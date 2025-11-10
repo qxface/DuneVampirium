@@ -1,0 +1,83 @@
+[gd_scene load_steps=5 format=3 uid="uid://i3pf445i7qp8"]
+
+[ext_resource type="Script" uid="uid://d1m7mj85xran2" path="res://main.gd" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://docs8xbbyc615" path="res://BoardParts/PlayerHand/player_hand.tscn" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://bexwjtfox12au" path="res://assets/UI/arrow_right.png" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://ds7jatgbi07fv" path="res://BoardParts/ZoomArea/plan_zoom.tscn" id="4_1bvp3"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_0xm2m")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Screen" type="HBoxContainer" parent="CanvasLayer/MarginContainer"]
+layout_mode = 2
+
+[node name="LeftSide" type="VBoxContainer" parent="CanvasLayer/MarginContainer/Screen"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Board" type="Control" parent="CanvasLayer/MarginContainer/Screen/LeftSide"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayerHand" parent="CanvasLayer/MarginContainer/Screen/LeftSide" instance=ExtResource("1_ig7tw")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="SelectedItems" type="VBoxContainer" parent="CanvasLayer/MarginContainer/Screen"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="PlanHover" parent="CanvasLayer/MarginContainer/Screen/SelectedItems" instance=ExtResource("4_1bvp3")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Control" type="Control" parent="CanvasLayer/MarginContainer/Screen/SelectedItems"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control2" type="Control" parent="CanvasLayer/MarginContainer/Screen/SelectedItems"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DevUILayer" type="CanvasLayer" parent="."]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DevUILayer"]
+unique_name_in_owner = true
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 395.0
+offset_bottom = 138.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="PreviousPlayerButton" type="TextureButton" parent="DevUILayer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = ExtResource("2_h2yge")
+flip_h = true
+
+[node name="CurrentPlayerLabel" type="Label" parent="DevUILayer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Regulkar Player"
+
+[node name="NextPlayerButton" type="TextureButton" parent="DevUILayer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = ExtResource("2_h2yge")

@@ -1,0 +1,251 @@
+[gd_scene load_steps=8 format=3 uid="uid://dsmra417pedqn"]
+
+[ext_resource type="Script" uid="uid://cy8pofrrxl74" path="res://BoardParts/plan_base.gd" id="1_utqov"]
+[ext_resource type="Texture2D" uid="uid://cm0xof33mm2p0" path="res://assets/icons/clans/primori.png" id="4_ej2ca"]
+[ext_resource type="Texture2D" uid="uid://by4g2os8w0qxp" path="res://assets/icons/clans/volupta.png" id="5_i8vks"]
+[ext_resource type="Texture2D" uid="uid://cwh55w7iubqw1" path="res://assets/icons/clans/vorace.png" id="6_4x8y8"]
+[ext_resource type="Texture2D" uid="uid://bqpdw1b6d5rny" path="res://assets/icons/actions/intrigue.png" id="7_ui13n"]
+[ext_resource type="Texture2D" uid="uid://bwetchgnia66s" path="res://assets/icons/actions/hunting.png" id="8_4etkg"]
+[ext_resource type="Texture2D" uid="uid://pkyvwuq88hkr" path="res://assets/icons/actions/battle.png" id="9_o1uki"]
+
+[node name="PlanBase" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_utqov")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="Icons" type="HBoxContainer" parent="MarginContainer/VSplitContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VSplitContainer/Icons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Clans" type="HBoxContainer" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Primori_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+color = Color(0.95686275, 0.9529412, 0.9372549, 1)
+
+[node name="Primori_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans/Primori_BG"]
+unique_name_in_owner = true
+self_modulate = Color(0.078431375, 0.039215688, 0.10980392, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_ej2ca")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Volupta_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+color = Color(0.95686275, 0.9529412, 0.9372549, 1)
+
+[node name="Volupta_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans/Volupta_BG"]
+unique_name_in_owner = true
+self_modulate = Color(0.16470589, 0.047058824, 0.0627451, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_i8vks")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Vorace_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+color = Color(0.95686275, 0.9529412, 0.9372549, 1)
+
+[node name="Vorace_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans/Vorace_BG"]
+unique_name_in_owner = true
+self_modulate = Color(0.05490196, 0.16470589, 0.07058824, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_4x8y8")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Actions" type="HBoxContainer" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Intrigue_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+color = Color(0.08627451, 0.09019608, 0.105882354, 1)
+
+[node name="Intrigue_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions/Intrigue_BG"]
+unique_name_in_owner = true
+self_modulate = Color(0.9490196, 0.85490197, 0.38431373, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_ui13n")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Hunting_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+color = Color(0.08627451, 0.09019608, 0.105882354, 1)
+
+[node name="Hunting_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions/Hunting_BG"]
+unique_name_in_owner = true
+self_modulate = Color(0.44705883, 0.6117647, 0.7137255, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_4etkg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Battle_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+color = Color(0.08627451, 0.09019608, 0.105882354, 1)
+
+[node name="Battle_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions/Battle_BG"]
+unique_name_in_owner = true
+self_modulate = Color(0.80784315, 0.40392157, 0.13333334, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("9_o1uki")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Origin_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+color = Color(0.6039216, 0.50980395, 0.41960785, 1)
+
+[node name="Origin_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/Origin_BG"]
+unique_name_in_owner = true
+self_modulate = Color(0.03529412, 0.03529412, 0.043137256, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -292.0
+offset_top = 25.0
+offset_right = -292.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("9_o1uki")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Activations" type="VBoxContainer" parent="MarginContainer/VSplitContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Acquire_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Activations"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+color = Color(0.58431375, 0.78039217, 0.3019608, 1)
+
+[node name="Action_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Activations"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+color = Color(0.4862745, 0.627451, 0.95686275, 1)
+
+[node name="Reveal_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Activations"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+color = Color(0.40392157, 0.22352941, 0.7372549, 1)
+
+[node name="Discard_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Activations"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+color = Color(0.7921569, 0.15686275, 0.15686275, 1)
+
+[node name="Trash_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Activations"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+color = Color(0.05490196, 0.003921569, 0.08627451, 1)
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

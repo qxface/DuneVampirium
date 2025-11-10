@@ -1,0 +1,38 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="DuneVampirium"
+run/main_scene="uid://i3pf445i7qp8"
+config/features=PackedStringArray("4.5", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+PALETTE="*res://UI/vampire_palette.gd"
+Helper="*res://Global/helper.gd"
+Signals="*res://Global/signals.gd"
+Ref="*res://Global/references.gd"
+
+[display]
+
+window/size/viewport_width=1760
+window/size/viewport_height=990
+window/stretch/mode="viewport"
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/PaletteTools/plugin.cfg", "res://addons/Todo_Manager/plugin.cfg", "res://addons/gamedev_assistant/plugin.cfg")

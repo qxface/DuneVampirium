@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dl1gt6w174stk"]
+
+[ext_resource type="Texture2D" uid="uid://bdlyu0s4flldd" path="res://assets/icons/discard_pile.png" id="1_vq5tv"]
+
+[node name="DiscardPile" type="TextureButton"]
+offset_right = 64.0
+offset_bottom = 64.0
+texture_normal = ExtResource("1_vq5tv")
