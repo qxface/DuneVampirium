@@ -1,9 +1,6 @@
 # res://Global/helper.gd
 extends Node
 
-# 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
-# https://github.com/qxface/DuneVampirium
-
 func odds_fifty_fifty() -> bool:
 	return randi_range(0, 1) == 0
 	
