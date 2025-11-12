@@ -21,48 +21,64 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Screen" type="HBoxContainer" parent="CanvasLayer/MarginContainer"]
+[node name="Screen" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
 layout_mode = 2
 
-[node name="LeftSide" type="VBoxContainer" parent="CanvasLayer/MarginContainer/Screen"]
+[node name="Top" type="HBoxContainer" parent="CanvasLayer/MarginContainer/Screen"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="Board" type="Control" parent="CanvasLayer/MarginContainer/Screen/LeftSide"]
-layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PlayerHand" parent="CanvasLayer/MarginContainer/Screen/LeftSide" instance=ExtResource("1_ig7tw")]
-unique_name_in_owner = true
+[node name="Board" type="Control" parent="CanvasLayer/MarginContainer/Screen/Top"]
 layout_mode = 2
-size_flags_vertical = 8
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="SelectedItems" type="VBoxContainer" parent="CanvasLayer/MarginContainer/Screen"]
+[node name="SelectedItems" type="VBoxContainer" parent="CanvasLayer/MarginContainer/Screen/Top"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 10
 
-[node name="PlanHover" parent="CanvasLayer/MarginContainer/Screen/SelectedItems" instance=ExtResource("4_1bvp3")]
+[node name="PlanHover" parent="CanvasLayer/MarginContainer/Screen/Top/SelectedItems" instance=ExtResource("4_1bvp3")]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 
-[node name="Control" type="Control" parent="CanvasLayer/MarginContainer/Screen/SelectedItems"]
+[node name="Control" type="Control" parent="CanvasLayer/MarginContainer/Screen/Top/SelectedItems"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Control2" type="Control" parent="CanvasLayer/MarginContainer/Screen/SelectedItems"]
+[node name="Control2" type="Control" parent="CanvasLayer/MarginContainer/Screen/Top/SelectedItems"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="Bottom" type="HBoxContainer" parent="CanvasLayer/MarginContainer/Screen"]
+layout_mode = 2
+
+[node name="PlayerHand" parent="CanvasLayer/MarginContainer/Screen/Bottom" instance=ExtResource("1_ig7tw")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+
+[node name="PlayerResources" type="HBoxContainer" parent="CanvasLayer/MarginContainer/Screen/Bottom"]
+layout_mode = 2
 
 [node name="DevUILayer" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="DevUILayer"]
 unique_name_in_owner = true
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 395.0
-offset_bottom = 138.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -192.5
+offset_top = -64.0
+offset_right = 192.5
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 

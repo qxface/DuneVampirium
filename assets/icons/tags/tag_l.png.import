@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ciysy0mei58u1"
-path="res://.godot/imported/primori_large.png-7d536e0677c75b378d220388fe95dfb9.ctex"
+uid="uid://o22s731fwhpk"
+path="res://.godot/imported/tag_l.png-062bb4dc41d4a40a6e0ea8b421b64bfa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/clans/primori_large.png"
-dest_files=["res://.godot/imported/primori_large.png-7d536e0677c75b378d220388fe95dfb9.ctex"]
+source_file="res://assets/icons/tags/tag_l.png"
+dest_files=["res://.godot/imported/tag_l.png-062bb4dc41d4a40a6e0ea8b421b64bfa.ctex"]
 
 [params]
 

@@ -22,6 +22,10 @@ Helper="*res://Global/helper.gd"
 Signals="*res://Global/signals.gd"
 Ref="*res://Global/references.gd"
 
+[debug]
+
+gdscript/warnings/unused_signal=0
+
 [display]
 
 window/size/viewport_width=1760

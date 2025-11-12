@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dm3g3spsihnqk"
-path="res://.godot/imported/volupta_large.png-6739f2968e00aed92513755725818874.ctex"
+uid="uid://c33cf7aat6sse"
+path="res://.godot/imported/blood.png-9c2a94ae8a6bae80ab6cb8a3931d4b8b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/clans/volupta_large.png"
-dest_files=["res://.godot/imported/volupta_large.png-6739f2968e00aed92513755725818874.ctex"]
+source_file="res://assets/icons/resources/blood.png"
+dest_files=["res://.godot/imported/blood.png-9c2a94ae8a6bae80ab6cb8a3931d4b8b.ctex"]
 
 [params]
 

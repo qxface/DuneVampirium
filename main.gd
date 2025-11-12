@@ -158,6 +158,7 @@ func _load_cards_into_dynamic_plan_hands(cards):
 		plan_hand.load_plan(card)
 		print("Loaded card '", card.card_name, "' into dynamically created PlanHand ", i)
 
+# Edit file: res://main.gd
 func create_players():
 	Ref.players = [
 		Player.new("Kaiser", Color.ORANGE),
@@ -165,6 +166,12 @@ func create_players():
 		Player.new("Deal", Color.YELLOW),
 		Player.new("Andrew", Color.RED)
 	]
+	
+	# Initialize random resources for each player
+	for player in Ref.players:
+		player.money = randi_range(2, 5)
+		player.blood = randi_range(1, 2)
+		player.secrets = randi_range(0, 1)
 
 func update_player_display():
 	if !Ref.current_player:

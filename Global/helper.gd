@@ -10,6 +10,10 @@ func odds_low() -> bool:
 func odds_high() -> bool:
 	return randi_range(0, 3) != 0
 
+func color_light(color: Color) -> bool:
+	var luminance = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b
+	return luminance >= 0.5
+
 func create_random_plan() -> Card:
 	var card = Card.new()
 	card.card_type = Card.CardType.PLAN

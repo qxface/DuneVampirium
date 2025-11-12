@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xsreid8he6cm"
-path="res://.godot/imported/vorace_large.png-e1222d8ac57ae39c4de395a647d2d916.ctex"
+uid="uid://fbr854w5pkk6"
+path="res://.godot/imported/tag_r.png-41b3a48987218681b3c048bbd39ff934.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/clans/vorace_large.png"
-dest_files=["res://.godot/imported/vorace_large.png-e1222d8ac57ae39c4de395a647d2d916.ctex"]
+source_file="res://assets/icons/tags/tag_r.png"
+dest_files=["res://.godot/imported/tag_r.png-41b3a48987218681b3c048bbd39ff934.ctex"]
 
 [params]
 

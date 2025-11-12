@@ -10,15 +10,15 @@ func _ready():
 	
 	icons.custom_minimum_size.y = 100
 	
-	zoom_icon(primori_icon)
-	zoom_icon(volupta_icon)
-	zoom_icon(vorace_icon)
-	
-	zoom_icon(intrigue_icon)
-	zoom_icon(hunting_icon)
-	zoom_icon(battle_icon)
-	
-	zoom_icon(origin_icon)
+	#zoom_icon(primori_icon)
+	#zoom_icon(volupta_icon)
+	#zoom_icon(vorace_icon)
+	#
+	#zoom_icon(intrigue_icon)
+	#zoom_icon(hunting_icon)
+	#zoom_icon(battle_icon)
+	#
+	#zoom_icon(origin_icon)
 	
 	Signals.plan_chosen.connect(_on_plan_chosen)
 	Signals.plan_unchosen.connect(_on_plan_unchosen)
@@ -52,30 +52,30 @@ func _on_plan_chosen() -> void:
 	
 func _on_plan_unchosen() -> void:
 	chosen_card_data = null
-
-func zoom_icon(icon: TextureRect):
-	# Get the current texture path
-	var current_texture = icon.texture
-	if current_texture == null:
-		return
-	
-	# Get the resource path of the current texture
-	var texture_path = current_texture.resource_path
-	if texture_path == "":
-		return
-	
-	# Extract file information
-	var file_path = texture_path.get_base_dir()
-	var file_name = texture_path.get_file()
-	var file_extension = texture_path.get_extension()
-	var base_name = file_name.trim_suffix("." + file_extension)
-	
-	# Construct the large version filename
-	var large_filename = base_name + "_large." + file_extension
-	var large_texture_path = file_path.path_join(large_filename)
-	
-	# Check if the large texture exists and load it
-	if FileAccess.file_exists(large_texture_path):
-		var large_texture = load(large_texture_path)
-		if large_texture:
-			icon.texture = large_texture
+#
+#func zoom_icon(icon: TextureRect):
+	## Get the current texture path
+	#var current_texture = icon.texture
+	#if current_texture == null:
+		#return
+	#
+	## Get the resource path of the current texture
+	#var texture_path = current_texture.resource_path
+	#if texture_path == "":
+		#return
+	#
+	## Extract file information
+	#var file_path = texture_path.get_base_dir()
+	#var file_name = texture_path.get_file()
+	#var file_extension = texture_path.get_extension()
+	#var base_name = file_name.trim_suffix("." + file_extension)
+	#
+	## Construct the large version filename
+	#var large_filename = base_name + "_large." + file_extension
+	#var large_texture_path = file_path.path_join(large_filename)
+	#
+	## Check if the large texture exists and load it
+	#if FileAccess.file_exists(large_texture_path):
+		#var large_texture = load(large_texture_path)
+		#if large_texture:
+			#icon.texture = large_texture

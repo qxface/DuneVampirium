@@ -1,0 +1,85 @@
+[gd_scene load_steps=7 format=3 uid="uid://c0h5bfvxg47gp"]
+
+[ext_resource type="Texture2D" uid="uid://eo3tcu0xkg7n" path="res://assets/icons/clans/primori.png" id="1_ciqrw"]
+[ext_resource type="Script" uid="uid://b4hary5wyk15a" path="res://UI/Icons/icon.gd" id="2_53bup"]
+[ext_resource type="Texture2D" uid="uid://fbr854w5pkk6" path="res://assets/icons/tags/tag_r.png" id="4_85gqq"]
+[ext_resource type="Texture2D" uid="uid://o22s731fwhpk" path="res://assets/icons/tags/tag_l.png" id="5_6v0m3"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_i2yow"]
+load_path = "res://.godot/imported/tag_r.png-41b3a48987218681b3c048bbd39ff934.ctex"
+
+[sub_resource type="LabelSettings" id="LabelSettings_i2yow"]
+font_size = 48
+font_color = Color(0.08627451, 0.09019608, 0.105882354, 1)
+
+[node name="Icon" type="TextureRect"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_ciqrw")
+script = ExtResource("2_53bup")
+color = Color(0.05490196, 0.16470589, 0.07058824, 1)
+
+[node name="TagMapLeft" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 128.0
+
+[node name="TagMapRight" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("CompressedTexture2D_i2yow")
+
+[node name="TagLeft" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 128.0
+texture = ExtResource("4_85gqq")
+
+[node name="TagRight" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 128.0
+texture = ExtResource("5_6v0m3")
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TagLabelLeft" type="Label" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "1"
+label_settings = SubResource("LabelSettings_i2yow")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TagLabelRight" type="Label" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "+"
+label_settings = SubResource("LabelSettings_i2yow")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjekuncqism2q"
-path="res://.godot/imported/battle_large.png-8828dbc22617753ee22ddbee63a927ba.ctex"
+uid="uid://buauyfs27ire4"
+path="res://.godot/imported/money.png-b07cdb1a6a7a4f8e35027edfb0638298.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/actions/battle_large.png"
-dest_files=["res://.godot/imported/battle_large.png-8828dbc22617753ee22ddbee63a927ba.ctex"]
+source_file="res://assets/icons/resources/money.png"
+dest_files=["res://.godot/imported/money.png-b07cdb1a6a7a4f8e35027edfb0638298.ctex"]
 
 [params]
 
