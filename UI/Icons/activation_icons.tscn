@@ -1,0 +1,63 @@
+[gd_scene load_steps=5 format=3 uid="uid://beds0uld2gt6j"]
+
+[ext_resource type="Script" uid="uid://toet78y503it" path="res://UI/Icons/activation_icons.gd" id="1_ch5ug"]
+[ext_resource type="Texture2D" uid="uid://3qbtaaa0kigj" path="res://assets/icons/instructions/requirement.png" id="2_ch5ug"]
+[ext_resource type="PackedScene" uid="uid://c0h5bfvxg47gp" path="res://UI/Icons/icon.tscn" id="2_ukeae"]
+[ext_resource type="Texture2D" uid="uid://dr4yv0x0ugylo" path="res://assets/icons/instructions/cost.png" id="3_iisfm"]
+
+[node name="ActivationIcons" type="HBoxContainer"]
+custom_minimum_size = Vector2(0, 128)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+alignment = 1
+script = ExtResource("1_ch5ug")
+
+[node name="Requirement" parent="." instance=ExtResource("2_ukeae")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+expand_mode = 1
+
+[node name="Colon" type="TextureRect" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(13, 64)
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 4
+texture = ExtResource("2_ch5ug")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Cost" parent="." instance=ExtResource("2_ukeae")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+expand_mode = 1
+
+[node name="Arrow" type="TextureRect" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 64)
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 4
+texture = ExtResource("3_iisfm")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Reward" parent="." instance=ExtResource("2_ukeae")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+expand_mode = 1

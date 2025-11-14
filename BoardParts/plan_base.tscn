@@ -1,12 +1,12 @@
 [gd_scene load_steps=8 format=3 uid="uid://dsmra417pedqn"]
 
 [ext_resource type="Script" uid="uid://cy8pofrrxl74" path="res://BoardParts/plan_base.gd" id="1_utqov"]
-[ext_resource type="Texture2D" uid="uid://cm0xof33mm2p0" path="res://assets/icons/clans/primori.png" id="4_ej2ca"]
-[ext_resource type="Texture2D" uid="uid://by4g2os8w0qxp" path="res://assets/icons/clans/volupta.png" id="5_i8vks"]
-[ext_resource type="Texture2D" uid="uid://cwh55w7iubqw1" path="res://assets/icons/clans/vorace.png" id="6_4x8y8"]
-[ext_resource type="Texture2D" uid="uid://bqpdw1b6d5rny" path="res://assets/icons/actions/intrigue.png" id="7_ui13n"]
-[ext_resource type="Texture2D" uid="uid://bwetchgnia66s" path="res://assets/icons/actions/hunting.png" id="8_4etkg"]
-[ext_resource type="Texture2D" uid="uid://pkyvwuq88hkr" path="res://assets/icons/actions/battle.png" id="9_o1uki"]
+[ext_resource type="Texture2D" uid="uid://eo3tcu0xkg7n" path="res://assets/icons/clans/primori.png" id="4_ej2ca"]
+[ext_resource type="Texture2D" uid="uid://ptq3trepb5r6" path="res://assets/icons/clans/volupta.png" id="5_i8vks"]
+[ext_resource type="Texture2D" uid="uid://ccwja3gvw6swa" path="res://assets/icons/clans/vorace.png" id="6_4x8y8"]
+[ext_resource type="Texture2D" uid="uid://c3y84xua6m18p" path="res://assets/icons/actions/intrigue.png" id="7_ui13n"]
+[ext_resource type="Texture2D" uid="uid://d0bau0mve7v8b" path="res://assets/icons/actions/hunting.png" id="8_4etkg"]
+[ext_resource type="Texture2D" uid="uid://bkkvqsxlqh60o" path="res://assets/icons/actions/battle.png" id="9_o1uki"]
 
 [node name="PlanBase" type="Panel"]
 anchors_preset = 15

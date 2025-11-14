@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://bj3mns52pnhce"]
+
+[ext_resource type="Texture2D" uid="uid://ccwja3gvw6swa" path="res://assets/icons/clans/vorace.png" id="1_swxqf"]
+[ext_resource type="Script" uid="uid://dpumljqmgqiaw" path="res://test_icon.gd" id="2_fsurx"]
+[ext_resource type="Texture2D" uid="uid://o22s731fwhpk" path="res://assets/icons/tags/tag_l.png" id="3_mhfdh"]
+
+[node name="TestIcon" type="TextureRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_swxqf")
+expand_mode = 2
+stretch_mode = 5
+script = ExtResource("2_fsurx")
+metadata/_edit_lock_ = true
+
+[node name="TagLeft" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_mhfdh")
+stretch_mode = 5

@@ -205,20 +205,28 @@ func initialize_player_cards():
 		player.hand = []
 		player.minion_pile = []
 
-		for i in range(randi_range(6, 8)):
+		# Add "Vamp Out!" card to each player's hand
+		var vamp_out_card = CardExamples.create_vamp_out_card()
+		player.hand.append(vamp_out_card)
+		print("Added 'Vamp Out!' card to ", player.player_name, "'s hand")
+		
+		# Add remaining random cards to hand (one less since we added Vamp Out!)
+		for i in range(randi_range(5, 7)):
 			var random_card = Helper.create_random_plan()
 			player.hand.append(random_card)
 			
+		# Add cards to draw pile
 		for i in range(randi_range(10, 16)):
 			var random_card = Helper.create_random_plan()
 			player.draw_pile.append(random_card)
 			
+		# Add minion cards
 		for i in range(randi_range(2, 4)):
 			var random_card = Helper.create_random_minion()
 			if random_card and random_card.card_type == Card.CardType.MINION:
 				player.minion_pile.append(random_card)
 		
-		print(player.player_name + " - Hand: " + str(player.hand.size()) + " plan cards, Draw Pile: " + str(player.draw_pile.size()) + " plan cards, Minions: " + str(player.minion_pile.size()) + " minion cards")
+		print(player.player_name + " - Hand: " + str(player.hand.size()) + " plan cards (including Vamp Out!), Draw Pile: " + str(player.draw_pile.size()) + " plan cards, Minions: " + str(player.minion_pile.size()) + " minion cards")
 func draw_cards(player, count: int):
 	for i in range(count):
 		if player.draw_pile.is_empty():

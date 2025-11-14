@@ -1,3 +1,4 @@
+# res://Data/Card.gd
 class_name Card
 extends Resource
 
@@ -22,96 +23,82 @@ enum Activations {ACQUIRE, ACTION, REVEAL, DISCARD, TRASH}
 # Origin type
 @export var origin: OriginType = OriginType.VAMPIRE
 
-# Function availability booleans
+# New activation system
+@export var acquire_activation: Activation
+@export var action_activation: Activation
+@export var reveal_activation: Activation
+@export var discard_activation: Activation
+@export var trash_activation: Activation
+
+# Function availability booleans (compatibility with old system)
 var has_acquire: bool:
 	get():
-		return acquire_func.is_valid()
+		return acquire_activation and not acquire_activation.is_empty()
 var has_action: bool:
 	get():
-		return action_func.is_valid()
+		return action_activation and not action_activation.is_empty()
 var has_reveal: bool:
 	get():
-		return reveal_func.is_valid()
+		return reveal_activation and not reveal_activation.is_empty()
 var has_discard: bool:
 	get():
-		return discard_func.is_valid()
+		return discard_activation and not discard_activation.is_empty()
 var has_trash: bool:
 	get():
-		return trash_func.is_valid()
+		return trash_activation and not trash_activation.is_empty()
 
-# Function references (will be set by subclasses)
-var acquire_func: Callable
-var action_func: Callable
-var reveal_func: Callable
-var discard_func: Callable
-var trash_func: Callable
+# Initialize the card with activation objects
+func _init():
+	# Initialize empty activations
+	acquire_activation = Activation.EMPTY
+	action_activation = Activation.EMPTY
+	reveal_activation = Activation.EMPTY
+	discard_activation = Activation.EMPTY
+	trash_activation = Activation.EMPTY
 
-# Initialize the card with optional function references
-func _init(
-	p_acquire_func: Callable = Callable(),
-	p_action_func: Callable = Callable(),
-	p_reveal_func: Callable = Callable(),
-	p_discard_func: Callable = Callable(),
-	p_trash_func: Callable = Callable()
-):
-	acquire_func = p_acquire_func
-	action_func = p_action_func
-	reveal_func = p_reveal_func
-	discard_func = p_discard_func
-	trash_func = p_trash_func
-	
-	# Update availability booleans based on function existence
-	has_acquire = acquire_func.is_valid()
-	has_action = action_func.is_valid()
-	has_reveal = reveal_func.is_valid()
-	has_discard = discard_func.is_valid()
-	has_trash = trash_func.is_valid()
+# Add activation using the new system
+func add_activation(activation_type: Activations, requirement: Requirement = null, cost: Cost = null, reward: Reward = null) -> void:
+	var new_activation = Activation.new(requirement, cost, reward)
 
-func add_activation(activation: Activations, game_function: Callable) -> void:
-	match activation:
+	match activation_type:
 		Activations.ACQUIRE:
-			acquire_func = GameActions.draw_plan.bind(Ref.current_player)
+			acquire_activation = new_activation
 		Activations.ACTION:
-			action_func = GameActions.draw_plan.bind(Ref.current_player)
+			action_activation = new_activation
 		Activations.REVEAL:
-			reveal_func = GameActions.draw_plan.bind(Ref.current_player)
+			reveal_activation = new_activation
 		Activations.DISCARD:
-			discard_func = GameActions.draw_plan.bind(Ref.current_player)
+			discard_activation = new_activation
 		Activations.TRASH:
-			trash_func = GameActions.draw_plan.bind(Ref.current_player)
+			trash_activation = new_activation
 
-# Function execution methods
-func acquire() -> bool:
+# Function execution methods (compatibility with old system)
+func acquire(player: Player) -> bool:
 	if has_acquire:
-		acquire_func.call()
-		return true
+		return acquire_activation.execute(player)
 	return false
 
-func action() -> bool:
+func action(player: Player) -> bool:
 	if has_action:
-		action_func.call()
-		return true
+		return action_activation.execute(player)
 	return false
 
-func reveal() -> bool:
+func reveal(player: Player) -> bool:
 	if has_reveal:
-		reveal_func.call()
-		return true
+		return reveal_activation.execute(player)
 	return false
 
-func discard() -> bool:
+func discard(player: Player) -> bool:
 	if has_discard:
-		discard_func.call()
-		return true
+		return discard_activation.execute(player)
 	return false
 
-func trash() -> bool:
+func trash(player: Player) -> bool:
 	if has_trash:
-		trash_func.call()
-		return true
+		return trash_activation.execute(player)
 	return false
 
-# Utility methods
+# Utility methods (unchanged)
 func get_clans() -> Array[String]:
 	var clans: Array[String] = []
 	if is_primori: clans.append("Primori")

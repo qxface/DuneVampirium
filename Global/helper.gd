@@ -10,6 +10,19 @@ func odds_low() -> bool:
 func odds_high() -> bool:
 	return randi_range(0, 3) != 0
 
+func biggest_power_of_2(number: float) -> int:
+	if number <= 1:
+		return 1
+	
+	var power = 1
+	var result = 1
+	
+	while result * 2 < number:
+		result *= 2
+		power += 1
+	
+	return result
+
 func color_light(color: Color) -> bool:
 	var luminance = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b
 	return luminance >= 0.5
@@ -26,17 +39,47 @@ func create_random_plan() -> Card:
 	card.is_intrigue = odds_fifty_fifty()
 	card.is_hunting = odds_fifty_fifty()
 	card.is_battle = odds_fifty_fifty()
-	
+
+	# Create random activations using the new system
 	if odds_low():
-		card.acquire_func = GameActions.draw_plan.bind(Ref.current_player)
+		var reward = Reward.new()
+		reward.reward_type = Reward.RewardType.DRAW_PLAN
+		reward.tag = "D+"
+		card.acquire_activation = Activation.new(null, null, reward)
+
 	if odds_low():
-		card.action_func = GameActions.draw_plan.bind(Ref.current_player)
+		var reward = Reward.new()
+		reward.reward_type = Reward.RewardType.GAIN_MONEY
+		reward.amount = randi_range(1, 3)
+		reward.tag = str(reward.amount) + "+"
+		card.action_activation = Activation.new(null, null, reward)
+
 	if odds_low():
-		card.reveal_func = GameActions.draw_plan.bind(Ref.current_player)
+		var cost = Cost.new()
+		cost.cost_type = Cost.CostType.BLOOD
+		cost.amount = randi_range(1, 2)
+		cost.tag = str(cost.amount) + "-"
+		
+		var reward = Reward.new()
+		reward.reward_type = Reward.RewardType.GAIN_SECRETS
+		reward.amount = randi_range(1, 2)
+		reward.tag = str(reward.amount) + "+"
+		
+		card.reveal_activation = Activation.new(null, cost, reward)
+
 	if odds_low():
-		card.discard_func = GameActions.draw_plan.bind(Ref.current_player)
+		var reward = Reward.new()
+		reward.reward_type = Reward.RewardType.GAIN_BLOOD
+		reward.amount = 1
+		reward.tag = "1+"
+		card.discard_activation = Activation.new(null, null, reward)
+
 	if odds_low():
-		card.trash_func = GameActions.draw_plan.bind(Ref.current_player)
+		var reward = Reward.new()
+		reward.reward_type = Reward.RewardType.GAIN_MONEY
+		reward.amount = randi_range(3, 5)
+		reward.tag = str(reward.amount) + "+"
+		card.trash_activation = Activation.new(null, null, reward)
 
 	# Ensure at least one action type is true
 	if not (card.is_intrigue or card.is_hunting or card.is_battle):
@@ -46,6 +89,13 @@ func create_random_plan() -> Card:
 		card.set(random_action, true)
 
 	return card
+
+func create_special_plan() -> Card:
+	# 10% chance to create a special card
+	if randi_range(1, 10) == 1:
+		return CardExamples.create_vamp_out_card()
+	else:
+		return create_random_plan()
 
 func create_random_minion() -> Card:
 	var card = Card.new()
