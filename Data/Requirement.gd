@@ -4,12 +4,15 @@ extends ActivationComponent
 
 enum RequirementType { BLOOD, MONEY, SECRETS }
 
-@export var requirement_type: RequirementType
+@export var requirement_type: RequirementType:
+	set(value):
+		requirement_type = value
+		_update_icon_and_description(requirement_type)
+@export var amount: int = 0  # For resource costs
 @export var comparison: String = ""  # e.g., "3+", "6-", "5"
 
 func _init():
 	component_type = ComponentType.REQUIREMENT
-	_update_icon_and_description()
 
 func is_met(player: Player) -> bool:
 	if not player:
@@ -37,8 +40,8 @@ func _evaluate_comparison(value: int, comp: String) -> bool:
 		var threshold = comp.to_int()
 		return value == threshold
 
-func _update_icon_and_description():
-	match requirement_type:
+func _update_icon_and_description(new_requirement_type):
+	match new_requirement_type:
 		RequirementType.BLOOD:
 			icon_texture_path = "res://assets/icons/resources/blood.png"
 			description = "Blood requirement"

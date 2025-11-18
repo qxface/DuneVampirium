@@ -72,6 +72,22 @@ func add_activation(activation_type: Activations, requirement: Requirement = nul
 		Activations.TRASH:
 			trash_activation = new_activation
 
+func get_activation(activation_type: Activations) -> Activation:
+	match activation_type:
+		Activations.ACQUIRE:
+			return acquire_activation
+		Activations.ACTION:
+			return action_activation
+		Activations.REVEAL:
+			return reveal_activation
+		Activations.DISCARD:
+			return discard_activation
+		Activations.TRASH:
+			return trash_activation
+		_:
+			return null
+	
+
 # Function execution methods (compatibility with old system)
 func acquire(player: Player) -> bool:
 	if has_acquire:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c0h5bfvxg47gp"]
+[gd_scene load_steps=6 format=3 uid="uid://c0h5bfvxg47gp"]
 
 [ext_resource type="Texture2D" uid="uid://bf4hvl0vf7jvl" path="res://assets/icons/background.png" id="1_i2yow"]
 [ext_resource type="Script" uid="uid://b4hary5wyk15a" path="res://UI/Icons/icon.gd" id="2_53bup"]
@@ -7,10 +7,6 @@
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_i2yow"]
 load_path = "res://.godot/imported/tag_r.png-41b3a48987218681b3c048bbd39ff934.ctex"
-
-[sub_resource type="LabelSettings" id="LabelSettings_i2yow"]
-font_size = 48
-font_color = Color(0.08627451, 0.09019608, 0.105882354, 1)
 
 [node name="Icon" type="TextureRect"]
 offset_right = 40.0
@@ -63,8 +59,9 @@ offset_right = 64.0
 grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 5
+theme_override_colors/font_color = Color(0.49019608, 0, 1, 1)
+theme_override_font_sizes/font_size = 48
 text = "1"
-label_settings = SubResource("LabelSettings_i2yow")
 horizontal_alignment = 1
 vertical_alignment = 2
 
@@ -93,8 +90,9 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
+theme_override_colors/font_color = Color(0, 0.32156864, 0, 1)
+theme_override_font_sizes/font_size = 48
 text = "+"
-label_settings = SubResource("LabelSettings_i2yow")
 horizontal_alignment = 2
 vertical_alignment = 2
 

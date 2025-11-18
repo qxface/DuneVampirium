@@ -3,12 +3,14 @@ extends ActivationComponent
 
 enum RewardType { GAIN_BLOOD, GAIN_MONEY, GAIN_SECRETS, DRAW_PLAN, DISCARD_PLAN, TRASH_PLAN }
 
-@export var reward_type: RewardType
+@export var reward_type: RewardType:
+	set(value):
+		reward_type = value
+		_update_icon_and_description(reward_type)
 @export var amount: int = 0  # For resource rewards
 
 func _init():
 	component_type = ComponentType.REWARD
-	_update_icon_and_description()
 
 func execute(player: Player) -> void:
 	if not player:
@@ -30,8 +32,8 @@ func execute(player: Player) -> void:
 			# This would need card context
 			pass
 
-func _update_icon_and_description():
-	match reward_type:
+func _update_icon_and_description(new_reward_type: RewardType):
+	match new_reward_type:
 		RewardType.GAIN_BLOOD:
 			icon_texture_path = "res://assets/icons/resources/blood.png"
 			description = "Gain %d blood" % amount

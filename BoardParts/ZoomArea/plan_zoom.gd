@@ -58,30 +58,35 @@ func _on_plan_chosen() -> void:
 	
 func _on_plan_unchosen() -> void:
 	chosen_card_data = null
-#
-#func zoom_icon(icon: TextureRect):
-	## Get the current texture path
-	#var current_texture = icon.texture
-	#if current_texture == null:
-		#return
-	#
-	## Get the resource path of the current texture
-	#var texture_path = current_texture.resource_path
-	#if texture_path == "":
-		#return
-	#
-	## Extract file information
-	#var file_path = texture_path.get_base_dir()
-	#var file_name = texture_path.get_file()
-	#var file_extension = texture_path.get_extension()
-	#var base_name = file_name.trim_suffix("." + file_extension)
-	#
-	## Construct the large version filename
-	#var large_filename = base_name + "_large." + file_extension
-	#var large_texture_path = file_path.path_join(large_filename)
-	#
-	## Check if the large texture exists and load it
-	#if FileAccess.file_exists(large_texture_path):
-		#var large_texture = load(large_texture_path)
-		#if large_texture:
-			#icon.texture = large_texture
+
+func _update_display():
+	super()
+	_update_activation_icons()
+
+
+func _update_activation_icons():
+	var activation_areas = {
+		Card.Activations.ACQUIRE: acquire_icons,
+		Card.Activations.ACTION: action_icons,
+		Card.Activations.REVEAL: reveal_icons,
+		Card.Activations.DISCARD: discard_icons,
+		Card.Activations.TRASH: trash_icons
+	}
+
+	# Hide all activation areas first
+	for area in activation_areas.values():
+		area.visible = false
+
+	# Determine which card data to use (hovered card takes priority over chosen card)
+	var current_card_data: Card = card_data if card_data else chosen_card_data
+
+	# If no card data is set, exit early
+	if not current_card_data:
+		return
+
+	# Loop through activation areas and find matching activations in current_card_data
+	for activation_type: Card.Activations in activation_areas.keys():
+		var area: ActivationIcons = activation_areas[activation_type]
+		var activation: Activation = current_card_data.get_activation(activation_type)
+		if activation:
+			area.update_icons(activation)

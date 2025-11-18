@@ -9,10 +9,6 @@ enum Pic {PRIMORI, VOLUPTA, VORACE,
 	DRAW_PLAN, DISCARD_PLAN, TRASH_PLAN,
 }
 
-const LIGHT: Color = Color("#f4f3ef")
-const DARK: Color = Color("#16171b")
-const PALETTE = preload("res://UI/vampire_palette.tres")
-
 @onready var tag_map_left: TextureRect = %TagMapLeft
 @onready var tag_map_right: TextureRect = %TagMapRight
 @onready var tag_left: TextureRect = $TagLeft
@@ -23,25 +19,35 @@ const PALETTE = preload("res://UI/vampire_palette.tres")
 var tag_width_ratio: float = 0.25  # Tags will be 25% of icon width
 var tag_margin_ratio: float = 0.05  # Margin will be 5% of icon size
 
-@export var color: Color = Color("#f4f3ef"):
-	set(value):
-		color = value
-		# Defer the actual color application until nodes are ready
-		if is_node_ready():
-			_apply_color()
-		else:
-			call_deferred("_apply_color")
+@export var color: Color = Color("#f4f3ef")
+	#set(value):
+		#color = value
+		## Defer the actual color application until nodes are ready
+		#if is_node_ready():
+			#_apply_color(value)
+		#else:
+			#call_deferred("_apply_color", value)
 
+# Edit file: res://UI/Icons/icon.gd
+var icon_texture: String:
+	set(value):
+		# Check if the string value is a valid file path with an existing image file
+		if value and ResourceLoader.exists(value):
+			# Load and set the texture
+			var loaded_texture = load(value)
+			if loaded_texture:
+				texture = loaded_texture
+		else:
+			# If the path is invalid or empty, clear the texture
+			texture = null
 var tag_l: bool = false:
 	set(value):
 		tag_l = value
 		_update_shader_parameters()
-
 var tag_r: bool = true:
 	set(value):
 		tag_r = value
 		_update_shader_parameters()
-
 var tag: String = "":
 	set(value):
 		value = value.strip_edges()
@@ -72,12 +78,18 @@ var tag: String = "":
 		
 		# Handle label text based on string length
 		if value.length() == 0:
+			tag_left.visible = false
+			tag_right.visible = false
 			tag_label_left.text = ""
 			tag_label_right.text = ""
 		elif value.length() == 1:
+			tag_left.visible = false
+			tag_right.visible = true
 			tag_label_left.text = ""
 			tag_label_right.text = value[0]
 		elif value.length() == 2:
+			tag_left.visible = true
+			tag_right.visible = true
 			tag_label_left.text = value[0]
 			tag_label_right.text = value[1]
 
@@ -99,6 +111,7 @@ func _ready():
 	#material = shader_material
 	
 	_update_shader_parameters()
+	call_deferred('update_color')
 	call_deferred('_update_tag_positioning')
 func _update_shader_parameters():
 	pass
@@ -106,19 +119,21 @@ func _update_shader_parameters():
 		material.set_shader_parameter("tag_l", tag_l)
 		material.set_shader_parameter("tag_r", tag_r)
 
-func _apply_color():
-	self_modulate = color
-	if tag_left:
-		tag_left.self_modulate = color
-	if tag_right:
-		tag_right.self_modulate = color
-	if tag_label_left and tag_label_right:
-		if Helper.color_light(color):
-			tag_label_left.label_settings.font_color = DARK
-			tag_label_right.label_settings.font_color = DARK
-		else:
-			tag_label_left.label_settings.font_color = LIGHT
-			tag_label_right.label_settings.font_color = LIGHT
+#func _apply_color(new_color: Color):
+	#self_modulate = new_color
+	#if tag_left:
+		#tag_left.self_modulate = new_color
+	#if tag_right:
+		#tag_right.self_modulate = new_color
+	##tag_label_left.label_settings.font_new_color = Color.GREEN
+	##tag_label_right.label_settings.font_new_color = Color.RED
+	#await get_tree().process_frame
+	#if Helper.color_light(new_color):
+		#tag_label_left.label_settings.font_color = Color.PINK
+		#tag_label_right.label_settings.font_color = Color.PINK
+	#else:
+		#tag_label_left.label_settings.font_color = Color.ORANGE
+		#tag_label_right.label_settings.font_color = Color.ORANGE
 
 func _update_tag_positioning():
 	if not texture:
@@ -178,3 +193,21 @@ func _on_timer_timeout() -> void:
 	
 	# Set the tag, which will trigger the validation and texture loading
 	tag = random_string
+
+# Edit file: res://UI/Icons/icon.gd
+func update_color() -> void:
+	# Look up the parent tree until we find a ColorRect
+	var parent_color: Color = Helper.find_parent_rect_color(self)
+	
+	if Helper.color_light(parent_color):
+		self_modulate = PALETTE.dark
+		tag_left.self_modulate = PALETTE.dark
+		tag_right.self_modulate = PALETTE.dark
+		tag_label_left.add_theme_color_override("font_color", PALETTE.light)
+		tag_label_right.add_theme_color_override("font_color", PALETTE.light)
+	else:
+		self_modulate = PALETTE.light
+		tag_left.self_modulate = PALETTE.light
+		tag_right.self_modulate = PALETTE.light
+		tag_label_left.add_theme_color_override("font_color", PALETTE.dark)
+		tag_label_right.add_theme_color_override("font_color", PALETTE.dark)

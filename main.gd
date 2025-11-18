@@ -8,7 +8,7 @@ extends Node2D
 @onready var current_player_label: Label = %CurrentPlayerLabel
 @onready var next_player_button: TextureButton = %NextPlayerButton
 
-@onready var h_box_container: HBoxContainer = %HBoxContainer
+@onready var player_arrows: HBoxContainer = %PlayerArrows
 @onready var player_hand: PlayerHand = %PlayerHand
 @onready var plan_hover: PlanZoom = %PlanHover
 
@@ -205,28 +205,33 @@ func initialize_player_cards():
 		player.hand = []
 		player.minion_pile = []
 
-		# Add "Vamp Out!" card to each player's hand
-		var vamp_out_card = CardExamples.create_vamp_out_card()
-		player.hand.append(vamp_out_card)
-		print("Added 'Vamp Out!' card to ", player.player_name, "'s hand")
+		## Add "Vamp Out!" card to each player's hand
+		#var vamp_out_card = CardExamples.create_vamp_out_card()
+		#player.hand.append(vamp_out_card)
+		#print("Added 'Vamp Out!' card to ", player.player_name, "'s hand")
 		
-		# Add remaining random cards to hand (one less since we added Vamp Out!)
-		for i in range(randi_range(5, 7)):
-			var random_card = Helper.create_random_plan()
-			player.hand.append(random_card)
-			
-		# Add cards to draw pile
-		for i in range(randi_range(10, 16)):
-			var random_card = Helper.create_random_plan()
-			player.draw_pile.append(random_card)
+		# Add "Simple Card" after Vamp Out!
+		var simple_card = CardExamples.create_simple_card()
+		player.hand.append(simple_card)
+		print("Added 'Simple Card' to ", player.player_name, "'s hand")
+		
+		## Add remaining random cards to hand (two less since we added Vamp Out! and Simple Card)
+		#for i in range(randi_range(4, 6)):
+			#var random_card = Helper.create_random_plan()
+			#player.hand.append(random_card)
+			#
+		## Add cards to draw pile
+		#for i in range(randi_range(10, 16)):
+			#var random_card = Helper.create_random_plan()
+			#player.draw_pile.append(random_card)
 			
 		# Add minion cards
 		for i in range(randi_range(2, 4)):
 			var random_card = Helper.create_random_minion()
 			if random_card and random_card.card_type == Card.CardType.MINION:
 				player.minion_pile.append(random_card)
-		
-		print(player.player_name + " - Hand: " + str(player.hand.size()) + " plan cards (including Vamp Out!), Draw Pile: " + str(player.draw_pile.size()) + " plan cards, Minions: " + str(player.minion_pile.size()) + " minion cards")
+			
+		print(player.player_name + " - Hand: " + str(player.hand.size()) + " plan cards (including Vamp Out! and Simple Card), Draw Pile: " + str(player.draw_pile.size()) + " plan cards, Minions: " + str(player.minion_pile.size()) + " minion cards")
 func draw_cards(player, count: int):
 	for i in range(count):
 		if player.draw_pile.is_empty():
@@ -264,3 +269,10 @@ func _on_discard_pile_pressed():
 	pass
 func _on_discard_pile_right_pressed():
 	pass
+
+
+func _on_button_pressed() -> void:
+	if Ref.plan_chosen and Ref.plan_chosen.card_data:
+		print("Plan: ", Ref.plan_chosen.card_data.card_name)
+	else:
+		print("Plan: None")

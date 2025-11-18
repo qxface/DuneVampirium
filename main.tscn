@@ -1,80 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://i3pf445i7qp8"]
+[gd_scene load_steps=5 format=3 uid="uid://i3pf445i7qp8"]
 
 [ext_resource type="Script" uid="uid://d1m7mj85xran2" path="res://main.gd" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://docs8xbbyc615" path="res://BoardParts/PlayerHand/player_hand.tscn" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://bexwjtfox12au" path="res://assets/UI/arrow_right.png" id="2_h2yge"]
-[ext_resource type="PackedScene" uid="uid://c0h5bfvxg47gp" path="res://UI/Icons/icon.tscn" id="3_lquwl"]
 [ext_resource type="PackedScene" uid="uid://ds7jatgbi07fv" path="res://BoardParts/ZoomArea/plan_zoom.tscn" id="4_1bvp3"]
-[ext_resource type="Texture2D" uid="uid://ccwja3gvw6swa" path="res://assets/icons/clans/vorace.png" id="4_7mycd"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_0xm2m")
-
-[node name="DevUILayer" type="CanvasLayer" parent="."]
-
-[node name="HBoxContainer" type="HBoxContainer" parent="DevUILayer"]
-unique_name_in_owner = true
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -192.5
-offset_top = -64.0
-offset_right = 192.5
-offset_bottom = 64.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="PreviousPlayerButton" type="TextureButton" parent="DevUILayer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-texture_normal = ExtResource("2_h2yge")
-flip_h = true
-
-[node name="CurrentPlayerLabel" type="Label" parent="DevUILayer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Regulkar Player"
-
-[node name="NextPlayerButton" type="TextureButton" parent="DevUILayer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-texture_normal = ExtResource("2_h2yge")
-
-[node name="MarginContainer" type="MarginContainer" parent="DevUILayer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="Panel" type="Panel" parent="DevUILayer"]
-offset_left = 167.0
-offset_top = 132.0
-offset_right = 408.0
-offset_bottom = 364.0
-
-[node name="Icon" parent="DevUILayer/Panel" instance=ExtResource("3_lquwl")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 0.0
-offset_bottom = 0.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="TextureRect" type="TextureRect" parent="DevUILayer"]
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("4_7mycd")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -126,3 +58,44 @@ size_flags_vertical = 8
 
 [node name="PlayerResources" type="HBoxContainer" parent="CanvasLayer/MarginContainer/Screen/Bottom"]
 layout_mode = 2
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+offset_left = 718.0
+offset_top = 323.0
+offset_right = 1058.0
+offset_bottom = 440.0
+text = "Current Chosen Cards"
+
+[node name="PlayerArrows" type="HBoxContainer" parent="CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -192.5
+offset_top = -64.0
+offset_right = 192.5
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="PreviousPlayerButton" type="TextureButton" parent="CanvasLayer/PlayerArrows"]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = ExtResource("2_h2yge")
+flip_h = true
+
+[node name="CurrentPlayerLabel" type="Label" parent="CanvasLayer/PlayerArrows"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Regulkar Player"
+
+[node name="NextPlayerButton" type="TextureButton" parent="CanvasLayer/PlayerArrows"]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = ExtResource("2_h2yge")
+
+[connection signal="pressed" from="CanvasLayer/Button" to="." method="_on_button_pressed"]

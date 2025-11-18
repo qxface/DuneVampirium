@@ -8,6 +8,7 @@
 [node name="PlanZoom" instance=ExtResource("1_5pth7")]
 theme_override_styles/panel = ExtResource("2_w7knq")
 script = ExtResource("2_y5obq")
+metadata/_edit_vertical_guides_ = [-866.0]
 
 [node name="AcquireIcons" parent="MarginContainer/VSplitContainer/Activations/Acquire_BG" index="0" instance=ExtResource("4_w021b")]
 unique_name_in_owner = true

@@ -116,3 +116,15 @@ func create_random_minion() -> Card:
 	card.has_trash = odds_fifty_fifty()
 	
 	return card
+
+func find_parent_rect_color(scene: Control) -> Color:
+	var parent_color:= Color.WHITE
+	var current_parent = scene.get_parent()
+	print(name)
+	while current_parent:
+		print(current_parent.name)
+		if current_parent is ColorRect:
+			parent_color = current_parent.color
+		current_parent = current_parent.get_parent()
+	
+	return parent_color

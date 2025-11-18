@@ -15,9 +15,9 @@ static var EMPTY: Activation:
 		return empty
 
 func _init(p_requirement: Requirement = null, p_cost: Cost = null, p_reward: Reward = null):
-	requirement = p_requirement if p_requirement else Requirement.new()
-	cost = p_cost if p_cost else Cost.new()
-	reward = p_reward if p_reward else Reward.new()
+	requirement = p_requirement
+	cost = p_cost
+	reward = p_reward
 
 # Check if activation can be used (requirement met AND cost can be paid)
 func is_usable(player: Player) -> bool:

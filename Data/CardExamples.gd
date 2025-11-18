@@ -3,6 +3,61 @@
 class_name CardExamples
 extends Node
 
+# Create the "Simple Card" - a basic test card with 3 money reward and 1 blood cost
+static func create_simple_card() -> Card:
+	var card = Card.new()
+	
+	# Basic card properties
+	card.card_name = "Simple Card"
+	card.card_description = "A simple test card that gives 3 money for 1 blood"
+	card.card_type = Card.CardType.PLAN
+	
+	# Clan and action properties (minimal setup)
+	card.is_primori = true
+	card.is_volupta = false
+	card.is_vorace = false
+	card.is_intrigue = true
+	card.is_hunting = false
+	card.is_battle = false
+	card.origin = Card.OriginType.NONE
+	
+	var requirement:= Requirement.new()
+	requirement.requirement_type = Requirement.RequirementType.SECRETS
+	requirement.amount = 1
+	requirement.tag = "1"
+	
+	var cost:= Cost.new()
+	cost.cost_type = Cost.CostType.BLOOD
+	cost.amount = 1
+	cost.tag = "1"
+	
+	var reward:= Reward.new()
+	reward.reward_type = Reward.RewardType.GAIN_MONEY
+	reward.amount = 3
+	reward.tag = "3"
+	
+	card.acquire_activation = Activation.new(requirement, cost, reward)
+	
+	requirement = Requirement.new()
+	requirement.requirement_type = Requirement.RequirementType.SECRETS
+	requirement.amount = 1
+	requirement.tag = "1"
+	
+	cost = Cost.new()
+	cost.cost_type = Cost.CostType.BLOOD
+	cost.amount = 1
+	cost.tag = "1"
+	
+	reward = Reward.new()
+	reward.reward_type = Reward.RewardType.GAIN_MONEY
+	reward.amount = 3
+	reward.tag = "3"
+	
+	card.trash_activation = Activation.new(requirement, cost, reward)
+	
+	return card
+
+
 # Create the "Vamp Out!" card with all the specified activations
 static func create_vamp_out_card() -> Card:
 	var card = Card.new()
