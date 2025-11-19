@@ -205,25 +205,25 @@ func initialize_player_cards():
 		player.hand = []
 		player.minion_pile = []
 
-		## Add "Vamp Out!" card to each player's hand
-		#var vamp_out_card = CardExamples.create_vamp_out_card()
-		#player.hand.append(vamp_out_card)
-		#print("Added 'Vamp Out!' card to ", player.player_name, "'s hand")
+		# Add "Vamp Out!" card to each player's hand
+		var vamp_out_card = CardExamples.create_vamp_out_card()
+		player.hand.append(vamp_out_card)
+		print("Added 'Vamp Out!' card to ", player.player_name, "'s hand")
 		
 		# Add "Simple Card" after Vamp Out!
 		var simple_card = CardExamples.create_simple_card()
 		player.hand.append(simple_card)
 		print("Added 'Simple Card' to ", player.player_name, "'s hand")
 		
-		## Add remaining random cards to hand (two less since we added Vamp Out! and Simple Card)
-		#for i in range(randi_range(4, 6)):
-			#var random_card = Helper.create_random_plan()
-			#player.hand.append(random_card)
-			#
-		## Add cards to draw pile
-		#for i in range(randi_range(10, 16)):
-			#var random_card = Helper.create_random_plan()
-			#player.draw_pile.append(random_card)
+		# Add remaining random cards to hand (two less since we added Vamp Out! and Simple Card)
+		for i in range(randi_range(4, 6)):
+			var random_card = Helper.create_random_plan()
+			player.hand.append(random_card)
+			
+		# Add cards to draw pile
+		for i in range(randi_range(10, 16)):
+			var random_card = Helper.create_random_plan()
+			player.draw_pile.append(random_card)
 			
 		# Add minion cards
 		for i in range(randi_range(2, 4)):
@@ -274,5 +274,6 @@ func _on_discard_pile_right_pressed():
 func _on_button_pressed() -> void:
 	if Ref.plan_chosen and Ref.plan_chosen.card_data:
 		print("Plan: ", Ref.plan_chosen.card_data.card_name)
+		Ref.plan_chosen.card_data.action_activation.reward.execute(Ref.current_player)
 	else:
 		print("Plan: None")

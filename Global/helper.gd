@@ -44,7 +44,7 @@ func create_random_plan() -> Card:
 	if odds_low():
 		var reward = Reward.new()
 		reward.reward_type = Reward.RewardType.DRAW_PLAN
-		reward.tag = "D+"
+		reward.tag = ""
 		card.acquire_activation = Activation.new(null, null, reward)
 
 	if odds_low():

@@ -31,6 +31,7 @@ gdscript/warnings/unused_signal=0
 window/size/viewport_width=1760
 window/size/viewport_height=990
 window/stretch/mode="viewport"
+window/stretch/aspect="expand"
 
 [editor]
 

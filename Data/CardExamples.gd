@@ -21,39 +21,39 @@ static func create_simple_card() -> Card:
 	card.is_battle = false
 	card.origin = Card.OriginType.NONE
 	
-	var requirement:= Requirement.new()
-	requirement.requirement_type = Requirement.RequirementType.SECRETS
-	requirement.amount = 1
-	requirement.tag = "1"
-	
-	var cost:= Cost.new()
-	cost.cost_type = Cost.CostType.BLOOD
-	cost.amount = 1
-	cost.tag = "1"
+	#var requirement:= Requirement.new()
+	#requirement.requirement_type = Requirement.RequirementType.SECRETS
+	#requirement.amount = 1
+	#requirement.tag = "1"
+	#
+	#var cost:= Cost.new()
+	#cost.cost_type = Cost.CostType.BLOOD
+	#cost.amount = 1
+	#cost.tag = "1"
 	
 	var reward:= Reward.new()
-	reward.reward_type = Reward.RewardType.GAIN_MONEY
+	reward.reward_type = Reward.RewardType.DRAW_PLAN
 	reward.amount = 3
-	reward.tag = "3"
+	reward.tag = ""
 	
-	card.acquire_activation = Activation.new(requirement, cost, reward)
+	card.action_activation = Activation.new(null, null, reward)
 	
-	requirement = Requirement.new()
-	requirement.requirement_type = Requirement.RequirementType.SECRETS
-	requirement.amount = 1
-	requirement.tag = "1"
-	
-	cost = Cost.new()
-	cost.cost_type = Cost.CostType.BLOOD
-	cost.amount = 1
-	cost.tag = "1"
-	
-	reward = Reward.new()
-	reward.reward_type = Reward.RewardType.GAIN_MONEY
-	reward.amount = 3
-	reward.tag = "3"
-	
-	card.trash_activation = Activation.new(requirement, cost, reward)
+	#requirement = Requirement.new()
+	#requirement.requirement_type = Requirement.RequirementType.SECRETS
+	#requirement.amount = 1
+	#requirement.tag = "1"
+	#
+	#cost = Cost.new()
+	#cost.cost_type = Cost.CostType.BLOOD
+	#cost.amount = 1
+	#cost.tag = "1"
+	#
+	#reward = Reward.new()
+	#reward.reward_type = Reward.RewardType.GAIN_MONEY
+	#reward.amount = 3
+	#reward.tag = "3"
+	#
+	#card.trash_activation = Activation.new(requirement, cost, reward)
 	
 	return card
 

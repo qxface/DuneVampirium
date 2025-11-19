@@ -49,12 +49,12 @@ func _update_icon_and_description(new_reward_type: RewardType):
 		RewardType.DRAW_PLAN:
 			icon_texture_path = "res://assets/piles/draw_pile.png"
 			description = "Draw a plan"
-			tag = "D+"
+			tag = ""
 		RewardType.DISCARD_PLAN:
 			icon_texture_path = "res://assets/piles/discard_pile.png"
 			description = "Discard a plan"
-			tag = "D-"
+			tag = ""
 		RewardType.TRASH_PLAN:
 			icon_texture_path = "res://assets/piles/discard_pile.png"  # Need trash icon
 			description = "Trash a plan"
-			tag = "T-"
+			tag = ""
