@@ -15,6 +15,7 @@ func _ready() -> void:
 	super()
 	Signals.plan_chosen.connect(_on_plan_chosen)
 	Signals.plan_unchosen.connect(_on_plan_unchosen)
+	_minimize_icons()
 
 func _on_mouse_entered() -> void:
 	is_hovered = true
@@ -96,3 +97,24 @@ func _set_border() -> void:
 		add_theme_stylebox_override("panel", CARD_HOVER)
 	else:
 		add_theme_stylebox_override("panel", CARD_NORMAL)
+
+func _minimize_icons() -> void:
+	acquire_icons.visible = false
+	action_icons.visible = false
+	reveal_icons.visible = false
+	discard_icons.visible = false
+	trash_icons.visible = false
+	
+	primori_bg.color = primori_icon.self_modulate
+	volupta_bg.color = volupta_icon.self_modulate
+	vorace_bg.color = vorace_icon.self_modulate
+	primori_icon.visible = false
+	volupta_icon.visible = false
+	vorace_icon.visible = false
+	
+	intrigue_bg.color = intrigue_icon.self_modulate
+	hunting_bg.color = hunting_icon.self_modulate
+	battle_bg.color = battle_icon.self_modulate
+	intrigue_icon.visible = false
+	hunting_icon.visible = false
+	battle_icon.visible = false

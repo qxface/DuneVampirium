@@ -5,12 +5,6 @@ extends PlanBase
 
 var chosen_card_data: Card
 
-@onready var acquire_icons: ActivationIcons = %AcquireIcons
-@onready var action_icons: ActivationIcons = %ActionIcons
-@onready var reveal_icons: ActivationIcons = %RevealIcons
-@onready var discard_icons: ActivationIcons = %DiscardIcons
-@onready var trash_icons: ActivationIcons = %TrashIcons
-
 func _ready():
 	super()
 	

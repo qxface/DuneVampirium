@@ -52,6 +52,12 @@ var origin_color: Dictionary ={
 @onready var discard_bg: ColorRect = %Discard_BG
 @onready var trash_bg: ColorRect = %Trash_BG
 
+@onready var acquire_icons: ActivationIcons = %AcquireIcons
+@onready var action_icons: ActivationIcons = %ActionIcons
+@onready var reveal_icons: ActivationIcons = %RevealIcons
+@onready var discard_icons: ActivationIcons = %DiscardIcons
+@onready var trash_icons: ActivationIcons = %TrashIcons
+
 var card_parts: Dictionary = {}
 
 var player: Player
