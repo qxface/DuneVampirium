@@ -1,60 +1,50 @@
+# res://Data/Reward.gd
 class_name Reward
 extends ActivationComponent
 
-enum RewardType { GAIN_BLOOD, GAIN_MONEY, GAIN_SECRETS, DRAW_PLAN, DISCARD_PLAN, TRASH_PLAN }
-
-@export var reward_type: RewardType:
+@export var icon_type: IconTypes.Type = IconTypes.Type.BLOOD:
 	set(value):
-		reward_type = value
-		_update_icon_and_description(reward_type)
-@export var amount: int = 0  # For resource rewards
+		icon_type = value
+		_update_icon_and_description()
+@export var amount: int = 0
 
 func _init():
 	component_type = ComponentType.REWARD
+	_update_icon_and_description()
 
 func execute(player: Player) -> void:
 	if not player:
 		return
-	
-	match reward_type:
-		RewardType.GAIN_BLOOD:
-			player.blood += amount
-		RewardType.GAIN_MONEY:
-			player.money += amount
-		RewardType.GAIN_SECRETS:
-			player.secrets += amount
-		RewardType.DRAW_PLAN:
-			GameActions.draw_plan(player)
-		RewardType.DISCARD_PLAN:
-			# This would need card context
-			pass
-		RewardType.TRASH_PLAN:
-			# This would need card context
-			pass
 
-func _update_icon_and_description(new_reward_type: RewardType):
-	match new_reward_type:
-		RewardType.GAIN_BLOOD:
-			icon_texture_path = "res://assets/icons/resources/blood.png"
+	match icon_type:
+		IconTypes.Type.BLOOD:
+			player.blood += amount
+		IconTypes.Type.MONEY:
+			player.money += amount
+		IconTypes.Type.SECRETS:
+			player.secrets += amount
+		IconTypes.Type.PLAN:
+			for i in range(amount):
+				GameActions.draw_plan(player)
+		IconTypes.Type.INFLUENCE:
+			GameActions.gain_influence(player, amount)
+
+func _update_icon_and_description():
+	icon_texture_path = IconTypes.get_texture_path(icon_type)
+
+	match icon_type:
+		IconTypes.Type.BLOOD:
 			description = "Gain %d blood" % amount
 			tag = str(amount) + "+"
-		RewardType.GAIN_MONEY:
-			icon_texture_path = "res://assets/icons/resources/money.png"
+		IconTypes.Type.MONEY:
 			description = "Gain %d money" % amount
 			tag = str(amount) + "+"
-		RewardType.GAIN_SECRETS:
-			icon_texture_path = "res://assets/icons/resources/secret.png"
+		IconTypes.Type.SECRETS:
 			description = "Gain %d secrets" % amount
 			tag = str(amount) + "+"
-		RewardType.DRAW_PLAN:
-			icon_texture_path = "res://assets/piles/draw_pile.png"
-			description = "Draw a plan"
-			tag = ""
-		RewardType.DISCARD_PLAN:
-			icon_texture_path = "res://assets/piles/discard_pile.png"
-			description = "Discard a plan"
-			tag = ""
-		RewardType.TRASH_PLAN:
-			icon_texture_path = "res://assets/piles/discard_pile.png"  # Need trash icon
-			description = "Trash a plan"
-			tag = ""
+		IconTypes.Type.PLAN:
+			description = "Draw %d plan(s)" % amount
+			tag = str(amount) + "+"
+		IconTypes.Type.INFLUENCE:
+			description = "Gain %d influence" % amount
+			tag = str(amount) + "+"

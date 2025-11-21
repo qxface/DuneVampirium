@@ -7,6 +7,7 @@
 [node name="PlanHand" instance=ExtResource("1_klimf")]
 theme_override_styles/panel = ExtResource("2_sg5yq")
 script = ExtResource("1_as3oi")
+border = null
 
 [node name="MarginContainer" parent="." index="0"]
 mouse_filter = 2

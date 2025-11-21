@@ -1,3 +1,4 @@
+# res://Data/Activation.gd
 class_name Activation
 extends Resource
 
@@ -9,9 +10,10 @@ extends Resource
 static var EMPTY: Activation:
 	get:
 		var empty = Activation.new()
-		empty.requirement = Requirement.new()
-		empty.cost = Cost.new()
-		empty.reward = Reward.new()
+		# Create truly empty components
+		empty.requirement = null
+		empty.cost = null
+		empty.reward = null
 		return empty
 
 func _init(p_requirement: Requirement = null, p_cost: Cost = null, p_reward: Reward = null):
@@ -31,7 +33,7 @@ func is_usable(player: Player) -> bool:
 	
 	# Check if we have a valid cost
 	var cost_can_pay = true
-	if cost and (cost.amount > 0 or cost.cost_type in [Cost.CostType.DISCARD_PLAN, Cost.CostType.TRASH_PLAN]):
+	if cost and (cost.amount > 0 or cost.icon_type in [IconTypes.Type.PLAN, IconTypes.Type.PLAN_TRASH]):
 		cost_can_pay = cost.can_pay(player)
 	
 	return requirement_met and cost_can_pay
@@ -43,7 +45,7 @@ func execute(player: Player) -> bool:
 	
 	# Pay the cost first
 	var cost_paid = true
-	if cost and (cost.amount > 0 or cost.cost_type in [Cost.CostType.DISCARD_PLAN, Cost.CostType.TRASH_PLAN]):
+	if cost and (cost.amount > 0 or cost.icon_type in [IconTypes.Type.PLAN, IconTypes.Type.PLAN_TRASH]):
 		cost_paid = cost.pay(player)
 	
 	if not cost_paid:
@@ -57,6 +59,12 @@ func execute(player: Player) -> bool:
 
 # Check if this activation is empty (has no real functionality)
 func is_empty() -> bool:
-	return (requirement == null or requirement.comparison == "") and \
-		   (cost == null or (cost.amount == 0 and cost.cost_type not in [Cost.CostType.DISCARD_PLAN, Cost.CostType.TRASH_PLAN])) and \
-		   (reward == null or reward.reward_type == Reward.RewardType.GAIN_BLOOD and reward.amount == 0)
+	var req_empty = requirement == null or requirement.comparison == ""
+	var cost_empty = cost == null or (cost.amount == 0 and cost.icon_type not in [IconTypes.Type.PLAN, IconTypes.Type.PLAN_TRASH])
+	var reward_empty = reward == null or reward.amount == 0
+	#print("Activation.is_empty() check:")
+	#print("  Requirement empty: ", req_empty, " (requirement: ", requirement, ", comparison: ", requirement.comparison if requirement else "null", ")")
+	#print("  Cost empty: ", cost_empty, " (cost: ", cost, ", amount: ", cost.amount if cost else "null", ", icon_type: ", cost.icon_type if cost else "null", ")")
+	#print("  Reward empty: ", reward_empty, " (reward: ", reward, ", amount: ", reward.amount if reward else "null", ")")
+	#print("  Overall empty: ", req_empty and cost_empty and reward_empty)
+	return req_empty and cost_empty and reward_empty

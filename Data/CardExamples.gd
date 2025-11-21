@@ -3,13 +3,13 @@
 class_name CardExamples
 extends Node
 
-# Create the "Simple Card" - a basic test card with 3 money reward and 1 blood cost
+# Create the 'Simple Card' - a basic test card with Action and Reveal activations
 static func create_simple_card() -> Card:
 	var card = Card.new()
 	
 	# Basic card properties
 	card.card_name = "Simple Card"
-	card.card_description = "A simple test card that gives 3 money for 1 blood"
+	card.card_description = "A simple test card with Action and Reveal activations"
 	card.card_type = Card.CardType.PLAN
 	
 	# Clan and action properties (minimal setup)
@@ -21,39 +21,25 @@ static func create_simple_card() -> Card:
 	card.is_battle = false
 	card.origin = Card.OriginType.NONE
 	
-	#var requirement:= Requirement.new()
-	#requirement.requirement_type = Requirement.RequirementType.SECRETS
-	#requirement.amount = 1
-	#requirement.tag = "1"
-	#
-	#var cost:= Cost.new()
-	#cost.cost_type = Cost.CostType.BLOOD
-	#cost.amount = 1
-	#cost.tag = "1"
+	# Action Activation: Draw 3 plans (reward only)
+	var action_reward:= Reward.new()
+	action_reward.icon_type = IconTypes.Type.SECRETS
+	action_reward.amount = 3
+	action_reward.tag = "3"
+	card.action_activation = Activation.new(null, null, action_reward)
 	
-	var reward:= Reward.new()
-	reward.reward_type = Reward.RewardType.DRAW_PLAN
-	reward.amount = 3
-	reward.tag = ""
+	# Reveal Activation: Cost 1 blood, Reward 1 secret
+	var reveal_cost:= Cost.new()
+	reveal_cost.icon_type = IconTypes.Type.BLOOD
+	reveal_cost.amount = 1
+	reveal_cost.tag = "1"
 	
-	card.action_activation = Activation.new(null, null, reward)
+	var reveal_reward:= Reward.new()
+	reveal_reward.icon_type = IconTypes.Type.SECRETS
+	reveal_reward.amount = 1
+	reveal_reward.tag = "1"
 	
-	#requirement = Requirement.new()
-	#requirement.requirement_type = Requirement.RequirementType.SECRETS
-	#requirement.amount = 1
-	#requirement.tag = "1"
-	#
-	#cost = Cost.new()
-	#cost.cost_type = Cost.CostType.BLOOD
-	#cost.amount = 1
-	#cost.tag = "1"
-	#
-	#reward = Reward.new()
-	#reward.reward_type = Reward.RewardType.GAIN_MONEY
-	#reward.amount = 3
-	#reward.tag = "3"
-	#
-	#card.trash_activation = Activation.new(requirement, cost, reward)
+	card.reveal_activation = Activation.new(null, reveal_cost, reveal_reward)
 	
 	return card
 
@@ -77,51 +63,44 @@ static func create_vamp_out_card() -> Card:
 	
 	# 1. Acquire: "Gain 2 Money" (reward only)
 	var acquire_reward = Reward.new()
-	acquire_reward.reward_type = Reward.RewardType.GAIN_MONEY
+	acquire_reward.icon_type = IconTypes.Type.MONEY
 	acquire_reward.amount = 2
-	acquire_reward.tag = "2+"
-	
 	card.acquire_activation = Activation.new(null, null, acquire_reward)
 	
 	# 2. Action: requirement: "1+ blood", reward: "2 Money"
 	var action_requirement = Requirement.new()
-	action_requirement.requirement_type = Requirement.RequirementType.BLOOD
-	action_requirement.comparison = "1+"
-	action_requirement.tag = "1+"
-	
+	action_requirement.icon_type = IconTypes.Type.BLOOD
+	action_requirement.amount = 1
+	action_requirement.comparison = "+"
+
 	var action_reward = Reward.new()
-	action_reward.reward_type = Reward.RewardType.GAIN_MONEY
+	action_reward.icon_type = IconTypes.Type.MONEY
 	action_reward.amount = 2
-	action_reward.tag = "2+"
 	
 	card.action_activation = Activation.new(action_requirement, null, action_reward)
 	
 	# 3. Reveal: cost: "1 blood", reward: "1 secret"
 	var reveal_cost = Cost.new()
-	reveal_cost.cost_type = Cost.CostType.BLOOD
+	reveal_cost.icon_type = IconTypes.Type.BLOOD
 	reveal_cost.amount = 1
-	reveal_cost.tag = "1-"
-	
+
 	var reveal_reward = Reward.new()
-	reveal_reward.reward_type = Reward.RewardType.GAIN_SECRETS
+	reveal_reward.icon_type = IconTypes.Type.SECRETS
 	reveal_reward.amount = 1
-	reveal_reward.tag = "1+"
 	
 	card.reveal_activation = Activation.new(null, reveal_cost, reveal_reward)
 	
 	# 4. Discard: reward: "1 blood"
 	var discard_reward = Reward.new()
-	discard_reward.reward_type = Reward.RewardType.GAIN_BLOOD
+	discard_reward.icon_type = IconTypes.Type.BLOOD
 	discard_reward.amount = 1
-	discard_reward.tag = "1+"
 	
 	card.discard_activation = Activation.new(null, null, discard_reward)
 	
 	# 5. Trash: reward: "5 money"
 	var trash_reward = Reward.new()
-	trash_reward.reward_type = Reward.RewardType.GAIN_MONEY
+	trash_reward.icon_type = IconTypes.Type.MONEY
 	trash_reward.amount = 5
-	trash_reward.tag = "5+"
 	
 	card.trash_activation = Activation.new(null, null, trash_reward)
 	

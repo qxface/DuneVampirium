@@ -99,22 +99,47 @@ func _set_border() -> void:
 		add_theme_stylebox_override("panel", CARD_NORMAL)
 
 func _minimize_icons() -> void:
+	acquire_bg.visible = false
+	action_bg.visible = false
+	reveal_bg.visible = false
+	discard_bg.visible = false
+	trash_bg.visible = false
+
 	acquire_icons.visible = false
 	action_icons.visible = false
 	reveal_icons.visible = false
 	discard_icons.visible = false
 	trash_icons.visible = false
-	
+
 	primori_bg.color = primori_icon.self_modulate
 	volupta_bg.color = volupta_icon.self_modulate
 	vorace_bg.color = vorace_icon.self_modulate
 	primori_icon.visible = false
 	volupta_icon.visible = false
 	vorace_icon.visible = false
-	
+
 	intrigue_bg.color = intrigue_icon.self_modulate
 	hunting_bg.color = hunting_icon.self_modulate
 	battle_bg.color = battle_icon.self_modulate
 	intrigue_icon.visible = false
 	hunting_icon.visible = false
 	battle_icon.visible = false
+func update_activation_visibility(bg: ColorRect, icons: ActivationIcons, activation: Activation) -> void:
+	if not bg:
+		print("update_activation_visibility: bg is null")
+		return
+	var has_activation = activation != null
+	var is_not_empty = activation and not activation.is_empty()
+	var has_reward = activation and activation.reward and activation.reward.amount > 0
+	print("update_activation_visibility - bg:", bg.name, " has_activation:", has_activation, " is_not_empty:", is_not_empty, " has_reward:", has_reward)
+	if has_activation and is_not_empty and has_reward:
+		bg.visible = true
+		if icons:
+			icons.visible = true
+			icons.update_icons(activation)
+		print(bg.name, "- SHOWING")
+	else:
+		bg.visible = false
+		if icons:
+			icons.visible = false
+		print(bg.name, "- HIDING")

@@ -67,9 +67,19 @@ func _update_activation_icons():
 		Card.Activations.TRASH: trash_icons
 	}
 
-	# Hide all activation areas first
+	var activation_bgs = {
+		Card.Activations.ACQUIRE: acquire_bg,
+		Card.Activations.ACTION: action_bg,
+		Card.Activations.REVEAL: reveal_bg,
+		Card.Activations.DISCARD: discard_bg,
+		Card.Activations.TRASH: trash_bg
+	}
+
+	# Hide all activation areas and their background ColorRects first
 	for area in activation_areas.values():
 		area.visible = false
+	for bg in activation_bgs.values():
+		bg.visible = false
 
 	# Determine which card data to use (hovered card takes priority over chosen card)
 	var current_card_data: Card = card_data if card_data else chosen_card_data
@@ -81,6 +91,9 @@ func _update_activation_icons():
 	# Loop through activation areas and find matching activations in current_card_data
 	for activation_type: Card.Activations in activation_areas.keys():
 		var area: ActivationIcons = activation_areas[activation_type]
+		var bg: ColorRect = activation_bgs[activation_type]
 		var activation: Activation = current_card_data.get_activation(activation_type)
 		if activation:
 			area.update_icons(activation)
+		# Ensure the background visibility follows whether the icons area is visible
+		bg.visible = area.visible

@@ -8,7 +8,6 @@ enum Tint {LIGHT, NORMAL, DARK}
 var palette_resource: Resource = preload("res://UI/vampire_palette.tres")
 
 func color(hue: Hue, tint: Tint) -> Color:
-	return grey
 	var hue_offset: int = hue * 3
 	var tint_offset: int = tint
 	var palette_index: int = hue_offset + tint_offset

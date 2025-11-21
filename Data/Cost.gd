@@ -1,66 +1,71 @@
+# res://Data/Cost.gd
 class_name Cost
 extends ActivationComponent
 
-enum CostType { BLOOD, MONEY, SECRETS, DISCARD_PLAN, TRASH_PLAN }
-
-@export var cost_type: CostType:
-	set(value):
-		cost_type = value
-		_update_icon_and_description(cost_type)
-@export var amount: int = 0  # For resource costs
+@export var icon_type: IconTypes.Type = IconTypes.Type.BLOOD
+@export var amount: int = 0
 
 func _init():
 	component_type = ComponentType.COST
+	_update_icon_and_description()
 
 func can_pay(player: Player) -> bool:
 	if not player:
 		return false
 	
-	match cost_type:
-		CostType.BLOOD:
+	match icon_type:
+		IconTypes.Type.BLOOD:
 			return player.blood >= amount
-		CostType.MONEY:
+		IconTypes.Type.MONEY:
 			return player.money >= amount
-		CostType.SECRETS:
+		IconTypes.Type.SECRETS:
 			return player.secrets >= amount
-		CostType.DISCARD_PLAN, CostType.TRASH_PLAN:
-			# These require a card context, handled differently
-			return true  # Will be handled by card logic
+		IconTypes.Type.PLAN:
+			return player.hand.size() >= amount  # Player must have enough plans to discard
+		IconTypes.Type.PLAN_TRASH:
+			return player.hand.size() >= amount  # Player must have enough plans to trash
 	return false
 
 func pay(player: Player) -> bool:
 	if not can_pay(player):
 		return false
 	
-	match cost_type:
-		CostType.BLOOD:
+	match icon_type:
+		IconTypes.Type.BLOOD:
 			player.blood -= amount
-		CostType.MONEY:
+		IconTypes.Type.MONEY:
 			player.money -= amount
-		CostType.SECRETS:
+		IconTypes.Type.SECRETS:
 			player.secrets -= amount
-		# DISCARD_PLAN and TRASH_PLAN handled by card logic
+		IconTypes.Type.PLAN:
+			# Discard amount plans from hand
+			for i in range(amount):
+				if player.hand.size() > 0:
+					var discarded_card = player.hand.pop_back()
+					player.discard_pile.append(discarded_card)
+		IconTypes.Type.PLAN_TRASH:
+			# Trash amount plans from hand
+			for i in range(amount):
+				if player.hand.size() > 0:
+					player.hand.pop_back()  # Card is removed from game
 	return true
 
-func _update_icon_and_description(new_cost_type):
-	match new_cost_type:
-		CostType.BLOOD:
-			icon_texture_path = "res://assets/icons/resources/blood.png"
+func _update_icon_and_description():
+	icon_texture_path = IconTypes.get_texture_path(icon_type)
+	
+	match icon_type:
+		IconTypes.Type.BLOOD:
 			description = "Pay %d blood" % amount
-			tag = str(amount)  # Shows as "3" for paying 3 blood
-		CostType.MONEY:
-			icon_texture_path = "res://assets/icons/resources/money.png"
+			tag = str(amount)
+		IconTypes.Type.MONEY:
 			description = "Pay %d money" % amount
 			tag = str(amount)
-		CostType.SECRETS:
-			icon_texture_path = "res://assets/icons/resources/secret.png"
+		IconTypes.Type.SECRETS:
 			description = "Pay %d secrets" % amount
 			tag = str(amount)
-		CostType.DISCARD_PLAN:
-			icon_texture_path = "res://assets/piles/discard_pile.png"
-			description = "Discard a plan"
-			tag = ""
-		CostType.TRASH_PLAN:
-			icon_texture_path = "res://assets/piles/discard_pile.png"  # Need trash icon
-			description = "Trash a plan"
-			tag = ""
+		IconTypes.Type.PLAN:
+			description = "Discard %d plan(s)" % amount
+			tag = str(amount)
+		IconTypes.Type.PLAN_TRASH:
+			description = "Trash %d plan(s)" % amount
+			tag = str(amount)

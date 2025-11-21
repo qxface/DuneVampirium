@@ -25,6 +25,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 expand_mode = 1
+icon_type = null
 
 [node name="Colon" type="TextureRect" parent="."]
 unique_name_in_owner = true
@@ -43,6 +44,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 expand_mode = 1
+icon_type = null
 
 [node name="Arrow" type="TextureRect" parent="."]
 unique_name_in_owner = true
@@ -61,3 +63,4 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 expand_mode = 1
+icon_type = null

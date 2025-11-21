@@ -40,7 +40,17 @@ var icon_texture: String:
 		else:
 			# If the path is invalid or empty, clear the texture
 			texture = null
-var tag_l: bool = false:
+var _icon_type: IconTypes.Type = IconTypes.Type.BLOOD
+@export var icon_type: IconTypes.Type:
+	get:
+		return _icon_type
+	set(value):
+		_icon_type = value
+		# Update the icon texture when type changes
+		icon_texture = IconTypes.get_texture_path(value)
+		# Also update the color immediately when icon_type changes
+		update_color()
+var tag_l: bool = true:
 	set(value):
 		tag_l = value
 		_update_shader_parameters()
@@ -111,7 +121,6 @@ func _ready():
 	#material = shader_material
 	
 	_update_shader_parameters()
-	call_deferred('update_color')
 	call_deferred('_update_tag_positioning')
 func _update_shader_parameters():
 	pass
@@ -199,15 +208,18 @@ func update_color() -> void:
 	# Look up the parent tree until we find a ColorRect
 	var parent_color: Color = Helper.find_parent_rect_color(self)
 	
-	if Helper.color_light(parent_color):
-		self_modulate = PALETTE.dark
-		tag_left.self_modulate = PALETTE.dark
-		tag_right.self_modulate = PALETTE.dark
-		tag_label_left.add_theme_color_override("font_color", PALETTE.light)
-		tag_label_right.add_theme_color_override("font_color", PALETTE.light)
+	# Get the appropriate color based on the icon type and background
+	print("Icon.icon_type: %s" % icon_type)
+	var final_color = IconTypes.get_color(icon_type, parent_color)
+	
+	self_modulate = final_color
+	tag_left.self_modulate = final_color
+	tag_right.self_modulate = final_color
+	
+	# Update label colors based on background contrast
+	if !Helper.color_light(parent_color):
+		tag_label_left.add_theme_color_override("font_color", PALETTE.color(PALETTE.Hue.NEUTRAL, PALETTE.Tint.DARK))
+		tag_label_right.add_theme_color_override("font_color", PALETTE.color(PALETTE.Hue.NEUTRAL, PALETTE.Tint.DARK))
 	else:
-		self_modulate = PALETTE.light
-		tag_left.self_modulate = PALETTE.light
-		tag_right.self_modulate = PALETTE.light
-		tag_label_left.add_theme_color_override("font_color", PALETTE.dark)
-		tag_label_right.add_theme_color_override("font_color", PALETTE.dark)
+		tag_label_left.add_theme_color_override("font_color", PALETTE.color(PALETTE.Hue.NEUTRAL, PALETTE.Tint.LIGHT))
+		tag_label_right.add_theme_color_override("font_color", PALETTE.color(PALETTE.Hue.NEUTRAL, PALETTE.Tint.LIGHT))

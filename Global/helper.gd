@@ -25,7 +25,7 @@ func biggest_power_of_2(number: float) -> int:
 
 func color_light(color: Color) -> bool:
 	var luminance = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b
-	return luminance >= 0.5
+	return luminance < 0.2  # Lower threshold for your perception
 
 func create_random_plan() -> Card:
 	var card = Card.new()
@@ -40,47 +40,41 @@ func create_random_plan() -> Card:
 	card.is_hunting = odds_fifty_fifty()
 	card.is_battle = odds_fifty_fifty()
 
-	# Create random activations using the new system
+	# Create random activations using the new IconTypes system
 	if odds_low():
 		var reward = Reward.new()
-		reward.reward_type = Reward.RewardType.DRAW_PLAN
-		reward.tag = ""
+		reward.icon_type = IconTypes.Type.PLAN
+		reward.amount = 1
 		card.acquire_activation = Activation.new(null, null, reward)
 
 	if odds_low():
 		var reward = Reward.new()
-		reward.reward_type = Reward.RewardType.GAIN_MONEY
+		reward.icon_type = IconTypes.Type.MONEY
 		reward.amount = randi_range(1, 3)
-		reward.tag = str(reward.amount) + "+"
 		card.action_activation = Activation.new(null, null, reward)
 
 	if odds_low():
 		var cost = Cost.new()
-		cost.cost_type = Cost.CostType.BLOOD
+		cost.icon_type = IconTypes.Type.BLOOD
 		cost.amount = randi_range(1, 2)
-		cost.tag = str(cost.amount) + "-"
 		
 		var reward = Reward.new()
-		reward.reward_type = Reward.RewardType.GAIN_SECRETS
+		reward.icon_type = IconTypes.Type.SECRETS
 		reward.amount = randi_range(1, 2)
-		reward.tag = str(reward.amount) + "+"
 		
 		card.reveal_activation = Activation.new(null, cost, reward)
 
 	if odds_low():
 		var reward = Reward.new()
-		reward.reward_type = Reward.RewardType.GAIN_BLOOD
+		reward.icon_type = IconTypes.Type.BLOOD
 		reward.amount = 1
-		reward.tag = "1+"
 		card.discard_activation = Activation.new(null, null, reward)
 
 	if odds_low():
 		var reward = Reward.new()
-		reward.reward_type = Reward.RewardType.GAIN_MONEY
+		reward.icon_type = IconTypes.Type.MONEY
 		reward.amount = randi_range(3, 5)
-		reward.tag = str(reward.amount) + "+"
 		card.trash_activation = Activation.new(null, null, reward)
-
 	# Ensure at least one action type is true
 	if not (card.is_intrigue or card.is_hunting or card.is_battle):
 		# Randomly select one action type to set to true
