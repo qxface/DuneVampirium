@@ -1,3 +1,4 @@
+# res://BoardParts/ZoomArea/card_zoom.gd
 # res://BoardParts/ZoomArea/plan_zoom.gd
 # res://BoardParts/PlayerHand/plan_zoom.gd
 class_name CardZoom
@@ -9,16 +10,13 @@ func _ready():
 	super()
 	
 	icons.custom_minimum_size.y = 100
+	# Configure VSplitContainer for CardZooms
+	v_split_container.add_theme_constant_override("separation", 10)  # Dragger height
+	#split_container.add_theme_constant_override("autohide", 0)     # Always show dragger
+	## Make dragger transparent by overriding the style
+	var transparent_style = StyleBoxEmpty.new()
+	v_split_container.add_theme_stylebox_override("dragger", transparent_style)
 	
-	#zoom_icon(primori_icon)
-	#zoom_icon(volupta_icon)
-	#zoom_icon(vorace_icon)
-	#
-	#zoom_icon(intrigue_icon)
-	#zoom_icon(hunting_icon)
-	#zoom_icon(battle_icon)
-	#
-	#zoom_icon(origin_icon)
 	
 	Signals.plan_chosen.connect(_on_plan_chosen)
 	Signals.plan_unchosen.connect(_on_plan_unchosen)

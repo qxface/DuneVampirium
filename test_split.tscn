@@ -1,0 +1,53 @@
+[gd_scene load_steps=3 format=3 uid="uid://dqg4kpxrmaxvq"]
+
+[ext_resource type="Texture2D" uid="uid://ccwkfkibyebxn" path="res://assets/icons/origins/human.png" id="1_nfou7"]
+[ext_resource type="Texture2D" uid="uid://6lqnj8qgqwsn" path="res://assets/icons/origins/supernatural.png" id="2_bur7s"]
+
+[node name="Panel" type="Panel"]
+offset_right = 451.0
+offset_bottom = 613.0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+dragging_enabled = false
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/VSplitContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+color = Color(0.12156863, 0.42745098, 0.18039216, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VSplitContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VSplitContainer/ColorRect/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("1_nfou7")
+stretch_mode = 5
+
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/VSplitContainer/ColorRect/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_bur7s")
+stretch_mode = 5
+
+[node name="ColorRect2" type="ColorRect" parent="MarginContainer/VSplitContainer"]
+layout_mode = 2
+color = Color(0.80784315, 0.40392157, 0.13333334, 1)

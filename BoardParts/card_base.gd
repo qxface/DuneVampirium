@@ -35,6 +35,7 @@ var origin_color: Dictionary ={
 
 #@onready var background: TextureRect = get_node_or_null("Background") as TextureRect
 @onready var icons: HBoxContainer = %Icons
+@onready var v_split_container: VSplitContainer = %VSplitContainer
 
 @onready var primori_bg: ColorRect = %Primori_BG
 @onready var primori_icon: TextureRect = %Primori_Icon

@@ -17,6 +17,14 @@ func _ready() -> void:
 	Signals.plan_chosen.connect(_on_plan_chosen)
 	Signals.plan_unchosen.connect(_on_plan_unchosen)
 	_minimize_clan_and_origin_icons_only()
+	
+	# Configure VSplitContainer for CardHands
+	v_split_container.add_theme_constant_override("separation", 1)  # Dragger height
+	#v_split_container.add_theme_constant_override("autohide", 0)    # Always show dragger
+		
+	# Make dragger transparent by overriding the style
+	#var transparent_style = StyleBoxEmpty.new()
+	#v_split_container.add_theme_stylebox_override("dragger", transparent_style)
 
 func _update_display():
 	super()

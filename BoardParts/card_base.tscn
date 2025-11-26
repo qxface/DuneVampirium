@@ -32,7 +32,9 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
 [node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer"]
+unique_name_in_owner = true
 layout_mode = 2
+collapsed = true
 dragging_enabled = false
 
 [node name="Icons" type="HBoxContainer" parent="MarginContainer/VSplitContainer"]
