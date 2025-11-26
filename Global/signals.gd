@@ -6,8 +6,8 @@ signal update_current_player_hand_display
 signal card_left_clicked(card_data: Card)
 signal card_right_clicked(card_data: Card)
 
-signal plan_zoom_show(plan_hand: PlanHand)
-signal plan_zoom_hide(plan_hand: PlanHand)
+signal plan_zoom_show(plan_hand: CardHand)
+signal plan_zoom_hide(plan_hand: CardHand)
 signal plan_chosen()
 signal plan_unchosen()
 

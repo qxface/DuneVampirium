@@ -1,6 +1,6 @@
 # res://BoardParts/plan_base.gd
 # res://BoardParts/PlayerHand/plan_hand.gd
-class_name PlanBase
+class_name CardBase
 extends Panel
 
 #enum CardParts {
@@ -13,9 +13,12 @@ extends Panel
 #}
 
 const OUTLINE_THICKNESS = 2.0
-const CARD_CHOSEN = preload("uid://c2x6pcg3kefeq")
-const CARD_HOVER = preload("uid://d08x7kotsajk6")
-const CARD_NORMAL = preload("uid://ce52ar8aullls")
+const MINION_CHOSEN = preload("uid://doyxvbprnuly6")
+const MINION_HIGHLIGHT = preload("uid://bbiot6luxhtjd")
+const MINION_NORMAL = preload("uid://cxtb8u2qyj1pb")
+const PLAN_CHOSEN = preload("uid://c2x6pcg3kefeq")
+const PLAN_HIGHLIGHT = preload("uid://d08x7kotsajk6")
+const PLAN_NORMAL = preload("uid://ce52ar8aullls")
 
 @export var border: StyleBoxFlat = preload("uid://ce52ar8aullls")
 

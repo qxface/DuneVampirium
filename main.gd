@@ -10,7 +10,7 @@ extends Node2D
 
 @onready var player_arrows: HBoxContainer = %PlayerArrows
 @onready var player_hand: PlayerHand = %PlayerHand
-@onready var plan_hover: PlanZoom = %PlanHover
+@onready var plan_hover: CardZoom = %PlanHover
 
 func _ready():
 	add_to_group("main")

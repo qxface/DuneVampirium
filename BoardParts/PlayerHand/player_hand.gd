@@ -3,7 +3,7 @@
 class_name PlayerHand
 extends MarginContainer
 
-const PLAN_HAND = preload("res://BoardParts/PlayerHand/plan_hand.tscn")
+const PLAN_HAND = preload("res://BoardParts/PlayerHand/card_hand.tscn")
 const PLAN_WIDTH: int = 75
 
 @onready var bottom_row: HBoxContainer = %BottomRow
@@ -17,7 +17,7 @@ func _clear_existing_plan_hands():
 	# Find and remove all PlanHandCard children
 	var children_to_remove = []
 	for child in bottom_row.get_children():
-		if child is PlanHand:
+		if child is CardHand:
 			children_to_remove.append(child)
 	
 	# Remove the children
@@ -57,7 +57,7 @@ func update_hand_display(player: Player):
 	_clear_existing_plan_hands()
 	# Create card displays for each card in hand
 	for card in player.hand:
-		var hand_card_instance: PlanHand = PLAN_HAND.instantiate()
+		var hand_card_instance: CardHand = PLAN_HAND.instantiate()
 		hand_card_instance.player = player
 		# Prefer set_card_data if the PlanHandCard scene exposes it, otherwise fall back to load_plan
 		bottom_row.add_child(hand_card_instance)

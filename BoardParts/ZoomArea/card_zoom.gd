@@ -1,7 +1,7 @@
 # res://BoardParts/ZoomArea/plan_zoom.gd
 # res://BoardParts/PlayerHand/plan_zoom.gd
-class_name PlanZoom
-extends PlanBase
+class_name CardZoom
+extends CardBase
 
 var chosen_card_data: Card
 
@@ -37,11 +37,11 @@ func _on_mouse_entered() -> void:
 func _on_mouse_exited() -> void:
 	pass
 
-func _on_plan_zoom_show(new_plan_hand: PlanHand) -> void:
+func _on_plan_zoom_show(new_plan_hand: CardHand) -> void:
 	set_card_data(new_plan_hand.card_data)
 	visible = true
 
-func _on_plan_zoom_hide(new_plan_hand: PlanHand) -> void:
+func _on_plan_zoom_hide(new_plan_hand: CardHand) -> void:
 	if !chosen_card_data:
 		visible = false
 	else:

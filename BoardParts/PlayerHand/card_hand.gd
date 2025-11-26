@@ -1,6 +1,6 @@
 # res://BoardParts/PlayerHand/plan_hand.gd
-class_name PlanHand
-extends PlanBase
+class_name CardHand
+extends CardBase
 
 var is_hovered: bool = false:
 	set(value):
@@ -91,12 +91,22 @@ func _on_plan_unchosen() -> void:
 	#tween.tween_property(self, "modulate", Color(1.2, 1.2, 1.2, 1.0), 0.08)
 
 func _set_border() -> void:
-	if is_chosen:
-		add_theme_stylebox_override("panel", CARD_CHOSEN)
-	elif is_hovered:
-		add_theme_stylebox_override("panel", CARD_HOVER)
+	if card_data.card_type == Card.CardType.PLAN:
+		if is_chosen:
+			add_theme_stylebox_override("panel", PLAN_CHOSEN)
+		elif is_hovered:
+			add_theme_stylebox_override("panel", PLAN_HIGHLIGHT)
+		else:
+			add_theme_stylebox_override("panel", PLAN_NORMAL)
+	elif card_data.card_type == Card.CardType.MINION:
+		if is_chosen:
+			add_theme_stylebox_override("panel", MINION_CHOSEN)
+		elif is_hovered:
+			add_theme_stylebox_override("panel", MINION_HIGHLIGHT)
+		else:
+			add_theme_stylebox_override("panel", MINION_NORMAL)
 	else:
-		add_theme_stylebox_override("panel", CARD_NORMAL)
+		push_error("Plan Hand._set_border: Invalid Card Type")
 
 func _minimize_icons() -> void:
 	acquire_bg.visible = false

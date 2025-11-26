@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://d1m7mj85xran2" path="res://main.gd" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://docs8xbbyc615" path="res://BoardParts/PlayerHand/player_hand.tscn" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://bexwjtfox12au" path="res://assets/UI/arrow_right.png" id="2_h2yge"]
-[ext_resource type="PackedScene" uid="uid://ds7jatgbi07fv" path="res://BoardParts/ZoomArea/plan_zoom.tscn" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://ds7jatgbi07fv" path="res://BoardParts/ZoomArea/card_zoom.tscn" id="4_1bvp3"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_0xm2m")

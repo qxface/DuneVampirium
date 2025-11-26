@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=3 uid="uid://ds7jatgbi07fv"]
+
+[ext_resource type="PackedScene" uid="uid://dsmra417pedqn" path="res://BoardParts/card_base.tscn" id="1_5pth7"]
+[ext_resource type="StyleBox" uid="uid://ce52ar8aullls" path="res://UI/StyleBox/plan_normal.tres" id="2_w7knq"]
+[ext_resource type="Script" uid="uid://ud36gvjexsgn" path="res://BoardParts/ZoomArea/card_zoom.gd" id="2_y5obq"]
+
+[node name="CardZoom" instance=ExtResource("1_5pth7")]
+theme_override_styles/panel = ExtResource("2_w7knq")
+script = ExtResource("2_y5obq")
+border = null
+metadata/_edit_vertical_guides_ = [-866.0]

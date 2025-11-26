@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://bq2ulfrqe5p4s"]
+
+[ext_resource type="PackedScene" uid="uid://dsmra417pedqn" path="res://BoardParts/card_base.tscn" id="1_2awwj"]
+[ext_resource type="StyleBox" uid="uid://ce52ar8aullls" path="res://UI/StyleBox/plan_normal.tres" id="2_ox132"]
+[ext_resource type="Script" uid="uid://dd0573otsjao4" path="res://BoardParts/PlayerHand/card_hand.gd" id="3_4s80k"]
+
+[node name="CardHand" instance=ExtResource("1_2awwj")]
+theme_override_styles/panel = ExtResource("2_ox132")
+script = ExtResource("3_4s80k")
+border = null
+
+[node name="MarginContainer" parent="." index="0"]
+mouse_filter = 2

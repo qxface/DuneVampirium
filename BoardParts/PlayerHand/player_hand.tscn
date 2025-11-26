@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://7ltvmr1vitsq" path="res://BoardParts/PlayerHand/player_hand.gd" id="1_ms1yv"]
 [ext_resource type="PackedScene" uid="uid://cegqj5en7kabq" path="res://BoardParts/pile.tscn" id="1_vgske"]
 [ext_resource type="Texture2D" uid="uid://dfiesnx66cuug" path="res://assets/icons/character.png" id="2_ggfjk"]
-[ext_resource type="PackedScene" uid="uid://bq2ulfrqe5p4s" path="res://BoardParts/PlayerHand/plan_hand.tscn" id="4_ggfjk"]
+[ext_resource type="PackedScene" uid="uid://bq2ulfrqe5p4s" path="res://BoardParts/PlayerHand/card_hand.tscn" id="4_ggfjk"]
 [ext_resource type="Texture2D" uid="uid://01vobardlvxa" path="res://assets/piles/discard_pile.png" id="7_ec6sj"]
 
 [node name="PlayerHand" type="MarginContainer"]

@@ -17,4 +17,4 @@ func clear_players():
 	players.clear()
 	current_player_index = 0
 
-var plan_chosen: PlanHand
+var plan_chosen: CardHand
