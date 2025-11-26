@@ -6,24 +6,34 @@ extends MarginContainer
 const PLAN_HAND = preload("res://BoardParts/PlayerHand/card_hand.tscn")
 const PLAN_WIDTH: int = 75
 
+@onready var top_row: HBoxContainer = %TopRow
 @onready var bottom_row: HBoxContainer = %BottomRow
 @onready var draw_pile: Pile = %DrawPile
 @onready var discard_pile: Pile = %DiscardPile
 
 func _ready():
 	# Remove all existing PlanHandCards from BottomRow
-	_clear_existing_plan_hands()
-func _clear_existing_plan_hands():
+	_clear_existing_card_hands()
+
+func _clear_existing_card_hands():
 	# Find and remove all PlanHandCard children
 	var children_to_remove = []
 	for child in bottom_row.get_children():
 		if child is CardHand:
 			children_to_remove.append(child)
-	
-	# Remove the children
 	for child in children_to_remove:
 		bottom_row.remove_child(child)
 		child.queue_free()
+	
+	children_to_remove.clear()
+	for child in top_row.get_children():
+		if child is CardHand:
+			children_to_remove.append(child)
+	for child in children_to_remove:
+		top_row.remove_child(child)
+		child.queue_free()
+	
+	# Remove the children
 	
 	print("Removed ", children_to_remove.size(), " existing PlanHandCards")
 
@@ -54,9 +64,9 @@ func update_hand_display(player: Player):
 	if discard_pile and discard_pile.has_method("update_card_count"):
 		discard_pile.update_card_count(player.discard_pile.size())
 	# Clear existing hand display
-	_clear_existing_plan_hands()
+	_clear_existing_card_hands()
 	# Create card displays for each card in hand
-	for card in player.hand:
+	for card in player.plan_hand:
 		var hand_card_instance: CardHand = PLAN_HAND.instantiate()
 		hand_card_instance.player = player
 		# Prefer set_card_data if the PlanHandCard scene exposes it, otherwise fall back to load_plan
@@ -67,7 +77,7 @@ func update_hand_display(player: Player):
 			hand_card_instance.load_plan(card)
 		_set_plan_hand_sizing(hand_card_instance)
 	print("Updated hand display for ", player.player_name)
-	print("Hand size: ", player.hand.size())
+	print("Hand size: ", player.plan_hand.size())
 	print("Draw pile: ", player.draw_pile.size())
 	print("Discard pile: ", player.discard_pile.size())
 func _set_plan_hand_sizing(plan_hand: Control):

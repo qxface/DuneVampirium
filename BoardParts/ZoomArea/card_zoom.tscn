@@ -7,5 +7,4 @@
 [node name="CardZoom" instance=ExtResource("1_5pth7")]
 theme_override_styles/panel = ExtResource("2_w7knq")
 script = ExtResource("2_y5obq")
-border = null
 metadata/_edit_vertical_guides_ = [-866.0]

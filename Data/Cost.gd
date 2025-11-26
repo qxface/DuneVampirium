@@ -21,9 +21,9 @@ func can_pay(player: Player) -> bool:
 		IconTypes.Type.SECRETS:
 			return player.secrets >= amount
 		IconTypes.Type.PLAN:
-			return player.hand.size() >= amount  # Player must have enough plans to discard
+			return player.plan_hand.size() >= amount  # Player must have enough plans to discard
 		IconTypes.Type.PLAN_TRASH:
-			return player.hand.size() >= amount  # Player must have enough plans to trash
+			return player.plan_hand.size() >= amount  # Player must have enough plans to trash
 	return false
 
 func pay(player: Player) -> bool:
@@ -40,14 +40,14 @@ func pay(player: Player) -> bool:
 		IconTypes.Type.PLAN:
 			# Discard amount plans from hand
 			for i in range(amount):
-				if player.hand.size() > 0:
-					var discarded_card = player.hand.pop_back()
+				if player.plan_hand.size() > 0:
+					var discarded_card = player.plan_hand.pop_back()
 					player.discard_pile.append(discarded_card)
 		IconTypes.Type.PLAN_TRASH:
 			# Trash amount plans from hand
 			for i in range(amount):
-				if player.hand.size() > 0:
-					player.hand.pop_back()  # Card is removed from game
+				if player.plan_hand.size() > 0:
+					player.plan_hand.pop_back()  # Card is removed from game
 	return true
 
 func _update_icon_and_description():

@@ -110,7 +110,7 @@ static func create_vamp_out_card() -> Card:
 static func test_vamp_out_card(player: Player) -> void:
 	if player:
 		var vamp_out_card = create_vamp_out_card()
-		player.hand.append(vamp_out_card)
+		player.plan_hand.append(vamp_out_card)
 		print("Added 'Vamp Out!' card to ", player.player_name, "'s hand")
 		print("Card has activations:")
 		print("- Acquire: ", vamp_out_card.has_acquire)

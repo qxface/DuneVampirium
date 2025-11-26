@@ -20,6 +20,10 @@ const PLAN_CHOSEN = preload("uid://c2x6pcg3kefeq")
 const PLAN_HIGHLIGHT = preload("uid://d08x7kotsajk6")
 const PLAN_NORMAL = preload("uid://ce52ar8aullls")
 
+const HUMAN_ICON = preload("uid://ccwkfkibyebxn")
+const SUPERNATURAL_ICON = preload("uid://6lqnj8qgqwsn")
+const VAMPIRE_ICON = preload("uid://cpij7h4qc4i0i")
+
 @export var border: StyleBoxFlat = preload("uid://ce52ar8aullls")
 
 var origin_color: Dictionary ={
@@ -115,9 +119,21 @@ func _update_display():
 	discard_bg.visible = card_data.has_discard
 	trash_bg.visible = card_data.has_trash
 	
-	var is_none: bool = (card_data.origin != Card.OriginType.NONE)
-	origin_bg.visible = is_none
-	origin_icon.self_modulate = origin_color[card_data.origin]
+	var is_none: bool = (card_data.origin == Card.OriginType.NONE)
+	if is_none:
+		origin_bg.visible = false
+	else:
+		origin_bg.visible = true
+		match card_data.origin:
+			Card.OriginType.VAMPIRE:
+				origin_icon.texture = VAMPIRE_ICON
+			Card.OriginType.SUPERNATURAL:
+				origin_icon.texture = SUPERNATURAL_ICON
+			Card.OriginType.HUMAN:
+				origin_icon.texture = HUMAN_ICON
+			_:
+				origin_bg.visible = false
+		origin_icon.self_modulate = origin_color[card_data.origin]
 
 func set_card_data(card: Card):
 	card_data = card

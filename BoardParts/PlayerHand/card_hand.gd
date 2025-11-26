@@ -17,6 +17,10 @@ func _ready() -> void:
 	Signals.plan_unchosen.connect(_on_plan_unchosen)
 	_minimize_icons()
 
+func _update_display():
+	super()
+	#_minimize_icons()
+
 func _on_mouse_entered() -> void:
 	is_hovered = true
 	Signals.plan_zoom_show.emit(self)
@@ -134,6 +138,10 @@ func _minimize_icons() -> void:
 	intrigue_icon.visible = false
 	hunting_icon.visible = false
 	battle_icon.visible = false
+	
+	origin_bg.color = origin_icon.self_modulate
+	origin_icon.visible = false
+
 func update_activation_visibility(bg: ColorRect, icons: ActivationIcons, activation: Activation) -> void:
 	if not bg:
 		print("update_activation_visibility: bg is null")

@@ -33,13 +33,37 @@ func create_random_plan() -> Card:
 	card.card_name = "Plan %s" % randi_range(1, 99)
 	card.card_description = "A plan that does %s" % randi_range(1, 99)
 	card.origin = Card.OriginType.NONE
-	card.is_primori = odds_fifty_fifty()
-	card.is_volupta = odds_fifty_fifty()
-	card.is_vorace = odds_fifty_fifty()
+	if odds_low():
+		card.origin = Card.OriginType.VAMPIRE
+	
+	card.origin = Card.OriginType.VAMPIRE
+	if odds_fifty_fifty():
+		card.origin = Card.OriginType.SUPERNATURAL
+		
+		
+	card.is_primori = odds_low()
+	card.is_volupta = odds_low()
+	card.is_vorace = odds_low()
 	card.is_intrigue = odds_fifty_fifty()
 	card.is_hunting = odds_fifty_fifty()
 	card.is_battle = odds_fifty_fifty()
+	
+	card.is_primori = true
+	card.is_volupta = false
+	card.is_vorace = false
+	card.is_intrigue = true
+	card.is_hunting = false
+	card.is_battle = false
+	
+	#_add_activations(card)
+	var reward = Reward.new()
+	reward.icon_type = IconTypes.Type.PLAN
+	reward.amount = 1
+	card.acquire_activation = Activation.new(null, null, reward)
+	
+	return card
 
+func _add_activations(card: Card):
 	# Create random activations using the new IconTypes system
 	if odds_low():
 		var reward = Reward.new()
@@ -82,8 +106,6 @@ func create_random_plan() -> Card:
 		var random_action = action_types[randi() % action_types.size()]
 		card.set(random_action, true)
 
-	return card
-
 func create_special_plan() -> Card:
 	# 10% chance to create a special card
 	if randi_range(1, 10) == 1:
@@ -96,18 +118,28 @@ func create_random_minion() -> Card:
 	card.card_type = Card.CardType.MINION
 	card.card_name = "Minion %s" % randi_range(1, 99)
 	card.card_description = "A minion that is capable of %s" % randi_range(1, 99)
-	card.origin = Card.OriginType.NONE
+	if odds_high():
+		card.origin = Card.OriginType.VAMPIRE
+	elif odds_fifty_fifty():
+		card.origin = Card.OriginType.SUPERNATURAL
+	elif odds_low():
+		card.origin = Card.OriginType.HUMAN
+	else:
+		card.origin = Card.OriginType.VAMPIRE
+		
 	card.is_primori = odds_fifty_fifty()
 	card.is_volupta = odds_fifty_fifty()
 	card.is_vorace = odds_fifty_fifty()
-	card.is_intrigue = odds_fifty_fifty()
-	card.is_hunting = odds_fifty_fifty()
-	card.is_battle = odds_fifty_fifty()
+	card.is_intrigue = odds_low()
+	card.is_hunting = odds_low()
+	card.is_battle = odds_low()
 	card.has_acquire = odds_fifty_fifty()
 	card.has_action = odds_fifty_fifty()
 	card.has_reveal = odds_fifty_fifty()
 	card.has_discard = odds_fifty_fifty()
 	card.has_trash = odds_fifty_fifty()
+	
+	_add_activations(card)
 	
 	return card
 

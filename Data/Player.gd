@@ -8,7 +8,7 @@ extends Resource
 # All cards are regular Card instances with appropriate card_type
 var draw_pile: Array[Card] = []
 var discard_pile: Array[Card] = []
-var hand: Array[Card] = []
+var plan_hand: Array[Card] = []
 var minion_pile: Array[Card] = []
 
 var money: int = 0:
