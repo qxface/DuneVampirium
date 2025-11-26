@@ -36,11 +36,6 @@ func create_random_plan() -> Card:
 	if odds_low():
 		card.origin = Card.OriginType.VAMPIRE
 	
-	card.origin = Card.OriginType.VAMPIRE
-	if odds_fifty_fifty():
-		card.origin = Card.OriginType.SUPERNATURAL
-		
-		
 	card.is_primori = odds_low()
 	card.is_volupta = odds_low()
 	card.is_vorace = odds_low()
@@ -48,19 +43,8 @@ func create_random_plan() -> Card:
 	card.is_hunting = odds_fifty_fifty()
 	card.is_battle = odds_fifty_fifty()
 	
-	card.is_primori = true
-	card.is_volupta = false
-	card.is_vorace = false
-	card.is_intrigue = true
-	card.is_hunting = false
-	card.is_battle = false
-	
-	#_add_activations(card)
-	var reward = Reward.new()
-	reward.icon_type = IconTypes.Type.PLAN
-	reward.amount = 1
-	card.acquire_activation = Activation.new(null, null, reward)
-	
+	_add_activations(card)
+
 	return card
 
 func _add_activations(card: Card):

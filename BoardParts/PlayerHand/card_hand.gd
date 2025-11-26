@@ -1,3 +1,4 @@
+# res://BoardParts/PlayerHand/card_hand.gd
 # res://BoardParts/PlayerHand/plan_hand.gd
 class_name CardHand
 extends CardBase
@@ -15,11 +16,11 @@ func _ready() -> void:
 	super()
 	Signals.plan_chosen.connect(_on_plan_chosen)
 	Signals.plan_unchosen.connect(_on_plan_unchosen)
-	_minimize_icons()
+	_minimize_clan_and_origin_icons_only()
 
 func _update_display():
 	super()
-	#_minimize_icons()
+	_minimize_clan_and_origin_icons_only()
 
 func _on_mouse_entered() -> void:
 	is_hovered = true
@@ -113,6 +114,33 @@ func _set_border() -> void:
 		push_error("Plan Hand._set_border: Invalid Card Type")
 
 func _minimize_icons() -> void:
+	# First, set all ColorRect colors based on their corresponding TextureRect colors
+	primori_bg.color = primori_icon.self_modulate
+	volupta_bg.color = volupta_icon.self_modulate
+	vorace_bg.color = vorace_icon.self_modulate
+
+	intrigue_bg.color = intrigue_icon.self_modulate
+	hunting_bg.color = hunting_icon.self_modulate
+	battle_bg.color = battle_icon.self_modulate
+
+	# Set origin ColorRect color directly from the origin_color dictionary (more robust)
+	if card_data and card_data.origin in origin_color:
+		origin_bg.color = origin_color[card_data.origin]
+	else:
+		origin_bg.color = Color.WHITE
+ 
+	# Then hide the TextureRects
+	primori_icon.visible = false
+	volupta_icon.visible = false
+	vorace_icon.visible = false
+
+	intrigue_icon.visible = false
+	hunting_icon.visible = false
+	battle_icon.visible = false
+
+	origin_icon.visible = false
+
+	# Hide activation backgrounds and icons
 	acquire_bg.visible = false
 	action_bg.visible = false
 	reveal_bg.visible = false
@@ -125,23 +153,47 @@ func _minimize_icons() -> void:
 	discard_icons.visible = false
 	trash_icons.visible = false
 
+
+func _minimize_clan_and_origin_icons_only() -> void:
+	# Set clan and action ColorRect colors from their TextureRects
 	primori_bg.color = primori_icon.self_modulate
 	volupta_bg.color = volupta_icon.self_modulate
 	vorace_bg.color = vorace_icon.self_modulate
-	primori_icon.visible = false
-	volupta_icon.visible = false
-	vorace_icon.visible = false
 
 	intrigue_bg.color = intrigue_icon.self_modulate
 	hunting_bg.color = hunting_icon.self_modulate
 	battle_bg.color = battle_icon.self_modulate
+
+	# Set origin ColorRect color directly from the origin_color dictionary (more robust)
+	if card_data and card_data.origin in origin_color:
+		origin_bg.color = origin_color[card_data.origin]
+	else:
+		origin_bg.color = Color.WHITE
+	 
+	# Then hide the TextureRects for clan/origin only
+	primori_icon.visible = false
+	volupta_icon.visible = false
+	vorace_icon.visible = false
+
 	intrigue_icon.visible = false
 	hunting_icon.visible = false
 	battle_icon.visible = false
-	
-	origin_bg.color = origin_icon.self_modulate
+
 	origin_icon.visible = false
 
+	# DO NOT hide activation backgrounds - let CardBase._update_display() handle them
+	# acquire_bg.visible = false
+	# action_bg.visible = false
+	# reveal_bg.visible = false
+	# discard_bg.visible = false
+	# trash_bg.visible = false
+
+	# Hide activation icons (the HBoxContainer children)
+	acquire_icons.visible = false
+	action_icons.visible = false
+	reveal_icons.visible = false
+	discard_icons.visible = false
+	trash_icons.visible = false
 func update_activation_visibility(bg: ColorRect, icons: ActivationIcons, activation: Activation) -> void:
 	if not bg:
 		print("update_activation_visibility: bg is null")
