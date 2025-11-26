@@ -54,7 +54,7 @@ script = ExtResource("10_fmf78")
 timeout = 30.0
 
 [node name="SendMessage" type="HTTPRequest" parent="APIManager"]
-timeout = 30.0
+timeout = 120.0
 
 [node name="GetConversationsList" type="HTTPRequest" parent="APIManager"]
 timeout = 30.0
@@ -264,7 +264,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -99.0
+offset_top = -132.0
 offset_bottom = -96.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -283,6 +283,8 @@ tooltip_text = "Type your message here (Enter to send, Shift+Enter for new line)
 To include scripts you need to either paste the code here, use @OpenScripts,
  or select the code in the editor + right click for contextual menu \"Add to Chat\"
 The file tree and open scene nodes are automatically included"
+text = "
+@OpenScripts"
 placeholder_text = "Let's make that game"
 wrap_mode = 1
 autowrap_mode = 2
@@ -404,7 +406,6 @@ text = "To use GameDev assistant, please enter an API key."
 autowrap_mode = 2
 
 [node name="TokenValidationSuccess" type="RichTextLabel" parent="Screen_Settings/VBoxContainer"]
-visible = false
 modulate = Color(0.26144, 0.96, 0.2496, 1)
 layout_mode = 2
 bbcode_enabled = true
@@ -412,6 +413,7 @@ text = "You are already in the latest version"
 fit_content = true
 
 [node name="TokenValidationError" type="RichTextLabel" parent="Screen_Settings/VBoxContainer"]
+visible = false
 modulate = Color(1, 0.499129, 0.460804, 1)
 layout_mode = 2
 bbcode_enabled = true
@@ -464,7 +466,7 @@ layout_mode = 2
 
 [node name="CustomLabel" type="Label" parent="Screen_Settings/VBoxContainer"]
 layout_mode = 2
-text = "Custom instructions (PREMIUM)"
+text = "Custom instructions"
 vertical_alignment = 1
 
 [node name="CustomInput" type="TextEdit" parent="Screen_Settings/VBoxContainer"]
@@ -478,6 +480,14 @@ autowrap_mode = 2
 scroll_fit_content_height = true
 script = ExtResource("19_ycfa3")
 max_length = 500
+
+[node name="OpenScriptsContainer" type="HBoxContainer" parent="Screen_Settings/VBoxContainer"]
+layout_mode = 2
+
+[node name="OpenScriptsToggle" type="CheckButton" parent="Screen_Settings/VBoxContainer/OpenScriptsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add @OpenScripts to new chats"
 
 [node name="VSeparator3" type="VSeparator" parent="Screen_Settings/VBoxContainer"]
 modulate = Color(1, 1, 1, 0)

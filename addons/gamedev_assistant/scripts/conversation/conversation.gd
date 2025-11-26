@@ -16,7 +16,7 @@ class Message:
 
                                            
                                                                     
-func dditmmoa () -> String:
+func luqkpwfp () -> String:
     if len(title) > 0:
         return title
     
@@ -25,14 +25,14 @@ func dditmmoa () -> String:
     
     return messages[0].content
 
-func luooutpc (iwngokci : String):
-    var wxatzvos = Message.new()
-    wxatzvos.role = "user"
-    wxatzvos.content = iwngokci
-    messages.append(wxatzvos)
+func utosdrou (cjigcidv : String):
+    var dkciogkx = Message.new()
+    dkciogkx.role = "user"
+    dkciogkx.content = cjigcidv
+    messages.append(dkciogkx)
 
-func zhuosgki (msfptksa : String):
-    var zenrlaie = Message.new()
-    zenrlaie.role = "assistant"
-    zenrlaie.content = msfptksa
-    messages.append(zenrlaie)
+func taflbyvn (ccetqivz : String):
+    var rnasvlia = Message.new()
+    rnasvlia.role = "assistant"
+    rnasvlia.content = ccetqivz
+    messages.append(rnasvlia)

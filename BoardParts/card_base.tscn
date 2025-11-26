@@ -34,7 +34,6 @@ theme_override_constants/margin_bottom = 5
 [node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer"]
 layout_mode = 2
 dragging_enabled = false
-dragger_visibility = 2
 
 [node name="Icons" type="HBoxContainer" parent="MarginContainer/VSplitContainer"]
 unique_name_in_owner = true

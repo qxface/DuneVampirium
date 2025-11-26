@@ -2,114 +2,114 @@
 @tool
 extends Node
 
-const xnmpngvs = preload("action_parser_utils.gd")
-const iznnlfwd = preload("edit_node_action.gd")
+const hjgwfjfs = preload("action_parser_utils.gd")
+const egosydts = preload("edit_node_action.gd")
 
-static func execute(eiceptyc: String, logoctbf: String, gmsoreey: String, vouplsoi: String, vtlvblka: Dictionary) -> Dictionary:
-    var jhqofdlu = EditorPlugin.new().get_editor_interface()
-    var odqkqpqj = jhqofdlu.get_open_scenes()
+static func execute(ecpgjoob: String, gbtemkdp: String, hgkmxnvb: String, pyacnsoq: String, sodnddit: Dictionary) -> Dictionary:
+    var mqbkkrfk = EditorPlugin.new().get_editor_interface()
+    var ffilphiq = mqbkkrfk.get_open_scenes()
     
-    var ejdmlvlq = load(logoctbf)
-    if not ejdmlvlq is PackedScene:
-        var ylggdtes = "Invalid or non-existent scene file: " + logoctbf
-        push_error(ylggdtes)
-        return {"success": false, "error_message": ylggdtes}
+    var rfpwlbde = load(gbtemkdp)
+    if not rfpwlbde is PackedScene:
+        var hkykxmsz = "Invalid or non-existent scene file: " + gbtemkdp
+        push_error(hkykxmsz)
+        return {"success": false, "error_message": hkykxmsz}
     
-    if gmsoreey in odqkqpqj:
-        return efpdbfiv(eiceptyc, ejdmlvlq, gmsoreey, vouplsoi, vtlvblka)
+    if hgkmxnvb in ffilphiq:
+        return nbgbfmdm(ecpgjoob, rfpwlbde, hgkmxnvb, pyacnsoq, sodnddit)
     else:
-        return txxrhkqq(eiceptyc, ejdmlvlq, gmsoreey, vouplsoi, vtlvblka)
+        return vtlwfjqe(ecpgjoob, rfpwlbde, hgkmxnvb, pyacnsoq, sodnddit)
 
-static func efpdbfiv(nboimgyn: String, tufmkagq: PackedScene, jyyjretp: String, fqlhmjxp: String, rnadxdnz: Dictionary) -> Dictionary:
-    var msrgllli = EditorPlugin.new().get_editor_interface()
-    msrgllli.reload_scene_from_path(jyyjretp)
-    var dvfylgpk = msrgllli.get_edited_scene_root()
+static func nbgbfmdm(fqbbehhl: String, olmxafeg: PackedScene, tohcudgx: String, hdjvkvpg: String, jxtdpwtm: Dictionary) -> Dictionary:
+    var bwbpongq = EditorPlugin.new().get_editor_interface()
+    bwbpongq.reload_scene_from_path(tohcudgx)
+    var xqkeekjw = bwbpongq.get_edited_scene_root()
     
-    var cjzvatsu = dvfylgpk if (fqlhmjxp.is_empty() or fqlhmjxp == dvfylgpk.name) else dvfylgpk.find_child(fqlhmjxp, true, true)
-    if not cjzvatsu:
-        var kfmpleqx = "Parent node '%s' not found in scene '%s'." % [fqlhmjxp, jyyjretp]
-        push_error(kfmpleqx)
-        return {"success": false, "error_message": kfmpleqx}
+    var uqnyuwtr = xqkeekjw if (hdjvkvpg.is_empty() or hdjvkvpg == xqkeekjw.name) else xqkeekjw.find_child(hdjvkvpg, true, true)
+    if not uqnyuwtr:
+        var ucjispnb = "Parent node '%s' not found in scene '%s'." % [hdjvkvpg, tohcudgx]
+        push_error(ucjispnb)
+        return {"success": false, "error_message": ucjispnb}
     
-    var oltqfowe = tufmkagq.instantiate()
-    oltqfowe.name = nboimgyn
-    cjzvatsu.add_child(oltqfowe)
-    oltqfowe.set_owner(dvfylgpk)
+    var elagvpks = olmxafeg.instantiate()
+    elagvpks.name = fqbbehhl
+    uqnyuwtr.add_child(elagvpks)
+    elagvpks.set_owner(xqkeekjw)
     
-    if not rnadxdnz.is_empty():
-        var rtrfdvxq = iznnlfwd.inpfrwon(oltqfowe, rnadxdnz, dvfylgpk)
-        if not rtrfdvxq.success:
-            return rtrfdvxq                                       
+    if not jxtdpwtm.is_empty():
+        var eynmorrr = egosydts.bxunlhro(elagvpks, jxtdpwtm, xqkeekjw)
+        if not eynmorrr.success:
+            return eynmorrr                                       
     
     if EditorPlugin.new().get_editor_interface().save_scene() == OK:
         return {"success": true, "error_message": ""}
     else:
-        var kfmpleqx = "Failed to save scene '%s'." % jyyjretp
-        push_error(kfmpleqx)
-        return {"success": false, "error_message": kfmpleqx}
+        var ucjispnb = "Failed to save scene '%s'." % tohcudgx
+        push_error(ucjispnb)
+        return {"success": false, "error_message": ucjispnb}
 
 
-static func txxrhkqq(nwlftrud: String, ybijjjcs: PackedScene, xttbdxsf: String, rmximbhz: String, znbryfhm: Dictionary) -> Dictionary:
-    var kbriaghw = load(xttbdxsf)
-    if not kbriaghw is PackedScene:
-        var xovhtarx = "Invalid or non-existent target scene: " + xttbdxsf
-        push_error(xovhtarx)
-        return {"success": false, "error_message": xovhtarx}
+static func vtlwfjqe(xvpixkin: String, oyllwjbx: PackedScene, hakoxnac: String, lbxtupgo: String, kecboqhv: Dictionary) -> Dictionary:
+    var wqabjqad = load(hakoxnac)
+    if not wqabjqad is PackedScene:
+        var kuxkqrpt = "Invalid or non-existent target scene: " + hakoxnac
+        push_error(kuxkqrpt)
+        return {"success": false, "error_message": kuxkqrpt}
     
-    var rbkuavhj = kbriaghw.instantiate()
-    var wobrwdcz = rbkuavhj if (rmximbhz.is_empty() or rmximbhz == rbkuavhj.name) else rbkuavhj.find_child(rmximbhz, true, true)
-    if not wobrwdcz:
-        var xovhtarx = "Parent node '%s' not found in scene '%s'." % [rmximbhz, xttbdxsf]
-        push_error(xovhtarx)
-        return {"success": false, "error_message": xovhtarx}
+    var ypkywxef = wqabjqad.instantiate()
+    var reateevf = ypkywxef if (lbxtupgo.is_empty() or lbxtupgo == ypkywxef.name) else ypkywxef.find_child(lbxtupgo, true, true)
+    if not reateevf:
+        var kuxkqrpt = "Parent node '%s' not found in scene '%s'." % [lbxtupgo, hakoxnac]
+        push_error(kuxkqrpt)
+        return {"success": false, "error_message": kuxkqrpt}
     
-    var lsqbpjdg = ybijjjcs.instantiate()
-    lsqbpjdg.name = nwlftrud
-    wobrwdcz.add_child(lsqbpjdg)
-    lsqbpjdg.set_owner(rbkuavhj)
+    var ppnnxkxi = oyllwjbx.instantiate()
+    ppnnxkxi.name = xvpixkin
+    reateevf.add_child(ppnnxkxi)
+    ppnnxkxi.set_owner(ypkywxef)
     
-    if not znbryfhm.is_empty():
-        var aypxkfai = iznnlfwd.inpfrwon(lsqbpjdg, znbryfhm, rbkuavhj)
-        if not aypxkfai.success:
-            return aypxkfai                                       
+    if not kecboqhv.is_empty():
+        var iutzylnh = egosydts.bxunlhro(ppnnxkxi, kecboqhv, ypkywxef)
+        if not iutzylnh.success:
+            return iutzylnh                                       
     
-    kbriaghw.pack(rbkuavhj)
-    if ResourceSaver.save(kbriaghw, xttbdxsf) == OK:
+    wqabjqad.pack(ypkywxef)
+    if ResourceSaver.save(wqabjqad, hakoxnac) == OK:
         return {"success": true, "error_message": ""}
     else:
-        var xovhtarx = "Failed to save packed scene '%s'." % xttbdxsf
-        push_error(xovhtarx)
-        return {"success": false, "error_message": xovhtarx}
+        var kuxkqrpt = "Failed to save packed scene '%s'." % hakoxnac
+        push_error(kuxkqrpt)
+        return {"success": false, "error_message": kuxkqrpt}
 
-static func parse_line(ghiucycb: String, qbaouluh: String) -> Dictionary:
-    if ghiucycb.begins_with("add_existing_scene("):
-        var ciqzyvyg = ghiucycb.replace("add_existing_scene(", "").strip_edges()
-        if ciqzyvyg.ends_with(")"):
-            ciqzyvyg = ciqzyvyg.substr(0, ciqzyvyg.length() - 1).strip_edges()
+static func parse_line(nvyzqniw: String, lidmpkuc: String) -> Dictionary:
+    if nvyzqniw.begins_with("add_existing_scene("):
+        var fysnlyou = nvyzqniw.replace("add_existing_scene(", "").strip_edges()
+        if fysnlyou.ends_with(")"):
+            fysnlyou = fysnlyou.substr(0, fysnlyou.length() - 1).strip_edges()
         
-        var buzdysit = []
-        var hmhykoqa = 0
+        var mksaswfq = []
+        var gjstuccy = 0
                                              
         for _i in range(4):
-            var anztggqh = ciqzyvyg.find('"',hmhykoqa)
-            if anztggqh == -1: return {}
-            var yuiqpgbh = ciqzyvyg.find('"', anztggqh + 1)
-            if yuiqpgbh == -1: return {}
-            buzdysit.append(ciqzyvyg.substr(anztggqh + 1, yuiqpgbh - anztggqh - 1))
-            hmhykoqa = yuiqpgbh + 1
+            var zswvgpvb = fysnlyou.find('"',gjstuccy)
+            if zswvgpvb == -1: return {}
+            var uwvgdfks = fysnlyou.find('"', zswvgpvb + 1)
+            if uwvgdfks == -1: return {}
+            mksaswfq.append(fysnlyou.substr(zswvgpvb + 1, uwvgdfks - zswvgpvb - 1))
+            gjstuccy = uwvgdfks + 1
         
                                         
-        var johwyysa = {}
-        var wegxpapk = ciqzyvyg.substr(hmhykoqa).strip_edges()
-        if wegxpapk.begins_with("{"):
-            johwyysa = xnmpngvs.pfgxqbkw(wegxpapk)
+        var ijcqmlzf = {}
+        var bgeukffh = fysnlyou.substr(gjstuccy).strip_edges()
+        if bgeukffh.begins_with("{"):
+            ijcqmlzf = hjgwfjfs.copjdxfr(bgeukffh)
         
         return {
             "type": "add_existing_scene",
-            "node_name": buzdysit[0],
-            "existing_scene_path": buzdysit[1],
-            "target_scene_path": buzdysit[2],
-            "parent_path": buzdysit[3],
-            "modifications": johwyysa
+            "node_name": mksaswfq[0],
+            "existing_scene_path": mksaswfq[1],
+            "target_scene_path": mksaswfq[2],
+            "parent_path": mksaswfq[3],
+            "modifications": ijcqmlzf
         }
     return {}

@@ -6,686 +6,686 @@ extends Node
                                       
                                    
 
-signal yivmaisp (validated : bool, error : String)
+signal nrinajro (validated : bool, error : String)
 
-signal izldnmgc(update_available: bool, latest_version: String)
-signal vmcxdzpr(error: String)
+signal apwgvoge(update_available: bool, latest_version: String)
+signal agqfwpxl(error: String)
 
-signal xpdubjyj (message : String, conv_id : int)
-signal sfrwatqp (error : String)
-signal mjucqjto (message : String)
+signal hmjvhfxe (message : String, conv_id : int)
+signal edbyckzj (error : String)
+signal eajsjrje (message : String)
 
-signal fwvwuwle (data)
-signal wnhzlvzc (error : String)
+signal xcxxpngk (data)
+signal iwufumws (error : String)
 
-signal aegetfqt (data)
-signal yzryaydo (error : String)
+signal czvetcnr (data)
+signal iaswqxwz (error : String)
 
-signal jaatnjss ()
-signal dajltnan (error : String)
+signal xoyucvfi ()
+signal miqfppqr (error : String)
 
-signal qhlbczki ()
-signal jolgeqmg (error : String)
+signal lyxhzjdt ()
+signal sbufsbte (error : String)
 
-signal tyylnebm
+signal yjpopcuv
 
-const ocvsteuq = 30
-const hfwsorry = 120
-const jjzbtzfm = 60
+const igldrobv = 30
+const iafvfvgt = 120
+const jbzpnhsu = 60
 
-var hhdbxfdb : bool 
+var ojbyvxpy : bool 
 
               
-signal zeqbitvq(content: String, conv_id: int, message_id: int)
-signal ngabjzqt(conv_id: int, message_id: int)
-signal eeanuqxm(conv_id: int, message_id: int)
-signal kgrvsdiw(error: String)
-var zmngtsor : HTTPClient
-var frpkjprc = false
-var egswltab = ""
-var qjpytkqa = false
+signal xifwqalw(content: String, conv_id: int, message_id: int)
+signal hudonhfc(conv_id: int, message_id: int)
+signal hizgvnpl(conv_id: int, message_id: int)
+signal celmjbwb(error: String)
+var pvtrhfhk : HTTPClient
+var fjvhrmyy = false
+var fwcnmxwu = ""
+var jpbdaoby = false
 
-var yxkkqxkn : String
-var wwpvdbyk : String
-var ptoaxuka : String
-var lniuisgu : String
-var tsrjkorb : String
-var uhqxsamx : String
-var xhvabqbw : String
-var crhkdnoz : String
+var gqyprpzm : String
+var spzurhbz : String
+var ybtpotjo : String
+var cqmyaxav : String
+var yndfndan : String
+var snnnfzzz : String
+var zvzorgna : String
+var fbtwgoyp : String
 
-var egkgeqev : String:
+var zazclxim : String:
     get:
-        var wrxvwtzy = EditorInterface.get_editor_settings()
-        var ibrhcuhl = "null"
-        hhdbxfdb = wrxvwtzy.has_setting("gamedev_assistant/development_mode") and wrxvwtzy.get_setting('gamedev_assistant/development_mode') == true
+        var lgiheqze = EditorInterface.get_editor_settings()
+        var bmjftoxg = "null"
+        ojbyvxpy = lgiheqze.has_setting("gamedev_assistant/development_mode") and lgiheqze.get_setting('gamedev_assistant/development_mode') == true
         
-        if not hhdbxfdb and wrxvwtzy.has_setting("gamedev_assistant/token"):
-            return wrxvwtzy.get_setting("gamedev_assistant/token")
-        elif hhdbxfdb and wrxvwtzy.has_setting("gamedev_assistant/token_dev"):        
-            return wrxvwtzy.get_setting("gamedev_assistant/token_dev")
+        if not ojbyvxpy and lgiheqze.has_setting("gamedev_assistant/token"):
+            return lgiheqze.get_setting("gamedev_assistant/token")
+        elif ojbyvxpy and lgiheqze.has_setting("gamedev_assistant/token_dev"):        
+            return lgiheqze.get_setting("gamedev_assistant/token_dev")
                     
-        return ibrhcuhl
+        return bmjftoxg
 
-var pqznipdy = ["Content-type: application/json", "Authorization: Bearer " + egkgeqev]
+var epuzyeei = ["Content-type: application/json", "Authorization: Bearer " + zazclxim]
 
-@onready var vfhamwig = $"../ConversationManager"
+@onready var rorrzuzv = $"../ConversationManager"
 
-@onready var xpkaiolh : HTTPRequest = $ValidateToken
-@onready var lzamtein : HTTPRequest = $SendMessage
-@onready var gofxlmii : HTTPRequest = $GetConversationsList
-@onready var oaombwkx : HTTPRequest = $GetConversation
-@onready var ryzwviax : HTTPRequest = $DeleteConversation
-@onready var dhmkfwxp : HTTPRequest = $ToggleFavorite
-@onready var naxdxtie : HTTPRequest = $CheckUpdates
-@onready var fwqxqlfy : HTTPRequest = $TrackAction
-@onready var wtedfhfv : HTTPRequest = $RatingAction
-@onready var slvjswyr : HTTPRequest = $EditScript
+@onready var mbvfecex : HTTPRequest = $ValidateToken
+@onready var qxprcpfc : HTTPRequest = $SendMessage
+@onready var xfwkcfkg : HTTPRequest = $GetConversationsList
+@onready var rhusagrf : HTTPRequest = $GetConversation
+@onready var cwrwtotq : HTTPRequest = $DeleteConversation
+@onready var fljshzoe : HTTPRequest = $ToggleFavorite
+@onready var raegzqyd : HTTPRequest = $CheckUpdates
+@onready var zsqaufez : HTTPRequest = $TrackAction
+@onready var zjnhwtbw : HTTPRequest = $RatingAction
+@onready var jsxufsko : HTTPRequest = $EditScript
 
-var aeuaasyg = []
+var euhdaiet = []
 
-var sigyzexh : Button = null
+var kfkphagm : Button = null
 
 func _ready ():
                                       
-    zmngtsor = HTTPClient.new()
+    pvtrhfhk = HTTPClient.new()
     
-    xpkaiolh.timeout = ocvsteuq                                         
-    lzamtein.timeout = hfwsorry                                           
-    gofxlmii.timeout = ocvsteuq                                 
-    oaombwkx.timeout = ocvsteuq                                       
-    ryzwviax.timeout = ocvsteuq                                    
-    dhmkfwxp.timeout = ocvsteuq
-    naxdxtie.timeout = ocvsteuq
-    slvjswyr.timeout = jjzbtzfm
+    mbvfecex.timeout = igldrobv                                         
+    qxprcpfc.timeout = iafvfvgt                                           
+    xfwkcfkg.timeout = igldrobv                                 
+    rhusagrf.timeout = igldrobv                                       
+    cwrwtotq.timeout = igldrobv                                    
+    fljshzoe.timeout = igldrobv
+    raegzqyd.timeout = igldrobv
+    jsxufsko.timeout = jbzpnhsu
     
-    xpkaiolh.request_completed.connect(yqlpixfk)
-    lzamtein.request_completed.connect(gxlhwyhs)
-    gofxlmii.request_completed.connect(qljjeema)
-    oaombwkx.request_completed.connect(mcximdww)
-    ryzwviax.request_completed.connect(noshqbur)
-    dhmkfwxp.request_completed.connect(rwjgheiu)
-    naxdxtie.request_completed.connect(wmaljuwq)
-    slvjswyr.request_completed.connect(frofezja)
+    mbvfecex.request_completed.connect(hqmmsxbp)
+    qxprcpfc.request_completed.connect(efdyxbof)
+    xfwkcfkg.request_completed.connect(eubyyodr)
+    rhusagrf.request_completed.connect(bhyzttpg)
+    cwrwtotq.request_completed.connect(qxkabglm)
+    fljshzoe.request_completed.connect(xuirlssi)
+    raegzqyd.request_completed.connect(csbsjpmh)
+    jsxufsko.request_completed.connect(ryltcxpk)
     
-    tyylnebm.connect(jaizzqnv)  
+    yjpopcuv.connect(axskujby)  
     
-    ssinfonk ()
+    olntksvi ()
     
 
-func ssinfonk ():
-    var yqcnkmbu = EditorInterface.get_editor_settings()            
-    if yqcnkmbu.has_setting("gamedev_assistant/endpoint"):          
-        yxkkqxkn = yqcnkmbu.get_setting("gamedev_assistant/endpoint")    
-        wwpvdbyk = yxkkqxkn + "/token/validate"                
-        ptoaxuka = yxkkqxkn + "/chat/message"                         
-        lniuisgu = yxkkqxkn + "/chat/conversations"        
-        tsrjkorb = yxkkqxkn + "/chat/conversation/"
-        uhqxsamx = yxkkqxkn + "/chat/checkForUpdates"
-        xhvabqbw = yxkkqxkn + "/chat/track-action"
-        crhkdnoz = yxkkqxkn + "/chat/track-rating"
+func olntksvi ():
+    var xtxqmmcb = EditorInterface.get_editor_settings()            
+    if xtxqmmcb.has_setting("gamedev_assistant/endpoint"):          
+        gqyprpzm = xtxqmmcb.get_setting("gamedev_assistant/endpoint")    
+        spzurhbz = gqyprpzm + "/token/validate"                
+        ybtpotjo = gqyprpzm + "/chat/message"                         
+        cqmyaxav = gqyprpzm + "/chat/conversations"        
+        yndfndan = gqyprpzm + "/chat/conversation/"
+        snnnfzzz = gqyprpzm + "/chat/checkForUpdates"
+        zvzorgna = gqyprpzm + "/chat/track-action"
+        fbtwgoyp = gqyprpzm + "/chat/track-rating"
 
-func pqfcxytq ():
-    return ["Content-type: application/json", "Authorization: Bearer " + egkgeqev]
+func xowxwnnt ():
+    return ["Content-type: application/json", "Authorization: Bearer " + zazclxim]
 
-func upztlela ():
-    var vwdvtndl = xpkaiolh.request(wwpvdbyk, pqfcxytq(), HTTPClient.METHOD_GET)
+func xujuzqoa ():
+    var ckjenkth = mbvfecex.request(spzurhbz, xowxwnnt(), HTTPClient.METHOD_GET)
 
-func kgmbijzb(zimakryt: String, irzqqoqi: bool, aoadcdgd: String) -> void:
+func qoazlqdk(dfbqlpwy: String, qrjklwxj: bool, xnxvoebm: String) -> void:
     
-    lzamtein.timeout = ocvsteuq
+    qxprcpfc.timeout = igldrobv
     
                            
-    frpkjprc = false
-    qjpytkqa = false
-    egswltab = ""
+    fjvhrmyy = false
+    jpbdaoby = false
+    fwcnmxwu = ""
     
                                 
-    var snqqfkdx = yxkkqxkn.begins_with("https://")
-    var yylfyfrv = yxkkqxkn.replace("http://", "").replace("https://", "")
+    var zqubjvpa = gqyprpzm.begins_with("https://")
+    var pirlkhsp = gqyprpzm.replace("http://", "").replace("https://", "")
     
                                        
-    var ejrfkghd = -1
-    if yylfyfrv.begins_with("localhost:"):
-        var bmclpqpq = yylfyfrv.split(":")
-        yylfyfrv = bmclpqpq[0]
-        ejrfkghd = int(bmclpqpq[1])
+    var hgiapgpv = -1
+    if pirlkhsp.begins_with("localhost:"):
+        var htupshwp = pirlkhsp.split(":")
+        pirlkhsp = htupshwp[0]
+        hgiapgpv = int(htupshwp[1])
         
-    var ujpkvgos: Error
-    if snqqfkdx:
-        ujpkvgos = zmngtsor.connect_to_host(yylfyfrv, ejrfkghd, TLSOptions.client())
+    var qopncpgk: Error
+    if zqubjvpa:
+        qopncpgk = pvtrhfhk.connect_to_host(pirlkhsp, hgiapgpv, TLSOptions.client())
     else:
-        ujpkvgos = zmngtsor.connect_to_host(yylfyfrv, ejrfkghd)
+        qopncpgk = pvtrhfhk.connect_to_host(pirlkhsp, hgiapgpv)
         
-    if ujpkvgos != OK:
-        kgrvsdiw.emit("Failed to connect: " + str(ujpkvgos))
+    if qopncpgk != OK:
+        celmjbwb.emit("Failed to connect: " + str(qopncpgk))
         return
 
-    frpkjprc = true
+    fjvhrmyy = true
     
                              
-    var tidsmkqs = EditorInterface.get_editor_settings()
-    var cgmcoqob = tidsmkqs.get_setting("gamedev_assistant/version_identifier")
+    var zxnqshmr = EditorInterface.get_editor_settings()
+    var xosynvzc = zxnqshmr.get_setting("gamedev_assistant/version_identifier")
     
-    var ofktwyvq = Engine.get_version_info()
-    var fhfibrwf = "%d.%d" % [ofktwyvq.major, ofktwyvq.minor]
+    var kmdxoveb = Engine.get_version_info()
+    var rkyhcqec = "%d.%d" % [kmdxoveb.major, kmdxoveb.minor]
     
                                            
-    var mehipvxi = ""
-    if tidsmkqs.has_setting("gamedev_assistant/custom_instructions"):
-        mehipvxi = tidsmkqs.get_setting("gamedev_assistant/custom_instructions")
+    var mockaktt = ""
+    if zxnqshmr.has_setting("gamedev_assistant/custom_instructions"):
+        mockaktt = zxnqshmr.get_setting("gamedev_assistant/custom_instructions")
     
     
                               
-    var uzowmabm = { 
-        "content": zimakryt, 
-        "useThinking": irzqqoqi,
-        "releaseUniqueIdentifier": cgmcoqob,
-        "godotVersion": fhfibrwf,
-        "mode": aoadcdgd,
-        "customInstructions": mehipvxi
+    var fpedopuf = { 
+        "content": dfbqlpwy, 
+        "useThinking": qrjklwxj,
+        "releaseUniqueIdentifier": xosynvzc,
+        "godotVersion": rkyhcqec,
+        "mode": xnxvoebm,
+        "customInstructions": mockaktt
     }
     
-    var wcoaftrw = vfhamwig.srlihurr()
+    var vpwuadzd = rorrzuzv.uziqrmqg()
     
-    if wcoaftrw and wcoaftrw.id > 0:
-        uzowmabm["conversationId"] = wcoaftrw.id
+    if vpwuadzd and vpwuadzd.id > 0:
+        fpedopuf["conversationId"] = vpwuadzd.id
         
                                                             
     
                                                 
-    mfzxvdwn(uzowmabm)
+    oilazydy(fpedopuf)
     
-    mjucqjto.emit(zimakryt)
+    eajsjrje.emit(dfbqlpwy)
 
-func eovxkoya ():
-    var fnuoenxg = gofxlmii.request(lniuisgu, pqfcxytq(), HTTPClient.METHOD_GET)
+func yoleiwce ():
+    var zfvxlmed = xfwkcfkg.request(cqmyaxav, xowxwnnt(), HTTPClient.METHOD_GET)
 
-func get_conversation (gfcjtzwf : int):
-    var kmjpqphb = tsrjkorb + str(gfcjtzwf)
-    var jmonnjhg = oaombwkx.request(kmjpqphb, pqfcxytq(), HTTPClient.METHOD_GET)
+func get_conversation (hblosjdq : int):
+    var dhllxwwq = yndfndan + str(hblosjdq)
+    var oatwqsde = rhusagrf.request(dhllxwwq, xowxwnnt(), HTTPClient.METHOD_GET)
 
-func jfwrevby (hjqeydem : int):
-    var vwvrmmac = tsrjkorb + str(hjqeydem)
-    var wkgfeyjb = ryzwviax.request(vwvrmmac, pqfcxytq(), HTTPClient.METHOD_DELETE)
+func cdojqhzs (tikcqbrg : int):
+    var rzzngafu = yndfndan + str(tikcqbrg)
+    var atxvlcju = cwrwtotq.request(rzzngafu, xowxwnnt(), HTTPClient.METHOD_DELETE)
 
-func rfvbxjfp (xnozomwr : int):
-    var xzoyljnj = tsrjkorb + str(xnozomwr) + "/toggle-favorite"
-    var evfrltjp = dhmkfwxp.request(xzoyljnj, pqfcxytq(), HTTPClient.METHOD_POST)
+func pvxvfono (vetsatcf : int):
+    var jvxmyfst = yndfndan + str(vetsatcf) + "/toggle-favorite"
+    var iwrswmfi = fljshzoe.request(jvxmyfst, xowxwnnt(), HTTPClient.METHOD_POST)
 
-func yqlpixfk(ehbaxadp: int, mdvixgso: int, mdmcjovf: PackedStringArray, kgqhtfkg: PackedByteArray):
+func hqmmsxbp(rlucwljk: int, kdzqurqk: int, xdbdfpai: PackedStringArray, nucuzkok: PackedByteArray):
                                 
-    if ehbaxadp != HTTPRequest.RESULT_SUCCESS:
-        yivmaisp.emit(false, "Network error (Code: " + str(ehbaxadp) + ")")
+    if rlucwljk != HTTPRequest.RESULT_SUCCESS:
+        nrinajro.emit(false, "Network error (Code: " + str(rlucwljk) + ")")
         return
         
-    var aouzjlwd = obimremq(kgqhtfkg)
-    if not aouzjlwd is Dictionary:
-        yivmaisp.emit(false, "Response error (Code: " + str(mdvixgso) + ")")
+    var rmiznitx = jfpptpyj(nucuzkok)
+    if not rmiznitx is Dictionary:
+        nrinajro.emit(false, "Response error (Code: " + str(kdzqurqk) + ")")
         return
         
-    var kcvfvewa = aouzjlwd.get("success", false)
-    var etbnpabr = aouzjlwd.get("error", "Response code: " + str(mdvixgso))
+    var tlwwlmsn = rmiznitx.get("success", false)
+    var buxlqkjc = rmiznitx.get("error", "Response code: " + str(kdzqurqk))
     
-    yivmaisp.emit(kcvfvewa, etbnpabr)
+    nrinajro.emit(tlwwlmsn, buxlqkjc)
 
                                                      
-func gxlhwyhs(skndgnaw, pvtappgn, puisouje, ibqetinh):
+func efdyxbof(rzppxkoi, hyghjoqo, epfewkeo, koksefij):
     
-    if skndgnaw != HTTPRequest.RESULT_SUCCESS:
-        sfrwatqp.emit("Network error (Code: " + str(skndgnaw) + ")")
+    if rzppxkoi != HTTPRequest.RESULT_SUCCESS:
+        edbyckzj.emit("Network error (Code: " + str(rzppxkoi) + ")")
         return
         
-    var wwfffsam = obimremq(ibqetinh)
-    if not wwfffsam is Dictionary:
-        sfrwatqp.emit("Response error (Code: " + str(pvtappgn) + ")")
+    var unzlcgug = jfpptpyj(koksefij)
+    if not unzlcgug is Dictionary:
+        edbyckzj.emit("Response error (Code: " + str(hyghjoqo) + ")")
         return
     
-    if pvtappgn == 201:
-        var lvejdbfg = wwfffsam.get("content", "")
-        var qwvpswwa = int(wwfffsam.get("conversationId", -1))
-        xpdubjyj.emit(lvejdbfg, qwvpswwa)
+    if hyghjoqo == 201:
+        var tpbnjvsf = unzlcgug.get("content", "")
+        var jzypjxho = int(unzlcgug.get("conversationId", -1))
+        hmjvhfxe.emit(tpbnjvsf, jzypjxho)
     else:
-        sfrwatqp.emit(wwfffsam.get("error", "Response code: " + str(pvtappgn)))
+        edbyckzj.emit(unzlcgug.get("error", "Response code: " + str(hyghjoqo)))
 
                                                                     
-func qljjeema(rukpsnkg, wfilwjvq, hgfhkaiy, dlbwmxph):
-    if rukpsnkg != HTTPRequest.RESULT_SUCCESS:
-        wnhzlvzc.emit("Network error (Code: " + str(rukpsnkg) + ")")
+func eubyyodr(joskcmsv, eizjtzcx, mewqntwc, qpxawvdp):
+    if joskcmsv != HTTPRequest.RESULT_SUCCESS:
+        iwufumws.emit("Network error (Code: " + str(joskcmsv) + ")")
         return
         
-    var lkunynyu = obimremq(dlbwmxph)
+    var xwsrmydq = jfpptpyj(qpxawvdp)
     
-    if wfilwjvq == 200:
-        fwvwuwle.emit(lkunynyu)
+    if eizjtzcx == 200:
+        xcxxpngk.emit(xwsrmydq)
     else:
-        if lkunynyu is Dictionary:
-            wnhzlvzc.emit(lkunynyu.get("error", "Response code: " + str(wfilwjvq)))
+        if xwsrmydq is Dictionary:
+            iwufumws.emit(xwsrmydq.get("error", "Response code: " + str(eizjtzcx)))
         else:
-            wnhzlvzc.emit("Response error (Code: " + str(wfilwjvq) + ")")
+            iwufumws.emit("Response error (Code: " + str(eizjtzcx) + ")")
 
                                                                 
-func mcximdww(eacdxigf, ekuheibi, pwtkiwmy, mwnpjkci):
-    if eacdxigf != HTTPRequest.RESULT_SUCCESS:
+func bhyzttpg(uengjcop, rgoiallj, kkiljfuy, ahqsxolj):
+    if uengjcop != HTTPRequest.RESULT_SUCCESS:
                                                               
-        printerr("[GameDev Assistant] Get conversation network error (Code: " + str(eacdxigf) + ")")
+        printerr("[GameDev Assistant] Get conversation network error (Code: " + str(uengjcop) + ")")
         return
         
-    var xfjxslju = obimremq(mwnpjkci)
-    if not xfjxslju is Dictionary:
-        printerr("[GameDev Assistant] Get conversation response error (Code: " + str(ekuheibi) + ")")
+    var tcypvnzz = jfpptpyj(ahqsxolj)
+    if not tcypvnzz is Dictionary:
+        printerr("[GameDev Assistant] Get conversation response error (Code: " + str(rgoiallj) + ")")
         return
         
-    aegetfqt.emit(xfjxslju)
+    czvetcnr.emit(tcypvnzz)
 
                                                                                          
-func noshqbur(urbxrfxa, tcscvfqe, ubmolqfg, pckrkcnt):
-    if urbxrfxa != HTTPRequest.RESULT_SUCCESS:
+func qxkabglm(sxztlviy, memzgcca, ygzhxkgh, gambdxyx):
+    if sxztlviy != HTTPRequest.RESULT_SUCCESS:
                                                                           
-        printerr("[GameDev Assistant] Delete conversation network error (Code: " + str(urbxrfxa) + ")")
+        printerr("[GameDev Assistant] Delete conversation network error (Code: " + str(sxztlviy) + ")")
         return
         
-    if tcscvfqe == 204:
-        jaatnjss.emit()
+    if memzgcca == 204:
+        xoyucvfi.emit()
     else:
-        var nlwlbcsp = obimremq(pckrkcnt)
-        var gzftywaf = "[GameDev Assistant] Response code: " + str(tcscvfqe)
-        if nlwlbcsp is Dictionary:
-            gzftywaf = nlwlbcsp.get("error", gzftywaf)
-        dajltnan.emit(gzftywaf)
+        var vjmjcudt = jfpptpyj(gambdxyx)
+        var kbddpxnw = "[GameDev Assistant] Response code: " + str(memzgcca)
+        if vjmjcudt is Dictionary:
+            kbddpxnw = vjmjcudt.get("error", kbddpxnw)
+        miqfppqr.emit(kbddpxnw)
 
                                                                                                        
-func rwjgheiu(mackojpg, kslorzuu, zwjnvwec, iupocfcv):
-    if mackojpg != HTTPRequest.RESULT_SUCCESS:
+func xuirlssi(upvcpoyf, cckgsovg, ahzjjxvi, dejnapoz):
+    if upvcpoyf != HTTPRequest.RESULT_SUCCESS:
                                                                       
-        printerr("[GameDev Assistant] Toggle favorite network error (Code: " + str(mackojpg) + ")")
+        printerr("[GameDev Assistant] Toggle favorite network error (Code: " + str(upvcpoyf) + ")")
         return
         
-    if kslorzuu == 200:
-        qhlbczki.emit()
+    if cckgsovg == 200:
+        lyxhzjdt.emit()
     else:
-        var gdtmjnmy = obimremq(iupocfcv)
-        var nibeogjh = "[GameDev Assistant] Response code: " + str(kslorzuu)
-        if gdtmjnmy is Dictionary:
-            nibeogjh = gdtmjnmy.get("error", nibeogjh)
-        jolgeqmg.emit(nibeogjh)
+        var jcjgukki = jfpptpyj(dejnapoz)
+        var rltdhqfm = "[GameDev Assistant] Response code: " + str(cckgsovg)
+        if jcjgukki is Dictionary:
+            rltdhqfm = jcjgukki.get("error", rltdhqfm)
+        sbufsbte.emit(rltdhqfm)
 
-func obimremq (dneqvnaj):
-    var jzmtgebz = JSON.new()
-    var gqiblqil = jzmtgebz.parse(dneqvnaj.get_string_from_utf8())
-    if gqiblqil != OK:
+func jfpptpyj (eomlaaja):
+    var cvhpgwsz = JSON.new()
+    var zpjfmygb = cvhpgwsz.parse(eomlaaja.get_string_from_utf8())
+    if zpjfmygb != OK:
         return null
-    return jzmtgebz.get_data()
+    return cvhpgwsz.get_data()
 
-func mfzxvdwn(dydfbwcb: Dictionary) -> void:
-    while frpkjprc:
-        zmngtsor.poll()
+func oilazydy(guaybdmm: Dictionary) -> void:
+    while fjvhrmyy:
+        pvtrhfhk.poll()
         
-        match zmngtsor.get_status():
+        match pvtrhfhk.get_status():
             HTTPClient.STATUS_CONNECTION_ERROR:
-                kgrvsdiw.emit("Connection error")
-                jaizzqnv()
+                celmjbwb.emit("Connection error")
+                axskujby()
                 return
             HTTPClient.STATUS_DISCONNECTED:
-                kgrvsdiw.emit("Disconnected")
-                jaizzqnv()
+                celmjbwb.emit("Disconnected")
+                axskujby()
                 return
             
             HTTPClient.STATUS_CONNECTED:
-                if not qjpytkqa:
-                    cwwrzwop(dydfbwcb)
+                if not jpbdaoby:
+                    sgifxvrb(guaybdmm)
                 
             HTTPClient.STATUS_BODY:
-                qbrjhzno()
+                trpgeoam()
         
         await get_tree().process_frame
 
-func cwwrzwop(gvfgdbmo: Dictionary) -> void:
-    if qjpytkqa:
+func sgifxvrb(lwunvaym: Dictionary) -> void:
+    if jpbdaoby:
         return
-    qjpytkqa = true
+    jpbdaoby = true
     
-    var hggwlsmh = JSON.new()
-    var jobepwdc = hggwlsmh.stringify(gvfgdbmo)
-    var gtlipbor = PackedStringArray([
+    var iiklblzh = JSON.new()
+    var nejpndfs = iiklblzh.stringify(lwunvaym)
+    var qmtiwvhz = PackedStringArray([
         "Content-Type: application/json",
-        "Authorization: Bearer " + egkgeqev
+        "Authorization: Bearer " + zazclxim
     ])
     
-    var hdluxcph = zmngtsor.request(
+    var luvmbhqu = pvtrhfhk.request(
         HTTPClient.METHOD_POST,
-        ptoaxuka.replace(yxkkqxkn, ""),                                        
-        gtlipbor,
-        jobepwdc
+        ybtpotjo.replace(gqyprpzm, ""),                                        
+        qmtiwvhz,
+        nejpndfs
     )
     
-    if hdluxcph != OK:
-        kgrvsdiw.emit("Failed to send request: " + str(hdluxcph))
-        frpkjprc = false
-        qjpytkqa = false
+    if luvmbhqu != OK:
+        celmjbwb.emit("Failed to send request: " + str(luvmbhqu))
+        fjvhrmyy = false
+        jpbdaoby = false
 
-func qbrjhzno() -> void:
-    while zmngtsor.get_status() == HTTPClient.STATUS_BODY:
-        var kebxgvpo = zmngtsor.read_response_body_chunk()
-        if kebxgvpo.size() == 0:
+func trpgeoam() -> void:
+    while pvtrhfhk.get_status() == HTTPClient.STATUS_BODY:
+        var bxatnpfr = pvtrhfhk.read_response_body_chunk()
+        if bxatnpfr.size() == 0:
             break
             
-        egswltab += kebxgvpo.get_string_from_utf8()
+        fwcnmxwu += bxatnpfr.get_string_from_utf8()
         
-        whuoxyza()
+        oqrwevhi()
 
-func whuoxyza() -> void:
+func oqrwevhi() -> void:
     
-    var zbwnxout
-    var qrzglpbl
-    var nvmqusbi
+    var kswdfyfx
+    var xalobjue
+    var miryzosv
     
-    if zmngtsor.get_response_code() != 200:
-        frpkjprc = false
+    if pvtrhfhk.get_response_code() != 200:
+        fjvhrmyy = false
         
-        zbwnxout = JSON.new()
-        qrzglpbl = zbwnxout.parse(egswltab)
+        kswdfyfx = JSON.new()
+        xalobjue = kswdfyfx.parse(fwcnmxwu)
         
-        if qrzglpbl == OK:
-            nvmqusbi = zbwnxout.get_data()
-            if nvmqusbi.has("error"):                
-                kgrvsdiw.emit(nvmqusbi["error"])
-            elif nvmqusbi.has("message"):                
-                kgrvsdiw.emit(nvmqusbi["message"])
+        if xalobjue == OK:
+            miryzosv = kswdfyfx.get_data()
+            if miryzosv.has("error"):                
+                celmjbwb.emit(miryzosv["error"])
+            elif miryzosv.has("message"):                
+                celmjbwb.emit(miryzosv["message"])
             else:
-                kgrvsdiw.emit("Unknown server error, please try again later")
+                celmjbwb.emit("Unknown server error, please try again later")
         else: 
-            kgrvsdiw.emit("Could not parse server response. Received from server: " + egswltab)
+            celmjbwb.emit("Could not parse server response. Received from server: " + fwcnmxwu)
     
-    var shanafxd = egswltab.split("\n\n")
+    var nzkgwlse = fwcnmxwu.split("\n\n")
     
                                                                                  
-    for i in range(shanafxd.size() - 1):
-        var uqqnlktj: String = shanafxd[i]
-        if uqqnlktj.find("data:") != -1:
-            var hedwrwku = uqqnlktj.split("\n")
-            for line in hedwrwku:
+    for i in range(nzkgwlse.size() - 1):
+        var umhhyejo: String = nzkgwlse[i]
+        if umhhyejo.find("data:") != -1:
+            var rumhtvpm = umhhyejo.split("\n")
+            for line in rumhtvpm:
                 if line.begins_with("data:"):
-                    var efjgnkra = line.substr(5).strip_edges()
+                    var ipdjwecg = line.substr(5).strip_edges()
                                                                
                     
-                    zbwnxout = JSON.new()
-                    qrzglpbl = zbwnxout.parse(efjgnkra)
+                    kswdfyfx = JSON.new()
+                    xalobjue = kswdfyfx.parse(ipdjwecg)
                     
-                    if qrzglpbl == OK:
-                        nvmqusbi = zbwnxout.get_data()
+                    if xalobjue == OK:
+                        miryzosv = kswdfyfx.get_data()
                         
-                        if nvmqusbi is Dictionary:
-                            if nvmqusbi.has("error"):
-                                printerr("Server error: ", nvmqusbi["error"])
-                                kgrvsdiw.emit(nvmqusbi["error"])
-                                jaizzqnv()
+                        if miryzosv is Dictionary:
+                            if miryzosv.has("error"):
+                                printerr("Server error: ", miryzosv["error"])
+                                celmjbwb.emit(miryzosv["error"])
+                                axskujby()
                                 return
                             
-                            if nvmqusbi.has("done") and nvmqusbi["done"] == true:
-                                frpkjprc = false
+                            if miryzosv.has("done") and miryzosv["done"] == true:
+                                fjvhrmyy = false
                                                                 
-                                ngabjzqt.emit(
-                                    int(nvmqusbi.get("conversationId", -1)),
-                                    int(nvmqusbi.get("messageId", -1))
+                                hudonhfc.emit(
+                                    int(miryzosv.get("conversationId", -1)),
+                                    int(miryzosv.get("messageId", -1))
                                 )
-                                jaizzqnv()
+                                axskujby()
                                 
-                            elif nvmqusbi.has("beforeActions"):
-                                eeanuqxm.emit(
-                                    int(nvmqusbi.get("conversationId", -1)),
-                                    int(nvmqusbi.get("messageId", -1))
+                            elif miryzosv.has("beforeActions"):
+                                hizgvnpl.emit(
+                                    int(miryzosv.get("conversationId", -1)),
+                                    int(miryzosv.get("messageId", -1))
                                 )
                                 
-                            elif nvmqusbi.has("content"):
+                            elif miryzosv.has("content"):
                                 
-                                if (typeof(nvmqusbi.get("messageId")) != TYPE_INT and typeof(nvmqusbi.get("messageId")) != TYPE_FLOAT) or (typeof(nvmqusbi.get("conversationId")) != TYPE_INT and typeof(nvmqusbi.get("conversationId")) != TYPE_FLOAT):
-                                    kgrvsdiw.emit("Invalid data coming from the server")
-                                    jaizzqnv()
+                                if (typeof(miryzosv.get("messageId")) != TYPE_INT and typeof(miryzosv.get("messageId")) != TYPE_FLOAT) or (typeof(miryzosv.get("conversationId")) != TYPE_INT and typeof(miryzosv.get("conversationId")) != TYPE_FLOAT):
+                                    celmjbwb.emit("Invalid data coming from the server")
+                                    axskujby()
                                     return                                   
                             
-                                zeqbitvq.emit(
-                                    str(nvmqusbi["content"]),
-                                    int(nvmqusbi.get("conversationId", -1)),
-                                    int(nvmqusbi.get("messageId", -1))
+                                xifwqalw.emit(
+                                    str(miryzosv["content"]),
+                                    int(miryzosv.get("conversationId", -1)),
+                                    int(miryzosv.get("messageId", -1))
                                 )
                         
                                                
-    egswltab = shanafxd[shanafxd.size() - 1]
+    fwcnmxwu = nzkgwlse[nzkgwlse.size() - 1]
     
-func jaizzqnv():  
-    frpkjprc = false  
-    zmngtsor.close()            
+func axskujby():  
+    fjvhrmyy = false  
+    pvtrhfhk.close()            
 
                                                                   
-func nwmgpvao(cvcxywbn: bool = false):
-    var dohotbwf = EditorInterface.get_editor_settings()       
-    var ariniejv = dohotbwf.get_setting("gamedev_assistant/version_identifier")
+func rkzcjncs(fdbluurb: bool = false):
+    var jyvcxukt = EditorInterface.get_editor_settings()       
+    var vtixphlx = jyvcxukt.get_setting("gamedev_assistant/version_identifier")
     
-    var oqpvcwku = {
-        "releaseUniqueIdentifier": ariniejv,
-        "isInit": cvcxywbn
+    var ujuxxjkc = {
+        "releaseUniqueIdentifier": vtixphlx,
+        "isInit": fdbluurb
     }
-    var jyjfaart = JSON.new()
-    var lqwvqjcg = jyjfaart.stringify(oqpvcwku)
-    var ofdhwqwi = naxdxtie.request(uhqxsamx, pqfcxytq(), HTTPClient.METHOD_POST, lqwvqjcg)
+    var oezhrtce = JSON.new()
+    var kypnvnmd = oezhrtce.stringify(ujuxxjkc)
+    var ijajpbgi = raegzqyd.request(snnnfzzz, xowxwnnt(), HTTPClient.METHOD_POST, kypnvnmd)
 
                                             
-func wmaljuwq(fvvlduum, owodanng, jzhogxmc, rahanwtu):
-    if fvvlduum != HTTPRequest.RESULT_SUCCESS:
-        vmcxdzpr.emit("[GameDev Assistant] Network error when checking for updates (Code: " + str(fvvlduum) + ")")
+func csbsjpmh(xzzgwjdr, aqgcgspf, ahixdkiz, enrgsyrj):
+    if xzzgwjdr != HTTPRequest.RESULT_SUCCESS:
+        agqfwpxl.emit("[GameDev Assistant] Network error when checking for updates (Code: " + str(xzzgwjdr) + ")")
         return
         
-    var ixgzakek = obimremq(rahanwtu)
-    if not ixgzakek is Dictionary:
-        vmcxdzpr.emit("[GameDev Assistant] Response error when checking for updates (Code: " + str(owodanng) + ")")
+    var hufumnsj = jfpptpyj(enrgsyrj)
+    if not hufumnsj is Dictionary:
+        agqfwpxl.emit("[GameDev Assistant] Response error when checking for updates (Code: " + str(aqgcgspf) + ")")
         return
     
-    if owodanng == 200:
-        var prrrnfrl = ixgzakek.get("updateAvailable", false)
-        var sywebemy = ixgzakek.get("latestVersion", "")
+    if aqgcgspf == 200:
+        var ppltnoyd = hufumnsj.get("updateAvailable", false)
+        var koifpoqq = hufumnsj.get("latestVersion", "")
         
-        izldnmgc.emit(prrrnfrl, sywebemy)
+        apwgvoge.emit(ppltnoyd, koifpoqq)
     else:
-        vmcxdzpr.emit(ixgzakek.get("error", "Response code: " + str(owodanng)))
+        agqfwpxl.emit(hufumnsj.get("error", "Response code: " + str(aqgcgspf)))
 
-func kevulpbh(irbrchln: int, pouexvwf: bool, rhefgriz: String, zumzqngn: String, ghvwghjp: String, rbkyztry: String):
-    var ejrofaoc = {
-        "messageId": irbrchln,
-        "success": pouexvwf,
-        "action_type": rhefgriz,
-        "node_type": zumzqngn,
-        "subresource_type": ghvwghjp,
-        "error_message": rbkyztry
+func gjnrwvpr(qxjarvmq: int, iybtmofr: bool, ulrxxwri: String, pvkuomdn: String, nxpakpre: String, cklurtqw: String):
+    var dzerelxj = {
+        "messageId": qxjarvmq,
+        "success": iybtmofr,
+        "action_type": ulrxxwri,
+        "node_type": pvkuomdn,
+        "subresource_type": nxpakpre,
+        "error_message": cklurtqw
     }
-    aeuaasyg.append(ejrofaoc)
-    xauzccyd()
+    euhdaiet.append(dzerelxj)
+    htnqidwu()
 
                              
-func xauzccyd():
-    var client_status = fwqxqlfy.get_http_client_status()
+func htnqidwu():
+    var client_status = zsqaufez.get_http_client_status()
                                                                                       
     if (client_status == HTTPClient.STATUS_DISCONNECTED or 
         client_status == HTTPClient.STATUS_CANT_RESOLVE or 
         client_status == HTTPClient.STATUS_CANT_CONNECT or 
         client_status == HTTPClient.STATUS_CONNECTION_ERROR or 
-        client_status == HTTPClient.STATUS_TLS_HANDSHAKE_ERROR) and aeuaasyg.size() > 0:
+        client_status == HTTPClient.STATUS_TLS_HANDSHAKE_ERROR) and euhdaiet.size() > 0:
         
-        var irzrogck = aeuaasyg.pop_front()
-        var qmquhmpn = JSON.new()
-        var cdxwposf = qmquhmpn.stringify(irzrogck)
-        var stinoisc = pqfcxytq()
-        var zbodjlzu = fwqxqlfy.request(xhvabqbw, stinoisc, HTTPClient.METHOD_POST, cdxwposf)
-        if zbodjlzu != OK:
-            printerr("Failed to start track action request:", zbodjlzu)
-            xauzccyd()                                  
+        var xiuryxbf = euhdaiet.pop_front()
+        var aiperlfe = JSON.new()
+        var kkrsptva = aiperlfe.stringify(xiuryxbf)
+        var lwgssmsy = xowxwnnt()
+        var pkvgdafc = zsqaufez.request(zvzorgna, lwgssmsy, HTTPClient.METHOD_POST, kkrsptva)
+        if pkvgdafc != OK:
+            printerr("Failed to start track action request:", pkvgdafc)
+            htnqidwu()                                  
 
-func kxrgdjql(sbvzlfjf, mrpsviai, sedlnqbu, slaihxbh):
-    xauzccyd()                                      
-    if sbvzlfjf != HTTPRequest.RESULT_SUCCESS:
-        printerr("[GameDev Assistant] Track action failed:", sbvzlfjf)
+func rjjfzbmc(evplqhae, gnmteeew, lrxrpbsz, hfvcfwhu):
+    htnqidwu()                                      
+    if evplqhae != HTTPRequest.RESULT_SUCCESS:
+        printerr("[GameDev Assistant] Track action failed:", evplqhae)
         return
         
-    var sqkwdhqf = obimremq(slaihxbh)
-    if not sqkwdhqf is Dictionary:
+    var olgmrket = jfpptpyj(hfvcfwhu)
+    if not olgmrket is Dictionary:
         printerr("[GameDev Assistant] Invalid track action response")
 
-func goknswzz(fabpjavp: int, wbvhzdpv: int) -> void:
-    var ijihbkjb = {
-        "messageId": fabpjavp,
-        "rating": wbvhzdpv
+func oxkuymyc(ymhggxfn: int, gzkxmfjz: int) -> void:
+    var upllildm = {
+        "messageId": ymhggxfn,
+        "rating": gzkxmfjz
     }
-    var tmbzjtdf = JSON.new()
-    var olywnaal = tmbzjtdf.stringify(ijihbkjb)
-    var oxcnkrtc = pqfcxytq()
-    var vtndpjdf = wtedfhfv.request(crhkdnoz, oxcnkrtc, HTTPClient.METHOD_POST, olywnaal)
-    if vtndpjdf != OK:
-        printerr("[GameDev Assistant] Failed to track rating:", vtndpjdf)
+    var pmuglrkn = JSON.new()
+    var lgesakax = pmuglrkn.stringify(upllildm)
+    var kutqeuft = xowxwnnt()
+    var cmcbpidu = zjnhwtbw.request(fbtwgoyp, kutqeuft, HTTPClient.METHOD_POST, lgesakax)
+    if cmcbpidu != OK:
+        printerr("[GameDev Assistant] Failed to track rating:", cmcbpidu)
 
                                           
-func rhzjufxb(dwnynujg, ltypfgal, dblphthh, brmzjtfb):
-    if dwnynujg != HTTPRequest.RESULT_SUCCESS:
-        printerr("[GameDev Assistant] Rating action failed:", dwnynujg)
+func sajeajzr(hlnwctgm, hplqsssf, injzwkfd, zjmnqtny):
+    if hlnwctgm != HTTPRequest.RESULT_SUCCESS:
+        printerr("[GameDev Assistant] Rating action failed:", hlnwctgm)
         return
         
-    var amnflkvb = obimremq(brmzjtfb)
-    if not amnflkvb is Dictionary:
+    var evaxnjaw = jfpptpyj(zjmnqtny)
+    if not evaxnjaw is Dictionary:
         printerr("[GameDev Assistant] Invalid rating response")
         return
 
-func lzgpswvj():
-    return frpkjprc
-func emgmyucb(ucdkmpsx: Object) -> void:
+func cbzghnwn():
+    return fjvhrmyy
+func saugzyjy(dhbbfwiw: Object) -> void:
     print("=== Methods ===")
-    for method in ucdkmpsx.get_method_list():
+    for method in dhbbfwiw.get_method_list():
         print(method["name"])
     
     print("\n=== Properties ===")
-    for property in ucdkmpsx.get_property_list():
+    for property in dhbbfwiw.get_property_list():
         print(property["name"])
     
     print("\n=== Signals ===")
-    for signal_info in ucdkmpsx.get_signal_list():
+    for signal_info in dhbbfwiw.get_signal_list():
         print(signal_info["name"])
         
-func fzcguaqa(vtkupxyl: String, xlbstkhl: int, mcmvkytw: String, dlikflwj: Button) -> void:
+func iaavjnqt(magpdwzd: String, iflhmyse: int, htckiiju: String, qntombjw: Button) -> void:
                                          
-    sigyzexh = dlikflwj
+    kfkphagm = qntombjw
     
                                                                   
-    var wwybkhhf = $"../ActionManager"
-    wwybkhhf.cdsrnkbh.emit("edit_script", true)
-    dlikflwj.text = "⌛Editing file %s" % vtkupxyl
+    var ciltsngi = $"../ActionManager"
+    ciltsngi.pvbkfcft.emit("edit_script", true)
+    qntombjw.text = "⌛Editing file %s" % magpdwzd
 
-    var gxwjxvpt = {
-        "path": vtkupxyl,
-        "message_id": xlbstkhl,
-        "content": mcmvkytw
+    var vyceqwdc = {
+        "path": magpdwzd,
+        "message_id": iflhmyse,
+        "content": htckiiju
     }
     
-    var vohnwkyl = JSON.new()
-    var xdeuoixf = vohnwkyl.stringify(gxwjxvpt)
-    var ssylfshx = pqfcxytq()
+    var xgtaryaz = JSON.new()
+    var plreqgaj = xgtaryaz.stringify(vyceqwdc)
+    var zgujrals = xowxwnnt()
                                                      
     
-    var vzxlexga = yxkkqxkn + "/editScript"
-    var yygtrzit = slvjswyr.request(vzxlexga, ssylfshx, HTTPClient.METHOD_POST, xdeuoixf)
+    var pqugvwll = gqyprpzm + "/editScript"
+    var rgfavpqp = jsxufsko.request(pqugvwll, zgujrals, HTTPClient.METHOD_POST, plreqgaj)
     
-    if yygtrzit != OK:
-        var fersapdc = "Failed to start edit_script request: " + str(yygtrzit)
-        push_error(fersapdc)
+    if rgfavpqp != OK:
+        var pllsrfdv = "Failed to start edit_script request: " + str(rgfavpqp)
+        push_error(pllsrfdv)
                                    
                                                       
-        wwybkhhf.axiebdny.emit("edit_script", false,fersapdc, "", "", dlikflwj)
+        ciltsngi.tmvpeqiy.emit("edit_script", false,pllsrfdv, "", "", qntombjw)
         
-func frofezja(cqgswour: int, sqiwofrg: int, orrfemqn: PackedStringArray, xykdscgz: PackedByteArray) -> void:
-    var ofdgjcvh = $"../ActionManager"
-    var vljxzoer = sigyzexh
+func ryltcxpk(nkyrelwx: int, iiynxdsl: int, dcordspx: PackedStringArray, okhyayms: PackedByteArray) -> void:
+    var jxrchils = $"../ActionManager"
+    var rndddmne = kfkphagm
 
                                                                 
-    if cqgswour != HTTPRequest.RESULT_SUCCESS:
-        var ngddhxhh = "EditScript network request failed. Code: " + str(cqgswour)
-        push_error(ngddhxhh)
-        ofdgjcvh.axiebdny.emit("edit_script", false, ngddhxhh, "", "", vljxzoer)
+    if nkyrelwx != HTTPRequest.RESULT_SUCCESS:
+        var wcwcjuxa = "EditScript network request failed. Code: " + str(nkyrelwx)
+        push_error(wcwcjuxa)
+        jxrchils.tmvpeqiy.emit("edit_script", false, wcwcjuxa, "", "", rndddmne)
         return
 
                                                       
-    var hdbowgaw = obimremq(xykdscgz)
-    if not hdbowgaw is Dictionary:
-        var ngddhxhh = "Invalid response from server (not valid JSON)."
-        push_error(ngddhxhh)
-        ofdgjcvh.axiebdny.emit("edit_script", false, ngddhxhh, "", "", vljxzoer)
+    var rxobqtom = jfpptpyj(okhyayms)
+    if not rxobqtom is Dictionary:
+        var wcwcjuxa = "Invalid response from server (not valid JSON)."
+        push_error(wcwcjuxa)
+        jxrchils.tmvpeqiy.emit("edit_script", false, wcwcjuxa, "", "", rndddmne)
         return
 
                                                          
-    if hdbowgaw.has("error"):
-        var ngddhxhh = "Server returned an error: " + str(hdbowgaw["error"])
-        push_error(ngddhxhh)
-        ofdgjcvh.axiebdny.emit("edit_script", false, ngddhxhh, "", "", vljxzoer)
+    if rxobqtom.has("error"):
+        var wcwcjuxa = "Server returned an error: " + str(rxobqtom["error"])
+        push_error(wcwcjuxa)
+        jxrchils.tmvpeqiy.emit("edit_script", false, wcwcjuxa, "", "", rndddmne)
         return
 
-    var ggqwrmkx = hdbowgaw.get("path", "")
-    var fsgrvflj = hdbowgaw.get("content", "")
+    var pflzhpnk = rxobqtom.get("path", "")
+    var hlkzllgo = rxobqtom.get("content", "")
 
                                                   
-    if ggqwrmkx.is_empty():
-        var ngddhxhh = "Incomplete data in EditScript response (path or content missing)."
-        push_error(ngddhxhh)
-        ofdgjcvh.axiebdny.emit("edit_script", false, ngddhxhh, "", "", vljxzoer)
+    if pflzhpnk.is_empty():
+        var wcwcjuxa = "Incomplete data in EditScript response (path or content missing)."
+        push_error(wcwcjuxa)
+        jxrchils.tmvpeqiy.emit("edit_script", false, wcwcjuxa, "", "", rndddmne)
         return
 
                                                          
-    var vhyhdydj = FileAccess.open(ggqwrmkx, FileAccess.WRITE)
-    if vhyhdydj:
-        vhyhdydj.store_string(fsgrvflj)
-        vhyhdydj.close()
+    var smtpwtqz = FileAccess.open(pflzhpnk, FileAccess.WRITE)
+    if smtpwtqz:
+        smtpwtqz.store_string(hlkzllgo)
+        smtpwtqz.close()
 
                                                         
-        var scduufcz = ResourceLoader.load(ggqwrmkx, "Script", ResourceLoader.CACHE_MODE_IGNORE)
+        var pyrqcgdk = ResourceLoader.load(pflzhpnk, "Script", ResourceLoader.CACHE_MODE_IGNORE)
         await get_tree().process_frame
         
                                                                           
                                                                                  
-        var gigonchr = vljxzoer.get_meta("action")
-        vljxzoer.text = "Edit {path}".format({"path": gigonchr.path})
+        var qrxlaeey = rndddmne.get_meta("action")
+        rndddmne.text = "Edit {path}".format({"path": qrxlaeey.path})
 
-        var fwawjemp = Engine.get_singleton("EditorInterface")
-        var alyelguh = fwawjemp.get_script_editor()
+        var mocqtowt = Engine.get_singleton("EditorInterface")
+        var ajnytzhx = mocqtowt.get_script_editor()
         
                                                                                   
-        var xurbbxeg = false
-        for open_script in alyelguh.get_open_scripts():
-            if open_script.resource_path == ggqwrmkx:
-                xurbbxeg = true
+        var skdbmdyo = false
+        for open_script in ajnytzhx.get_open_scripts():
+            if open_script.resource_path == pflzhpnk:
+                skdbmdyo = true
                 break
         
                                                                                  
-        fwawjemp.edit_script(scduufcz)
+        mocqtowt.edit_script(pyrqcgdk)
         await get_tree().process_frame                                   
         
                                                                    
                                                                 
-        var xehhmrah = alyelguh.get_current_script()
-        if xehhmrah and xehhmrah.resource_path == ggqwrmkx:
-            alyelguh.get_current_editor().get_base_editor().set_text(fsgrvflj)
-            if xurbbxeg:
-                push_warning("[GameDev Assistant] File updated: " + ggqwrmkx + " (due to a Godot API limitation, it will appear as unsaved, but it has been saved to disk!)")
+        var xuwvdhaj = ajnytzhx.get_current_script()
+        if xuwvdhaj and xuwvdhaj.resource_path == pflzhpnk:
+            ajnytzhx.get_current_editor().get_base_editor().set_text(hlkzllgo)
+            if skdbmdyo:
+                push_warning("[GameDev Assistant] File updated: " + pflzhpnk + " (due to a Godot API limitation, it will appear as unsaved, but it has been saved to disk!)")
             else:
-                print("[GameDev Assistant] File updated: " + ggqwrmkx)
+                print("[GameDev Assistant] File updated: " + pflzhpnk)
         else:
                                                                              
-            push_error("[GameDev Assistant] Could not update the editor view for " + ggqwrmkx + ", but the file has been saved to disk.")
+            push_error("[GameDev Assistant] Could not update the editor view for " + pflzhpnk + ", but the file has been saved to disk.")
 
-        fwawjemp.get_resource_filesystem().scan()
+        mocqtowt.get_resource_filesystem().scan()
         
         await get_tree().process_frame
-        fwawjemp.edit_script(scduufcz)                           
+        mocqtowt.edit_script(pyrqcgdk)                           
 
                                  
-        ofdgjcvh.axiebdny.emit("edit_script", true, "", "", "", vljxzoer)
+        jxrchils.tmvpeqiy.emit("edit_script", true, "", "", "", rndddmne)
     else:
                                                          
-        var xwjhlopw = FileAccess.get_open_error()
-        var ngddhxhh = "Failed to write to script '%s'. Error: %s" % [ggqwrmkx, error_string(xwjhlopw)]
-        push_error("[GameDev Assistant] " + ngddhxhh)
-        ofdgjcvh.axiebdny.emit("edit_script", false, ngddhxhh, "", "", vljxzoer)
+        var sxsufbxx = FileAccess.get_open_error()
+        var wcwcjuxa = "Failed to write to script '%s'. Error: %s" % [pflzhpnk, error_string(sxsufbxx)]
+        push_error("[GameDev Assistant] " + wcwcjuxa)
+        jxrchils.tmvpeqiy.emit("edit_script", false, wcwcjuxa, "", "", rndddmne)

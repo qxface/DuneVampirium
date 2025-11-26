@@ -2,34 +2,34 @@
 @tool
 extends Node
 
-const ktsceped = preload("action_parser_utils.gd")
+const ajmonppq = preload("action_parser_utils.gd")
 
-static func execute(bbjbcoae: String, uwhbeati: int, fgubuqcu: Button, bpwnhhsi: Node) -> Variant:
+static func execute(djpbqpdb: String, kgyidblu: int, cbddzzub: Button, ftkhdpxp: Node) -> Variant:
                                       
-    var ryphcecv = FileAccess.open(bbjbcoae, FileAccess.READ)
-    if not ryphcecv:
-        var ccnpfevs = FileAccess.get_open_error()
-        var fxzchbqz = "Failed to load script: " + bbjbcoae + " (Error: " + error_string(ccnpfevs) + ")"
-        push_error(fxzchbqz)
-        return {"success": false, "error_message": fxzchbqz}
+    var wsbsbmym = FileAccess.open(djpbqpdb, FileAccess.READ)
+    if not wsbsbmym:
+        var riqzccqt = FileAccess.get_open_error()
+        var svmfplzc = "Failed to load script: " + djpbqpdb + " (Error: " + error_string(riqzccqt) + ")"
+        push_error(svmfplzc)
+        return {"success": false, "error_message": svmfplzc}
     
                                 
-    var tlbqlpuj = ryphcecv.get_as_text()
-    ryphcecv.close()
+    var qgroaodh = wsbsbmym.get_as_text()
+    wsbsbmym.close()
         
                                                                                         
-    bpwnhhsi.fzcguaqa(bbjbcoae, uwhbeati, tlbqlpuj, fgubuqcu)
+    ftkhdpxp.iaavjnqt(djpbqpdb, kgyidblu, qgroaodh, cbddzzub)
     
                                                                                        
     return null
 
-static func parse_line(qesllhre: String, jozgvdaw: String) -> Dictionary:
-    if qesllhre.begins_with("edit_script("):
-        var oqouqqnf = ktsceped.qcizkoub(qesllhre)
-        if not oqouqqnf.is_empty():
+static func parse_line(ypvtsecx: String, pvybxssh: String) -> Dictionary:
+    if ypvtsecx.begins_with("edit_script("):
+        var ypbtcmdk = ajmonppq.habywlej(ypvtsecx)
+        if not ypbtcmdk.is_empty():
             return {
                 "type": "edit_script",
-                "path": oqouqqnf.get("path", ""),
-                "message_id": oqouqqnf.get("message_id", -1)
+                "path": ypbtcmdk.get("path", ""),
+                "message_id": ypbtcmdk.get("message_id", -1)
             }
     return {}

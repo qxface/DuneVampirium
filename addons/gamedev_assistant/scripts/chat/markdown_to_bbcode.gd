@@ -3,7 +3,7 @@
 class_name MarkdownToBBCode
 extends RefCounted
 
-const vvfnkudy = [
+const jdxnfowv = [
     "b", "i", "u", "s", "code", "char", "p", "center", "left", "right", "fill",
     "indent", "url", "hint", "img", "font", "font_size", "dropcap",
     "opentype_features", "lang", "color", "bgcolor", "fgcolor", "outline_size",
@@ -17,13 +17,13 @@ const vvfnkudy = [
                               
                                                                 
                                                                     
-static func xuyjifge(glqixprc: Array, ctyyygmx: String) -> String:
-    var wjmexqhq = ""
-    for i in range(glqixprc.size()):
+static func bsewlmik(iosiwvxx: Array, ewxmextu: String) -> String:
+    var aogswwcm = ""
+    for i in range(iosiwvxx.size()):
         if i > 0:
-            wjmexqhq += ctyyygmx
-        wjmexqhq += str(glqixprc[i])
-    return wjmexqhq
+            aogswwcm += ewxmextu
+        aogswwcm += str(iosiwvxx[i])
+    return aogswwcm
 
 
                                                                     
@@ -33,61 +33,61 @@ static func xuyjifge(glqixprc: Array, ctyyygmx: String) -> String:
                                                               
                                                                          
                                                                     
-static func rcrlccwv(ymrgbely: String) -> String:
-    var wjsrclth = ymrgbely.split("\n")
-    var yrhquuaz = []
-    var mtdxxupk = false
-    var qaowspvt = []
-    var krurbiki = []
+static func zlxkhaha(pjcmdgix: String) -> String:
+    var dktgxpwu = pjcmdgix.split("\n")
+    var uxopwfsz = []
+    var oruvdrzf = false
+    var vfdbpllh = []
+    var marzyxmi = []
 
-    for line in wjsrclth:
-        var aomvrkhh = line.strip_edges(true, false)                       
+    for line in dktgxpwu:
+        var ysqaecqv = line.strip_edges(true, false)                       
 
-        if aomvrkhh.begins_with("```"):
-            if mtdxxupk:
+        if ysqaecqv.begins_with("```"):
+            if oruvdrzf:
                                 
-                var vptajwbp = xuyjifge(qaowspvt, "\n")
-                vptajwbp = exbodwiv(vptajwbp)
+                var tncocpwc = bsewlmik(vfdbpllh, "\n")
+                tncocpwc = xrufinik(tncocpwc)
 
                                                        
-                if krurbiki.size() > 0:
-                    var awqocahc = xuyjifge(krurbiki, "\n")
-                    awqocahc = exbodwiv(awqocahc)
-                    awqocahc = rjvcowrz(awqocahc)
-                    yrhquuaz.append(awqocahc)
-                    krurbiki.clear()
+                if marzyxmi.size() > 0:
+                    var wbhyzogi = bsewlmik(marzyxmi, "\n")
+                    wbhyzogi = xrufinik(wbhyzogi)
+                    wbhyzogi = omxollrz(wbhyzogi)
+                    uxopwfsz.append(wbhyzogi)
+                    marzyxmi.clear()
 
-                yrhquuaz.append("\n[table=1]\n[cell bg=#000000]\n[code]" + vptajwbp + "[/code]\n[/cell]\n[/table]\n")
-                qaowspvt.clear()
-                mtdxxupk = false
+                uxopwfsz.append("\n[table=1]\n[cell bg=#000000]\n[code]" + tncocpwc + "[/code]\n[/cell]\n[/table]\n")
+                vfdbpllh.clear()
+                oruvdrzf = false
             else:
                                   
-                if krurbiki.size() > 0:
-                    var ctszfkdp = xuyjifge(krurbiki, "\n")
-                    ctszfkdp = exbodwiv(ctszfkdp)
-                    ctszfkdp = rjvcowrz(ctszfkdp)
-                    yrhquuaz.append(ctszfkdp)
-                    krurbiki.clear()
-                mtdxxupk = true
-        elif mtdxxupk:
-            qaowspvt.append(line)
+                if marzyxmi.size() > 0:
+                    var ifjlfygq = bsewlmik(marzyxmi, "\n")
+                    ifjlfygq = xrufinik(ifjlfygq)
+                    ifjlfygq = omxollrz(ifjlfygq)
+                    uxopwfsz.append(ifjlfygq)
+                    marzyxmi.clear()
+                oruvdrzf = true
+        elif oruvdrzf:
+            vfdbpllh.append(line)
         else:
-            krurbiki.append(line)
+            marzyxmi.append(line)
 
                                  
-    if mtdxxupk and qaowspvt.size() > 0:
+    if oruvdrzf and vfdbpllh.size() > 0:
                              
-        var djqpydnx = xuyjifge(qaowspvt, "\n")
-        djqpydnx = exbodwiv(djqpydnx)
-        var gxpvsnjr = plyiwbnm(djqpydnx)
-        yrhquuaz.append("[p][/p][table=1]\n[cell bg=#000000]\n[code]" + gxpvsnjr + "[/code]\n[/cell]\n[/table]")
-    elif krurbiki.size() > 0:
-        var yvqbhvef = xuyjifge(krurbiki, "\n")
-        yvqbhvef = exbodwiv(yvqbhvef)
-        yvqbhvef = rjvcowrz(yvqbhvef)
-        yrhquuaz.append(yvqbhvef)
+        var wxsrnfmi = bsewlmik(vfdbpllh, "\n")
+        wxsrnfmi = xrufinik(wxsrnfmi)
+        var tdbwnpte = wqprgbib(wxsrnfmi)
+        uxopwfsz.append("[p][/p][table=1]\n[cell bg=#000000]\n[code]" + tdbwnpte + "[/code]\n[/cell]\n[/table]")
+    elif marzyxmi.size() > 0:
+        var qaxofbyo = bsewlmik(marzyxmi, "\n")
+        qaxofbyo = xrufinik(qaxofbyo)
+        qaxofbyo = omxollrz(qaxofbyo)
+        uxopwfsz.append(qaxofbyo)
 
-    return xuyjifge(yrhquuaz, "\n")
+    return bsewlmik(uxopwfsz, "\n")
 
 
                                                                     
@@ -97,74 +97,74 @@ static func rcrlccwv(ymrgbely: String) -> String:
                                                                                   
                                                                             
                                                                     
-static func naehoovr(yomcjjbd: String) -> Array:
-    var fxolbnnn = []
-    var ezdlqhmm = yomcjjbd.split("\n")
+static func wdyafadg(pjvjetxa: String) -> Array:
+    var sdfagmzr = []
+    var ysigomex = pjvjetxa.split("\n")
 
-    var bwwhpzmx = false
-    var wsboiotk = []
-    var mdcxgedr = []
+    var ayvcurvk = false
+    var vvjbqfew = []
+    var jvgemula = []
 
-    for line in ezdlqhmm:
-        var tfebijcx = line.strip_edges()
+    for line in ysigomex:
+        var xlayfdhz = line.strip_edges()
 
-        if tfebijcx.begins_with("```"):
-            if bwwhpzmx:
+        if xlayfdhz.begins_with("```"):
+            if ayvcurvk:
                                     
-                var sbdprnjl = xuyjifge(mdcxgedr, "\n")
-                fxolbnnn.append({ "type": "code", "content": sbdprnjl })
-                mdcxgedr.clear()
-                bwwhpzmx = false
+                var jwygjnrw = bsewlmik(jvgemula, "\n")
+                sdfagmzr.append({ "type": "code", "content": jwygjnrw })
+                jvgemula.clear()
+                ayvcurvk = false
             else:
                                     
-                if wsboiotk.size() > 0:
-                    var agrfbcnv = xuyjifge(wsboiotk, "\n")
-                    fxolbnnn.append({ "type": "text", "content": agrfbcnv })
-                    wsboiotk.clear()
-                bwwhpzmx = true
-        elif bwwhpzmx:
-            mdcxgedr.append(line)
+                if vvjbqfew.size() > 0:
+                    var jshsbknd = bsewlmik(vvjbqfew, "\n")
+                    sdfagmzr.append({ "type": "text", "content": jshsbknd })
+                    vvjbqfew.clear()
+                ayvcurvk = true
+        elif ayvcurvk:
+            jvgemula.append(line)
         else:
-            wsboiotk.append(line)
+            vvjbqfew.append(line)
 
                                       
-    if wsboiotk.size() > 0:
-        var xqucdqub = xuyjifge(wsboiotk, "\n")
-        fxolbnnn.append({ "type": "text", "content": xqucdqub })
-    elif bwwhpzmx and mdcxgedr.size() > 0:
-        var wzarhgdi = xuyjifge(mdcxgedr, "\n")
-        fxolbnnn.append({ "type": "code", "content": wzarhgdi })
+    if vvjbqfew.size() > 0:
+        var aomcspmx = bsewlmik(vvjbqfew, "\n")
+        sdfagmzr.append({ "type": "text", "content": aomcspmx })
+    elif ayvcurvk and jvgemula.size() > 0:
+        var jhzbhzng = bsewlmik(jvgemula, "\n")
+        sdfagmzr.append({ "type": "code", "content": jhzbhzng })
 
-    return fxolbnnn
+    return sdfagmzr
 
 
                              
                            
                              
 
-static func plyiwbnm(qwttewbg: String) -> String:
-    var tdvokgrh = qwttewbg.split("\n")
-    var bniemozl = 0
+static func wqprgbib(bcdsphxm: String) -> String:
+    var wjnjzbof = bcdsphxm.split("\n")
+    var qvogmfzy = 0
     
                            
-    for line in tdvokgrh:
-        bniemozl = max(bniemozl, line.length())
+    for line in wjnjzbof:
+        qvogmfzy = max(qvogmfzy, line.length())
     
                                     
-    for i in range(tdvokgrh.size()):
-        var jolaasme = "  "
-        var zettgjrr = "  "
-        tdvokgrh[i] = jolaasme + tdvokgrh[i] + zettgjrr
+    for i in range(wjnjzbof.size()):
+        var avrhwreu = "  "
+        var kslgdhct = "  "
+        wjnjzbof[i] = avrhwreu + wjnjzbof[i] + kslgdhct
     
-    return xuyjifge(tdvokgrh, "\n") + "\n"
+    return bsewlmik(wjnjzbof, "\n") + "\n"
 
 
-static func rjvcowrz(mfenoaiu: String) -> String:
-    var ivibfsix = mfenoaiu
-    var klfvcnal = ivibfsix.split("\n")
-    var snnvznyt = []
+static func omxollrz(mkjcdskt: String) -> String:
+    var xsiyrzzy = mkjcdskt
+    var tpzcpngo = xsiyrzzy.split("\n")
+    var xtcmxdtr = []
 
-    for line in klfvcnal:
+    for line in tpzcpngo:
                         
         if line.begins_with("## "):
             line = "[font_size=22][b]" + line.substr(3) + "[/b][/font_size]"
@@ -174,96 +174,96 @@ static func rjvcowrz(mfenoaiu: String) -> String:
             line = "[font_size=16][b]" + line.substr(4) + "[/b][/font_size]"
         
                
-        line = phwofzrj(line)
-        snnvznyt.append(line)
+        line = jdlysemm(line)
+        xtcmxdtr.append(line)
 
-    ivibfsix = xuyjifge(snnvznyt, "\n")
+    xsiyrzzy = bsewlmik(xtcmxdtr, "\n")
 
                                
-    var gwnlkrph = ivibfsix.split("***")
-    ivibfsix = ""
-    for i in range(gwnlkrph.size()):
-        ivibfsix += gwnlkrph[i]
-        if i < gwnlkrph.size() - 1:
+    var urbiqizd = xsiyrzzy.split("***")
+    xsiyrzzy = ""
+    for i in range(urbiqizd.size()):
+        xsiyrzzy += urbiqizd[i]
+        if i < urbiqizd.size() - 1:
             if i % 2 == 0:
-                ivibfsix += "[b][i]"
+                xsiyrzzy += "[b][i]"
             else:
-                ivibfsix += "[/i][/b]"
+                xsiyrzzy += "[/i][/b]"
 
                            
-    var ijbhxzoh = ivibfsix.split("**")
-    var nuwwnoey = ""
-    for i in range(ijbhxzoh.size()):
-        nuwwnoey += ijbhxzoh[i]
-        if i < ijbhxzoh.size() - 1:
+    var swtbzcpv = xsiyrzzy.split("**")
+    var vtoopaas = ""
+    for i in range(swtbzcpv.size()):
+        vtoopaas += swtbzcpv[i]
+        if i < swtbzcpv.size() - 1:
             if i % 2 == 0:
-                nuwwnoey += "[b]"
+                vtoopaas += "[b]"
             else:
-                nuwwnoey += "[/b]"
-    ivibfsix = nuwwnoey
+                vtoopaas += "[/b]"
+    xsiyrzzy = vtoopaas
 
                            
-    var xhmugcja = RegEx.new()
-    xhmugcja.compile("(?<![\\s])(\\*)(?![\\s])([^\\*]+?)(?<![\\s])\\*(?![\\s])")
-    ivibfsix = xhmugcja.sub(ivibfsix, "[i]$2[/i]", true)
+    var zxdcexoa = RegEx.new()
+    zxdcexoa.compile("(?<![\\s])(\\*)(?![\\s])([^\\*]+?)(?<![\\s])\\*(?![\\s])")
+    xsiyrzzy = zxdcexoa.sub(xsiyrzzy, "[i]$2[/i]", true)
     
-    return ivibfsix
+    return xsiyrzzy
 
-static func gpgumkqx(pvoloool: String, icrfbvfr: String, vaeesaxf: int) -> bool:
-    var vocynrau = vaeesaxf + pvoloool.length()
-    while vocynrau < icrfbvfr.length():
-        var ieqwmaqz = icrfbvfr[vocynrau]
-        if ieqwmaqz == "(":
+static func xomyrcdi(wuyllarg: String, gtllkshf: String, fnivcfuj: int) -> bool:
+    var gwzwkgfv = fnivcfuj + wuyllarg.length()
+    while gwzwkgfv < gtllkshf.length():
+        var gfpaxwma = gtllkshf[gwzwkgfv]
+        if gfpaxwma == "(":
             return true
-        elif ieqwmaqz == " " or ieqwmaqz == "\t":
-            vocynrau += 1
+        elif gfpaxwma == " " or gfpaxwma == "\t":
+            gwzwkgfv += 1
         else:
             return false
     return false
 
 
-static func dbetmgrr(xtwnctmf: String, swdurrtl: Color) -> String:
-    return "[swdurrtl =#" + swdurrtl.to_html(false) + "]" + xtwnctmf + "[/color]"
+static func sjmneora(aitzojcj: String, qqbkibdi: Color) -> String:
+    return "[qqbkibdi =#" + qqbkibdi.to_html(false) + "]" + aitzojcj + "[/color]"
 
 
-static func exbodwiv(rczozbub: String) -> String:
-    var fshwyrnb = rczozbub
-    var feriwpwy = RegEx.new()
-    feriwpwy.compile("\\[(/?)(\\w+)((?:[= ])[^\\]]*)?\\]")
+static func xrufinik(sxzkgndx: String) -> String:
+    var idoipbkt = sxzkgndx
+    var ftgvshum = RegEx.new()
+    ftgvshum.compile("\\[(/?)(\\w+)((?:[= ])[^\\]]*)?\\]")
 
-    var dpwggjto = feriwpwy.search_all(fshwyrnb)
-    dpwggjto.reverse()
-    for match in dpwggjto:
-        var ejkivvcr = match.get_string()
-        var futovryw = match.get_string(2).to_lower()
-        if futovryw in vvfnkudy:
-            var fmpmhmqh = match.get_start()
-            var vrbcirer = match.get_end()
-            var dvqcsdud = ""
-            for c in ejkivvcr:
+    var ofkxrams = ftgvshum.search_all(idoipbkt)
+    ofkxrams.reverse()
+    for match in ofkxrams:
+        var alypidof = match.get_string()
+        var pjhosiug = match.get_string(2).to_lower()
+        if pjhosiug in jdxnfowv:
+            var uhgskirm = match.get_start()
+            var qvumvrzw = match.get_end()
+            var ngdvtyrz = ""
+            for c in alypidof:
                 if c == "[":
-                    dvqcsdud += "[lb]"
+                    ngdvtyrz += "[lb]"
                 elif c == "]":
-                    dvqcsdud += "[rb]"
+                    ngdvtyrz += "[rb]"
                 else:
-                    dvqcsdud += c
-            fshwyrnb = fshwyrnb.substr(0, fmpmhmqh) + dvqcsdud + fshwyrnb.substr(vrbcirer)
+                    ngdvtyrz += c
+            idoipbkt = idoipbkt.substr(0, uhgskirm) + ngdvtyrz + idoipbkt.substr(qvumvrzw)
 
-    return fshwyrnb
+    return idoipbkt
 
 
-static func phwofzrj(zbpklogu: String) -> String:
-    var mgzmcuvh = RegEx.new()
+static func jdlysemm(fuaneiej: String) -> String:
+    var reryplgu = RegEx.new()
                                       
-    mgzmcuvh.compile("\\[(.+?)\\]\\((.+?)\\)")
-    var rurothfa = zbpklogu
-    var yezdkfhf = mgzmcuvh.search_all(zbpklogu)
-    yezdkfhf.reverse()
-    for match in yezdkfhf:
-        var owmrsmxh = match.get_string()
-        var plusgjsm = match.get_string(1)
-        var ayflmzvn = match.get_string(2)
+    reryplgu.compile("\\[(.+?)\\]\\((.+?)\\)")
+    var sncmizrv = fuaneiej
+    var rjpqhsil = reryplgu.search_all(fuaneiej)
+    rjpqhsil.reverse()
+    for match in rjpqhsil:
+        var ptcbhsoi = match.get_string()
+        var xssntafp = match.get_string(1)
+        var tpoueflh = match.get_string(2)
                              
-        var iqsbpoxv = "[url=%s]%s[/url]" % [ayflmzvn, plusgjsm]
-        rurothfa = rurothfa.substr(0, match.get_start()) + iqsbpoxv + rurothfa.substr(match.get_end())
-    return rurothfa
+        var kwordldy = "[url=%s]%s[/url]" % [tpoueflh, xssntafp]
+        sncmizrv = sncmizrv.substr(0, match.get_start()) + kwordldy + sncmizrv.substr(match.get_end())
+    return sncmizrv

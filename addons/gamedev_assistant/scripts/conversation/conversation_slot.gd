@@ -1,51 +1,51 @@
 @tool
 extends Button
 
-@onready var hguuzhaj : Label = $PromptLabel
-@onready var jayqrlhg : TextureButton = $FavouriteButton
-@onready var rsjeppfo : Button = $DeleteButton
+@onready var lrsseabd : Label = $PromptLabel
+@onready var frfyrmcl : TextureButton = $FavouriteButton
+@onready var ktnddrwh : Button = $DeleteButton
 
 @export var non_favourite_color : Color
 @export var favourite_color : Color
 
-var unmcnliv : Conversation
-var ibihhvhn
+var stwcoxud : Conversation
+var mlysaegt
 
 func _ready():
-    jayqrlhg.modulate = non_favourite_color
+    frfyrmcl.modulate = non_favourite_color
     
                                 
-    pressed.connect(qnediuff)
-    rsjeppfo.pressed.connect(ghtfvhvj)
-    jayqrlhg.pressed.connect(uubrvcfp)
+    pressed.connect(vtqrcjqg)
+    ktnddrwh.pressed.connect(ossdmwxc)
+    frfyrmcl.pressed.connect(qirqijvf)
 
                                                  
-func vmnorewu (shvpdrmv : Conversation, exrgiyur):
-    unmcnliv = shvpdrmv
-    ibihhvhn = exrgiyur
-    hguuzhaj.text = unmcnliv.dditmmoa().replace("\n", "")                    
-    feddtdvy()
+func tphshgyb (jsljvpzp : Conversation, aypbxgzo):
+    stwcoxud = jsljvpzp
+    mlysaegt = aypbxgzo
+    lrsseabd.text = stwcoxud.luqkpwfp().replace("\n", "")                    
+    ffoazhod()
 
                                                 
-func qnediuff():
-    ibihhvhn.rubfwwhb(unmcnliv)
+func vtqrcjqg():
+    mlysaegt.hvmjihvs(stwcoxud)
 
                               
                                     
-func ghtfvhvj():
-    $"../../..".aabylfkg(self)
+func ossdmwxc():
+    $"../../..".bxfrdsbu(self)
 
-func uubrvcfp():
+func qirqijvf():
                                                           
-    var wgrzifgb = ibihhvhn.ffwqmbig()
-    wgrzifgb.cxevubez(unmcnliv, not unmcnliv.favorited)
-    feddtdvy()
+    var agtyuxun = mlysaegt.qqkfjbkp()
+    agtyuxun.rzdzryda(stwcoxud, not stwcoxud.favorited)
+    ffoazhod()
 
-func feddtdvy ():
-    if unmcnliv.favorited:
-        jayqrlhg.modulate = favourite_color
+func ffoazhod ():
+    if stwcoxud.favorited:
+        frfyrmcl.modulate = favourite_color
     else:
-        jayqrlhg.modulate = non_favourite_color
+        frfyrmcl.modulate = non_favourite_color
 
 func get_conversation():
-    return unmcnliv
+    return stwcoxud

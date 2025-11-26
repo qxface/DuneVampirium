@@ -2,209 +2,209 @@
 @tool
 extends Node
 
-static func lwlfieos(cknnqxyn: String) -> String:
-    var kqlvkpvb = cknnqxyn.find('"')
-    if kqlvkpvb == -1:
+static func qhrxdnwg(pfnshebn: String) -> String:
+    var hzojowzo = pfnshebn.find('"')
+    if hzojowzo == -1:
         return ""
-    var bvucrgkt = cknnqxyn.find('"', kqlvkpvb + 1)
-    if bvucrgkt == -1:
+    var jnckxzja = pfnshebn.find('"', hzojowzo + 1)
+    if jnckxzja == -1:
         return ""
-    return cknnqxyn.substr(kqlvkpvb + 1, bvucrgkt - (kqlvkpvb + 1))
+    return pfnshebn.substr(hzojowzo + 1, jnckxzja - (hzojowzo + 1))
 
 
-static func tzxwljiw(ovspbsvm: String, dknvpmmi: String) -> String:
-    var exuowbtd = RegEx.new()
-    exuowbtd.compile("```.*\\n# New file: " + ovspbsvm + "\\n([\\s\\S]*?)```")
-    var znpwtlzn = exuowbtd.search(dknvpmmi)
-    return znpwtlzn.get_string(1).strip_edges() if znpwtlzn else ""
+static func qtqlcugt(bkieedzi: String, zcagzgtx: String) -> String:
+    var zuxpkjgm = RegEx.new()
+    zuxpkjgm.compile("```.*\\n# New file: " + bkieedzi + "\\n([\\s\\S]*?)```")
+    var brxyptzr = zuxpkjgm.search(zcagzgtx)
+    return brxyptzr.get_string(1).strip_edges() if brxyptzr else ""
 
 
-static func dmlytmkl(ohflozzd: String) -> Array:
-    var kgyjdvtq = ohflozzd.replace("create_scene(", "").replace(")", "").strip_edges()
-    var xecwkwvs = []
-    var boufmsgd = 0
+static func qbzxismr(kwkssedt: String) -> Array:
+    var eybdrjjp = kwkssedt.replace("create_scene(", "").replace(")", "").strip_edges()
+    var pyrxrdjn = []
+    var vtneczrl = 0
     while true:
-        var drmueoda = kgyjdvtq.find('"',boufmsgd)
-        if drmueoda == -1:
+        var tfzxpdcv = eybdrjjp.find('"',vtneczrl)
+        if tfzxpdcv == -1:
             break
-        var qkthjobn = kgyjdvtq.find('"', drmueoda + 1)
-        if qkthjobn == -1:
+        var esmiifit = eybdrjjp.find('"', tfzxpdcv + 1)
+        if esmiifit == -1:
             break
-        xecwkwvs.append(kgyjdvtq.substr(drmueoda + 1, qkthjobn - drmueoda - 1))
-        boufmsgd = qkthjobn + 1
-    return xecwkwvs
+        pyrxrdjn.append(eybdrjjp.substr(tfzxpdcv + 1, esmiifit - tfzxpdcv - 1))
+        vtneczrl = esmiifit + 1
+    return pyrxrdjn
 
 
                                                      
-static func tfedjcsk(uckxzxwq: String) -> Array:
-    var ljvljooh = uckxzxwq.replace("create_node(", "")
+static func ixqfcoxa(dvwmjdqt: String) -> Array:
+    var xiaenroe = dvwmjdqt.replace("create_node(", "")
     
                                                                                                     
-    var eejqdeba = ljvljooh.rfind(")")
-    if eejqdeba != -1:
-        ljvljooh = ljvljooh.substr(0, eejqdeba)
+    var mnmqguns = xiaenroe.rfind(")")
+    if mnmqguns != -1:
+        xiaenroe = xiaenroe.substr(0, mnmqguns)
     
-    ljvljooh = ljvljooh.strip_edges()
+    xiaenroe = xiaenroe.strip_edges()
     
                                                    
-    var sxyujfss = ljvljooh.find("{")
-    if sxyujfss != -1:
-        ljvljooh = ljvljooh.substr(0, sxyujfss).strip_edges()
+    var vwhtrhgd = xiaenroe.find("{")
+    if vwhtrhgd != -1:
+        xiaenroe = xiaenroe.substr(0, vwhtrhgd).strip_edges()
     
-    var nrjetfio = []
-    var otxashij = 0
+    var rldrnjdq = []
+    var rsnymgel = 0
     while true:
-        var seexjvvx = ljvljooh.find('"',otxashij)
-        if seexjvvx == -1:
+        var ycdrphxp = xiaenroe.find('"',rsnymgel)
+        if ycdrphxp == -1:
             break
-        var kshyygch = ljvljooh.find('"', seexjvvx + 1)
-        if kshyygch == -1:
+        var cklvwgzx = xiaenroe.find('"', ycdrphxp + 1)
+        if cklvwgzx == -1:
             break
-        nrjetfio.append(ljvljooh.substr(seexjvvx + 1, kshyygch - seexjvvx - 1))
-        otxashij = kshyygch + 1
-    return nrjetfio
+        rldrnjdq.append(xiaenroe.substr(ycdrphxp + 1, cklvwgzx - ycdrphxp - 1))
+        rsnymgel = cklvwgzx + 1
+    return rldrnjdq
 
 
                                                                              
                    
                                                                              
-static func fwkieqnb(yoboekja: String) -> Dictionary:
+static func eotwzqyl(iukbzdhx: String) -> Dictionary:
                                  
-    var mjgblerm = yoboekja.replace("edit_node(", "")
+    var azmjrwtl = iukbzdhx.replace("edit_node(", "")
 
                                     
-    if mjgblerm.ends_with(")"):
-        mjgblerm = mjgblerm.substr(0, mjgblerm.length() - 1)
+    if azmjrwtl.ends_with(")"):
+        azmjrwtl = azmjrwtl.substr(0, azmjrwtl.length() - 1)
 
                      
-    mjgblerm = mjgblerm.strip_edges()
+    azmjrwtl = azmjrwtl.strip_edges()
 
                                                                   
-    var qkbqtnqt = []
-    var qphdndqb = 0
+    var geotnrso = []
+    var zrjtnxpb = 0
     while true:
-        var nttjzxnb = mjgblerm.find('"',qphdndqb)
-        if nttjzxnb == -1:
+        var xditxokm = azmjrwtl.find('"',zrjtnxpb)
+        if xditxokm == -1:
             break
-        var yetjpbrq = mjgblerm.find('"', nttjzxnb + 1)
-        if yetjpbrq == -1:
+        var wisrtubg = azmjrwtl.find('"', xditxokm + 1)
+        if wisrtubg == -1:
             break
 
-        qkbqtnqt.append(mjgblerm.substr(nttjzxnb + 1, yetjpbrq - nttjzxnb - 1))
-        qphdndqb = yetjpbrq + 1
+        geotnrso.append(azmjrwtl.substr(xditxokm + 1, wisrtubg - xditxokm - 1))
+        zrjtnxpb = wisrtubg + 1
 
                               
-    var tzvgxmpm = mjgblerm.find("{")
-    var nnsnuqvn = mjgblerm.rfind("}")
-    if tzvgxmpm == -1 or nnsnuqvn == -1:
+    var njgcssjo = azmjrwtl.find("{")
+    var brslpoea = azmjrwtl.rfind("}")
+    if njgcssjo == -1 or brslpoea == -1:
                                            
         return {}
 
-    var kzwdbufp = mjgblerm.substr(tzvgxmpm, nnsnuqvn - tzvgxmpm + 1)
+    var tuikvgug = azmjrwtl.substr(njgcssjo, brslpoea - njgcssjo + 1)
 
                                              
-    var yxyfvfhx = ""
-    if qkbqtnqt.size() > 0:
-        yxyfvfhx = qkbqtnqt[0]
+    var qpoqpnws = ""
+    if geotnrso.size() > 0:
+        qpoqpnws = geotnrso[0]
 
-    var gunnrxfk = ""
-    if qkbqtnqt.size() > 1:
-        gunnrxfk = qkbqtnqt[1]
+    var cvasoepc = ""
+    if geotnrso.size() > 1:
+        cvasoepc = geotnrso[1]
 
     return {
-        "node_name": yxyfvfhx,
-        "scene_path": gunnrxfk,
-        "modifications": pfgxqbkw(kzwdbufp)
+        "node_name": qpoqpnws,
+        "scene_path": cvasoepc,
+        "modifications": copjdxfr(tuikvgug)
     }
 
 
-static func pfgxqbkw(auwdyghp: String) -> Dictionary:
+static func copjdxfr(aiykifmk: String) -> Dictionary:
                                                           
-    var giytyzqi = auwdyghp.strip_edges()
+    var gvluadfv = aiykifmk.strip_edges()
 
                                     
-    if giytyzqi.begins_with("{"):
-        giytyzqi = giytyzqi.substr(1, giytyzqi.length() - 1)
+    if gvluadfv.begins_with("{"):
+        gvluadfv = gvluadfv.substr(1, gvluadfv.length() - 1)
                                      
-    if giytyzqi.ends_with("}"):
-        giytyzqi = giytyzqi.substr(0, giytyzqi.length() - 1)
+    if gvluadfv.ends_with("}"):
+        gvluadfv = gvluadfv.substr(0, gvluadfv.length() - 1)
 
                                       
-    giytyzqi = giytyzqi.strip_edges()
+    gvluadfv = gvluadfv.strip_edges()
 
                                                               
-    var xsjavwmb = []
-    var jcittifv = ""
-    var yjyluudl = 0
+    var exvpzkxj = []
+    var jaujtoiq = ""
+    var jxrleivs = 0
 
-    for i in range(giytyzqi.length()):
-        var tcndsfgy = giytyzqi[i]
-        if tcndsfgy == "(":
-            yjyluudl += 1
-        elif tcndsfgy == ")":
-            yjyluudl -= 1
+    for i in range(gvluadfv.length()):
+        var wfxogrvk = gvluadfv[i]
+        if wfxogrvk == "(":
+            jxrleivs += 1
+        elif wfxogrvk == ")":
+            jxrleivs -= 1
 
-        if tcndsfgy == "," and yjyluudl == 0:
-            xsjavwmb.append(jcittifv.strip_edges())
-            jcittifv = ""
+        if wfxogrvk == "," and jxrleivs == 0:
+            exvpzkxj.append(jaujtoiq.strip_edges())
+            jaujtoiq = ""
         else:
-            jcittifv += tcndsfgy
+            jaujtoiq += wfxogrvk
 
-    if jcittifv != "":
-        xsjavwmb.append(jcittifv.strip_edges())
+    if jaujtoiq != "":
+        exvpzkxj.append(jaujtoiq.strip_edges())
 
                                  
-    var nxwdlevk = {}
-    for entry in xsjavwmb:
-        var kjbiwcvu = entry.find(":")
-        if kjbiwcvu == -1:
+    var uhyshphm = {}
+    for entry in exvpzkxj:
+        var phkowxec = entry.find(":")
+        if phkowxec == -1:
             continue
 
-        var bixoxeui = entry.substr(0, kjbiwcvu).strip_edges()
-        var gqefmojz = entry.substr(kjbiwcvu + 1).strip_edges()
+        var ilcxavhe = entry.substr(0, phkowxec).strip_edges()
+        var jevsbrus = entry.substr(phkowxec + 1).strip_edges()
 
                                                                         
-        if bixoxeui.begins_with("\"") and bixoxeui.ends_with("\"") and bixoxeui.length() >= 2:
-            bixoxeui = bixoxeui.substr(1, bixoxeui.length() - 2)
+        if ilcxavhe.begins_with("\"") and ilcxavhe.ends_with("\"") and ilcxavhe.length() >= 2:
+            ilcxavhe = ilcxavhe.substr(1, ilcxavhe.length() - 2)
 
-        nxwdlevk[bixoxeui] = gqefmojz
+        uhyshphm[ilcxavhe] = jevsbrus
 
-    return nxwdlevk
+    return uhyshphm
 
-static func qcizkoub(rec_line: String) -> Dictionary:
-    var ooegsbik = rec_line.replace("edit_script(", "")
-    var lqnuryib = ooegsbik.length()
-    if ooegsbik.ends_with(")"):
-        ooegsbik = ooegsbik.substr(0, lqnuryib - 1)
+static func habywlej(rec_line: String) -> Dictionary:
+    var xuinchtd = rec_line.replace("edit_script(", "")
+    var inqpwcep = xuinchtd.length()
+    if xuinchtd.ends_with(")"):
+        xuinchtd = xuinchtd.substr(0, inqpwcep - 1)
     
-    lqnuryib = ooegsbik.length()
+    inqpwcep = xuinchtd.length()
     
-    var vgqhculs = []
-    var luxsokiz = 0
-    var cbnvuadp = false
-    var dndszobp = ""
+    var ygebxhrj = []
+    var wemyxeul = 0
+    var wzrbguep = false
+    var swfojelq = ""
     
-    for i in range(lqnuryib):
-        var kzzvbahq = ooegsbik[i]
-        var taemqsjg = ooegsbik[i-1]
-        if kzzvbahq == '"' and (i == 0 or taemqsjg != '\\'):
-            cbnvuadp = !cbnvuadp
+    for i in range(inqpwcep):
+        var ncxbzwio = xuinchtd[i]
+        var dwqzotpv = xuinchtd[i-1]
+        if ncxbzwio == '"' and (i == 0 or dwqzotpv != '\\'):
+            wzrbguep = !wzrbguep
             continue
             
-        if !cbnvuadp and kzzvbahq == ',':
-            vgqhculs.append(dndszobp.strip_edges())
-            dndszobp = ""
+        if !wzrbguep and ncxbzwio == ',':
+            ygebxhrj.append(swfojelq.strip_edges())
+            swfojelq = ""
             continue
             
-        dndszobp += kzzvbahq
+        swfojelq += ncxbzwio
     
-    if dndszobp != "":
-        vgqhculs.append(dndszobp.strip_edges())
+    if swfojelq != "":
+        ygebxhrj.append(swfojelq.strip_edges())
     
-    if vgqhculs.size() < 2:
+    if ygebxhrj.size() < 2:
         return {}
     
     return {
-        "path": vgqhculs[0].strip_edges().trim_prefix('"').trim_suffix('"'),
-        "message_id": vgqhculs[1].to_int()
+        "path": ygebxhrj[0].strip_edges().trim_prefix('"').trim_suffix('"'),
+        "message_id": ygebxhrj[1].to_int()
     }

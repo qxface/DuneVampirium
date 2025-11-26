@@ -5,134 +5,134 @@ extends Node
                              
                                
 
-signal uyaqprfw (conversation : Conversation)
+signal jtsehhxe (conversation : Conversation)
 
                                                                     
-signal utgflqdv
-signal hgyhkthb
+signal wdquplpc
+signal uulcclje
 
-var itxkkpui : Array[Conversation]
-var iohizbqm : Conversation
+var kklrdtcx : Array[Conversation]
+var omngbfto : Conversation
 
-@onready var irdtojte = $"../APIManager"
-@onready var dtjttbkm = $".."
-@onready var jnjtzvbd = $"../Screen_Conversations"
+@onready var ancneyyi = $"../APIManager"
+@onready var ayohncak = $".."
+@onready var jfkprrea = $"../Screen_Conversations"
 
 func _ready ():
-    irdtojte.mjucqjto.connect(pmyzsdue)
-    irdtojte.xpdubjyj.connect(_on_send_message_received)
+    ancneyyi.eajsjrje.connect(pxvjteue)
+    ancneyyi.hmjvhfxe.connect(_on_send_message_received)
     
-    irdtojte.fwvwuwle.connect(dwphheqp)
-    irdtojte.aegetfqt.connect(tcxueqxh)
+    ancneyyi.xcxxpngk.connect(enrnjxoy)
+    ancneyyi.czvetcnr.connect(naykgvgu)
 
-func fzbbjphk () -> Conversation:
-    nnyutcvt()                                            
+func xxitjzwl () -> Conversation:
+    fipugthy()                                            
 
-    var xabnqxyb = Conversation.new()
-    xabnqxyb.id = -1                                       
-    itxkkpui.append(xabnqxyb)
-    iohizbqm = xabnqxyb
-    return xabnqxyb
+    var pcrfwnid = Conversation.new()
+    pcrfwnid.id = -1                                       
+    kklrdtcx.append(pcrfwnid)
+    omngbfto = pcrfwnid
+    return pcrfwnid
 
-func nnyutcvt ():
-    if iohizbqm != null:
-        if iohizbqm.id == -1:                                    
-            itxkkpui.erase(iohizbqm)
+func fipugthy ():
+    if omngbfto != null:
+        if omngbfto.id == -1:                                    
+            kklrdtcx.erase(omngbfto)
     
-    iohizbqm = null
+    omngbfto = null
 
-func psxfxker (igzuznfo : Conversation):
-    iohizbqm = igzuznfo
-    hgyhkthb.emit()
+func hfrrozwf (vosudctv : Conversation):
+    omngbfto = vosudctv
+    uulcclje.emit()
 
                                                                     
                                                                               
-func dwphheqp (lsattnqy):
-    itxkkpui.clear()
+func enrnjxoy (atzuvahi):
+    kklrdtcx.clear()
     
-    for conv_data in lsattnqy:
-        var uquhbhfm = Conversation.new()
-        uquhbhfm.id = int(conv_data["id"])
-        uquhbhfm.title = conv_data["title"]
-        uquhbhfm.favorited = conv_data["isFavorite"]
-        itxkkpui.append(uquhbhfm)
+    for conv_data in atzuvahi:
+        var mdrunebz = Conversation.new()
+        mdrunebz.id = int(conv_data["id"])
+        mdrunebz.title = conv_data["title"]
+        mdrunebz.favorited = conv_data["isFavorite"]
+        kklrdtcx.append(mdrunebz)
     
-    utgflqdv.emit()
+    wdquplpc.emit()
 
                                    
-func pmyzsdue(xbaxxurt: String):
-    if iohizbqm == null:
+func pxvjteue(sdkbbwrp: String):
+    if omngbfto == null:
                                            
-        fzbbjphk()
+        xxitjzwl()
     
                                                      
                                                     
                            
        
-    iohizbqm.luooutpc(xbaxxurt)
+    omngbfto.utosdrou(sdkbbwrp)
 
-func _on_send_message_received(fdsdobpj: String, gcbryacx: int):
+func _on_send_message_received(hekwwqkh: String, kplobcqt: int):
     print("Received assistant message: ", {
-        "conversation_id": gcbryacx,
-        "current_conv_id": iohizbqm.id if iohizbqm else "none",
-        "content": fdsdobpj
+        "conversation_id": kplobcqt,
+        "current_conv_id": omngbfto.id if omngbfto else "none",
+        "content": hekwwqkh
     })
-    if iohizbqm:
-        if iohizbqm.id == -1:
+    if omngbfto:
+        if omngbfto.id == -1:
                                                                     
-            iohizbqm.id = gcbryacx
-        iohizbqm.zhuosgki(fdsdobpj)
+            omngbfto.id = kplobcqt
+        omngbfto.taflbyvn(hekwwqkh)
 
                                                                                       
                                                                      
-func ytvlehxr (zyhretii : int):
-    irdtojte.get_conversation(zyhretii)
+func zjuxgbvd (nwzzuzrg : int):
+    ancneyyi.get_conversation(nwzzuzrg)
 
                                                             
                                                  
-func tcxueqxh (pheaqita):
-    var txgeoprb : Conversation
-    var qzukkusq = pheaqita["id"]
-    qzukkusq = int(qzukkusq)
+func naykgvgu (bhvhavew):
+    var jaqkklqs : Conversation
+    var xorqqzst = bhvhavew["id"]
+    xorqqzst = int(xorqqzst)
     
                                                 
-    for c in itxkkpui:
-        if c.id == qzukkusq:
-            txgeoprb = c
+    for c in kklrdtcx:
+        if c.id == xorqqzst:
+            jaqkklqs = c
             break
     
                                               
-    if txgeoprb == null:
-        txgeoprb = Conversation.new()
-        txgeoprb.id = qzukkusq
-        txgeoprb.title = pheaqita["title"]
-        itxkkpui.append(txgeoprb)
+    if jaqkklqs == null:
+        jaqkklqs = Conversation.new()
+        jaqkklqs.id = xorqqzst
+        jaqkklqs.title = bhvhavew["title"]
+        kklrdtcx.append(jaqkklqs)
     
-    txgeoprb.messages.clear()
+    jaqkklqs.messages.clear()
     
                                                     
-    for message in pheaqita["messages"]:
+    for message in bhvhavew["messages"]:
         if message["role"] == "user":
-            txgeoprb.luooutpc(message["content"])
+            jaqkklqs.utosdrou(message["content"])
         elif message["role"] == "assistant":
-            txgeoprb.zhuosgki(message["content"])
+            jaqkklqs.taflbyvn(message["content"])
     
-    txgeoprb.has_been_fetched = true
-    psxfxker(txgeoprb)
+    jaqkklqs.has_been_fetched = true
+    hfrrozwf(jaqkklqs)
 
-func cxevubez (ulsvtiqu : Conversation, enyllexg : bool):
-    irdtojte.rfvbxjfp(ulsvtiqu.id)
+func rzdzryda (cmpguxyp : Conversation, uidyhldq : bool):
+    ancneyyi.pvxvfono(cmpguxyp.id)
     
-    if enyllexg:
-        jnjtzvbd.izkkdhjn("Adding favorite...")
+    if uidyhldq:
+        jfkprrea.bmetlzxk("Adding favorite...")
     else:
-        jnjtzvbd.izkkdhjn("Removing favorite...")
+        jfkprrea.bmetlzxk("Removing favorite...")
 
-func pzmtslvl():
-    return itxkkpui
+func cgwggzwa():
+    return kklrdtcx
     
-func srlihurr():
-    return iohizbqm
+func uziqrmqg():
+    return omngbfto
     
-func uhclkmsr(ifmjftcj: int):
-    iohizbqm.id = ifmjftcj
+func pdcvcxsj(aptacrpe: int):
+    omngbfto.id = aptacrpe

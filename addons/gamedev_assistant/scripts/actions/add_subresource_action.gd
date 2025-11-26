@@ -2,163 +2,163 @@
 @tool
 extends Node
 
-const ktulliya = preload("action_parser_utils.gd")
+const pqsypxta = preload("action_parser_utils.gd")
 
-static func execute(mauuxrrb: String, zjnncndz: String, kthiivyg: String, ljgyaknl: Dictionary) -> Dictionary:
-    var exywouob = EditorPlugin.new().get_editor_interface()
-    var lyadjzsd = exywouob.get_open_scenes()
+static func execute(ulswaqmu: String, nofhuhgy: String, kugzeyon: String, ewyvjemf: Dictionary) -> Dictionary:
+    var msqlkqcr = EditorPlugin.new().get_editor_interface()
+    var artxleno = msqlkqcr.get_open_scenes()
 
                                    
-    for scene in lyadjzsd:
-        if scene == zjnncndz:
+    for scene in artxleno:
+        if scene == nofhuhgy:
                                                                    
-            exywouob.reload_scene_from_path(zjnncndz)
-            return _add_to_open_scene(mauuxrrb, exywouob.get_edited_scene_root(), kthiivyg, ljgyaknl)
+            msqlkqcr.reload_scene_from_path(nofhuhgy)
+            return _add_to_open_scene(ulswaqmu, msqlkqcr.get_edited_scene_root(), kugzeyon, ewyvjemf)
 
                                            
                                                              
-    return _add_to_closed_scene(mauuxrrb, zjnncndz, kthiivyg, ljgyaknl)
+    return _add_to_closed_scene(ulswaqmu, nofhuhgy, kugzeyon, ewyvjemf)
 
 
-static func _add_to_open_scene(ttmhvaay: String, rreuqikz: Node, mawhslmh: String, pwonkgfu: Dictionary) -> Dictionary:
-    var fpnazsiw = jiypoaqe(ttmhvaay, rreuqikz)
-    if not fpnazsiw:
-        return {"success": false, "error_message": "Node '%s' not found." % ttmhvaay, "node_type": ""}
+static func _add_to_open_scene(oytcjgsg: String, vikjrthr: Node, vrgokygf: String, ghbqcrew: Dictionary) -> Dictionary:
+    var oqewyebh = ftcztpyy(oytcjgsg, vikjrthr)
+    if not oqewyebh:
+        return {"success": false, "error_message": "Node '%s' not found." % oytcjgsg, "node_type": ""}
 
-    var dgdlwpjf = eqsqithp(mawhslmh, pwonkgfu)
-    if not dgdlwpjf:
+    var vzzizfpl = wcdbgigs(vrgokygf, ghbqcrew)
+    if not vzzizfpl:
                                        
-        return {"success": false, "error_message": "Could not create or configure resource '%s'." % mawhslmh, "node_type": fpnazsiw.get_class()}
+        return {"success": false, "error_message": "Could not create or configure resource '%s'." % vrgokygf, "node_type": oqewyebh.get_class()}
 
-    if not pwonkgfu.has("assign_to_property"):
-        var axymtpid = "No 'assign_to_property' field in pwonkgfu dictionary."
-        push_error(axymtpid)
-        return {"success": false, "error_message": axymtpid, "node_type": fpnazsiw.get_class()}
+    if not ghbqcrew.has("assign_to_property"):
+        var dilpznnm = "No 'assign_to_property' field in ghbqcrew dictionary."
+        push_error(dilpznnm)
+        return {"success": false, "error_message": dilpznnm, "node_type": oqewyebh.get_class()}
 
-    var gclipmix = String(pwonkgfu["assign_to_property"])
-    if not olwplblt(fpnazsiw, gclipmix, dgdlwpjf):
+    var wgcwovdh = String(ghbqcrew["assign_to_property"])
+    if not mlkebsqy(oqewyebh, wgcwovdh, vzzizfpl):
                                        
-        var axymtpid = "Failed to assign new resource to property '%s'." % gclipmix
-        return {"success": false, "error_message": axymtpid, "node_type": fpnazsiw.get_class()}
+        var dilpznnm = "Failed to assign new resource to property '%s'." % wgcwovdh
+        return {"success": false, "error_message": dilpznnm, "node_type": oqewyebh.get_class()}
 
     if EditorInterface.save_scene() == OK:
-        return {"success": true, "error_message": "", "node_type": fpnazsiw.get_class()}
+        return {"success": true, "error_message": "", "node_type": oqewyebh.get_class()}
     else:
-        var axymtpid = "Failed to save the scene."
-        push_error(axymtpid)
-        return {"success": false, "error_message": axymtpid, "node_type": fpnazsiw.get_class()}
+        var dilpznnm = "Failed to save the scene."
+        push_error(dilpznnm)
+        return {"success": false, "error_message": dilpznnm, "node_type": oqewyebh.get_class()}
 
-static func _add_to_closed_scene(qlaevfqx: String, jmkybqrr: String, ytibcall: String, teinsoso: Dictionary) -> Dictionary:
-    var svouonio = load(jmkybqrr)
-    if !(svouonio is PackedScene):
-        var iakszmtn = "Failed to load scene '%s' as PackedScene." % jmkybqrr
-        push_error(iakszmtn)
-        return {"success": false, "error_message": iakszmtn, "node_type": ""}
+static func _add_to_closed_scene(swuopdoh: String, lzlubphf: String, zlnestvv: String, qzygtpau: Dictionary) -> Dictionary:
+    var ahfjlrid = load(lzlubphf)
+    if !(ahfjlrid is PackedScene):
+        var wdfjkoii = "Failed to load scene '%s' as PackedScene." % lzlubphf
+        push_error(wdfjkoii)
+        return {"success": false, "error_message": wdfjkoii, "node_type": ""}
 
-    var ehmuoelq = svouonio.instantiate()
-    if not ehmuoelq:
-        var iakszmtn = "Could not instantiate scene '%s'." % jmkybqrr
-        push_error(iakszmtn)
-        return {"success": false, "error_message": iakszmtn, "node_type": ""}
+    var eazbsokj = ahfjlrid.instantiate()
+    if not eazbsokj:
+        var wdfjkoii = "Could not instantiate scene '%s'." % lzlubphf
+        push_error(wdfjkoii)
+        return {"success": false, "error_message": wdfjkoii, "node_type": ""}
 
-    var ffootxzd = jiypoaqe(qlaevfqx, ehmuoelq)
-    if not ffootxzd:
-        return {"success": false, "error_message": "Node '%s' not found." % qlaevfqx, "node_type": ""}
+    var gytkkcnp = ftcztpyy(swuopdoh, eazbsokj)
+    if not gytkkcnp:
+        return {"success": false, "error_message": "Node '%s' not found." % swuopdoh, "node_type": ""}
 
-    var lxijdueo = eqsqithp(ytibcall, teinsoso)
-    if not lxijdueo:
-        return {"success": false, "error_message": "Could not create or configure resource '%s'." % ytibcall, "node_type": ffootxzd.get_class()}
+    var shebradx = wcdbgigs(zlnestvv, qzygtpau)
+    if not shebradx:
+        return {"success": false, "error_message": "Could not create or configure resource '%s'." % zlnestvv, "node_type": gytkkcnp.get_class()}
 
-    if not teinsoso.has("assign_to_property"):
-        var iakszmtn = "No 'assign_to_property' field in teinsoso dictionary."
-        push_error(iakszmtn)
-        return {"success": false, "error_message": iakszmtn, "node_type": ffootxzd.get_class()}
+    if not qzygtpau.has("assign_to_property"):
+        var wdfjkoii = "No 'assign_to_property' field in qzygtpau dictionary."
+        push_error(wdfjkoii)
+        return {"success": false, "error_message": wdfjkoii, "node_type": gytkkcnp.get_class()}
 
-    var lekmknye = String(teinsoso["assign_to_property"])
-    if not olwplblt(ffootxzd, lekmknye, lxijdueo):
-        var iakszmtn = "Failed to assign new resource to property '%s'." % lekmknye
-        return {"success": false, "error_message": iakszmtn, "node_type": ffootxzd.get_class()}
+    var nffatpwf = String(qzygtpau["assign_to_property"])
+    if not mlkebsqy(gytkkcnp, nffatpwf, shebradx):
+        var wdfjkoii = "Failed to assign new resource to property '%s'." % nffatpwf
+        return {"success": false, "error_message": wdfjkoii, "node_type": gytkkcnp.get_class()}
 
-    svouonio.pack(ehmuoelq)
-    if ResourceSaver.save(svouonio, jmkybqrr) == OK:
-        return {"success": true, "error_message": "", "node_type": ffootxzd.get_class()}
+    ahfjlrid.pack(eazbsokj)
+    if ResourceSaver.save(ahfjlrid, lzlubphf) == OK:
+        return {"success": true, "error_message": "", "node_type": gytkkcnp.get_class()}
     else:
-        var iakszmtn = "Failed to save the packed scene."
-        push_error(iakszmtn)
-        return {"success": false, "error_message": iakszmtn, "node_type": ffootxzd.get_class()}
+        var wdfjkoii = "Failed to save the packed scene."
+        push_error(wdfjkoii)
+        return {"success": false, "error_message": wdfjkoii, "node_type": gytkkcnp.get_class()}
 
                                                                              
          
                                                                              
-static func jiypoaqe(jigmdffq: String, ihkgjfec: Node) -> Node:
-    var itysixqe = ihkgjfec.find_child(jigmdffq, true, true)
-    if not itysixqe and jigmdffq == ihkgjfec.name:
-        itysixqe = ihkgjfec
+static func ftcztpyy(gklcwcfh: String, okbtxdfz: Node) -> Node:
+    var tupfzsdo = okbtxdfz.find_child(gklcwcfh, true, true)
+    if not tupfzsdo and gklcwcfh == okbtxdfz.name:
+        tupfzsdo = okbtxdfz
 
-    if not itysixqe:
-        push_error("Node '%s' not found in the scene." % jigmdffq)
+    if not tupfzsdo:
+        push_error("Node '%s' not found in the scene." % gklcwcfh)
         return null
 
-    return itysixqe
+    return tupfzsdo
 
 
-static func eqsqithp(kxamhrmu: String, obpdlyic: Dictionary) -> Resource:
-    if not ClassDB.class_exists(kxamhrmu):
-        push_error("Resource type '%s' does not exist." % kxamhrmu)
+static func wcdbgigs(jumrovkd: String, pxcjuwmu: Dictionary) -> Resource:
+    if not ClassDB.class_exists(jumrovkd):
+        push_error("Resource type '%s' does not exist." % jumrovkd)
         return null
 
-    var ggwpbrxw = ClassDB.instantiate(kxamhrmu)
-    if not ggwpbrxw:
-        push_error("Could not instantiate resource of type '%s'." % kxamhrmu)
+    var wuhwbcpl = ClassDB.instantiate(jumrovkd)
+    if not wuhwbcpl:
+        push_error("Could not instantiate resource of type '%s'." % jumrovkd)
         return null
 
                                                                   
-    for property_name in obpdlyic.keys():
+    for property_name in pxcjuwmu.keys():
         if property_name == "assign_to_property":
             continue
 
-        var wevvrzdn = obpdlyic[property_name]
-        var bezxbcao = _parse_value(wevvrzdn)
-        if bezxbcao == null and wevvrzdn != null:
-            push_error("Failed to parse value '%s' for property '%s'." % [str(wevvrzdn), property_name])
+        var tvmelsrc = pxcjuwmu[property_name]
+        var zlcmewuo = _parse_value(tvmelsrc)
+        if zlcmewuo == null and tvmelsrc != null:
+            push_error("Failed to parse value '%s' for property '%s'." % [str(tvmelsrc), property_name])
             return null
 
-        if not wgsfzmnb(ggwpbrxw, property_name, bezxbcao):
+        if not synrxueg(wuhwbcpl, property_name, zlcmewuo):
             return null
 
-    return ggwpbrxw
+    return wuhwbcpl
 
 
-static func _parse_value(dkslxkou) -> Variant:
+static func _parse_value(sioeqirk) -> Variant:
                                                              
-    if dkslxkou is String:
-        var movudvmu = dkslxkou.strip_edges()
+    if sioeqirk is String:
+        var uzlpavww = sioeqirk.strip_edges()
                                                  
-        if movudvmu.begins_with("(") and movudvmu.ends_with(")"):
-            var vnlxyjlo = movudvmu.substr(1, movudvmu.length() - 2)
-            var mmonqmqp = vnlxyjlo.split(",", false)
-            if mmonqmqp.size() == 2:
-                return Vector2(float(mmonqmqp[0].strip_edges()), float(mmonqmqp[1].strip_edges()))
-            elif mmonqmqp.size() == 3:
-                return Vector3(float(mmonqmqp[0].strip_edges()), float(mmonqmqp[1].strip_edges()), float(mmonqmqp[2].strip_edges()))
-            elif mmonqmqp.size() == 4:
-                return Vector4(float(mmonqmqp[0].strip_edges()), float(mmonqmqp[1].strip_edges()), float(mmonqmqp[2].strip_edges()), float(mmonqmqp[3].strip_edges()))
-        if movudvmu.to_lower() == "true":
+        if uzlpavww.begins_with("(") and uzlpavww.ends_with(")"):
+            var zkklshdq = uzlpavww.substr(1, uzlpavww.length() - 2)
+            var onijvhco = zkklshdq.split(",", false)
+            if onijvhco.size() == 2:
+                return Vector2(float(onijvhco[0].strip_edges()), float(onijvhco[1].strip_edges()))
+            elif onijvhco.size() == 3:
+                return Vector3(float(onijvhco[0].strip_edges()), float(onijvhco[1].strip_edges()), float(onijvhco[2].strip_edges()))
+            elif onijvhco.size() == 4:
+                return Vector4(float(onijvhco[0].strip_edges()), float(onijvhco[1].strip_edges()), float(onijvhco[2].strip_edges()), float(onijvhco[3].strip_edges()))
+        if uzlpavww.to_lower() == "true":
             return true
-        if movudvmu.to_lower() == "false":
+        if uzlpavww.to_lower() == "false":
             return false
-        if movudvmu.is_valid_float():
-            return float(movudvmu)
+        if uzlpavww.is_valid_float():
+            return float(uzlpavww)
                                        
-        return movudvmu
+        return uzlpavww
 
                                                                   
-    return dkslxkou
+    return sioeqirk
 
 
-static func olwplblt(zvayitqm: Node, qoniczke: String, kdtrxych: Variant) -> bool:
-    var xrawoxxy = zvayitqm.get(qoniczke)
-    var fcjtnywv = true
+static func mlkebsqy(lykhivjf: Node, atrpherc: String, mzlqajvv: Variant) -> bool:
+    var nxnhskxe = lykhivjf.get(atrpherc)
+    var amevfddk = true
                                                                                           
                                                                                                         
                                          
@@ -167,81 +167,81 @@ static func olwplblt(zvayitqm: Node, qoniczke: String, kdtrxych: Variant) -> boo
                                                                  
 
                     
-    zvayitqm.set(qoniczke, kdtrxych)
+    lykhivjf.set(atrpherc, mzlqajvv)
                                                
-    if zvayitqm.get(qoniczke) != kdtrxych:
-        push_error("Failed to set property '%s' on node '%s' value: %s." % [qoniczke, zvayitqm.name, kdtrxych])
-        fcjtnywv = false
+    if lykhivjf.get(atrpherc) != mzlqajvv:
+        push_error("Failed to set property '%s' on node '%s' value: %s." % [atrpherc, lykhivjf.name, mzlqajvv])
+        amevfddk = false
                           
-    return fcjtnywv
+    return amevfddk
 
 
-static func wgsfzmnb(yxalqqcc: Resource, xasbezua: String, gitiypkw: Variant) -> bool:
+static func synrxueg(cfoozzqt: Resource, odjspbjh: String, lqlpndek: Variant) -> bool:
                                                     
-    var hbfuirwx = yxalqqcc.get_property_list()
-    var afxuthpd = null
+    var cuezxhoi = cfoozzqt.get_property_list()
+    var gliveyjy = null
 
                                            
-    for prop_info in hbfuirwx:
-        if prop_info.name == xasbezua:
-            afxuthpd = prop_info.type
+    for prop_info in cuezxhoi:
+        if prop_info.name == odjspbjh:
+            gliveyjy = prop_info.type
             break
 
                                               
-    if afxuthpd == null:
-        push_error("Property '%s' doesn't exist on resource '%s'." % [xasbezua, yxalqqcc.get_class()])
+    if gliveyjy == null:
+        push_error("Property '%s' doesn't exist on resource '%s'." % [odjspbjh, cfoozzqt.get_class()])
         return true                                                              
 
                                                                                  
                                          
-    if afxuthpd == TYPE_COLOR:
-        match typeof(gitiypkw):
+    if gliveyjy == TYPE_COLOR:
+        match typeof(lqlpndek):
             TYPE_VECTOR2:
                                                     
-                gitiypkw = Color(gitiypkw.x, gitiypkw.y, 0, 1.0)
+                lqlpndek = Color(lqlpndek.x, lqlpndek.y, 0, 1.0)
             TYPE_VECTOR3:
                                                         
-                gitiypkw = Color(gitiypkw.x, gitiypkw.y, gitiypkw.z, 1.0)
+                lqlpndek = Color(lqlpndek.x, lqlpndek.y, lqlpndek.z, 1.0)
             TYPE_VECTOR4:
                                                         
-                gitiypkw = Color(gitiypkw.x, gitiypkw.y, gitiypkw.z, gitiypkw.w)
+                lqlpndek = Color(lqlpndek.x, lqlpndek.y, lqlpndek.z, lqlpndek.w)
             TYPE_ARRAY:
                                                                                          
-                if gitiypkw.size() == 3:
-                    gitiypkw = Color(gitiypkw[0], gitiypkw[1], gitiypkw[2], 1.0)
-                elif gitiypkw.size() == 4:
-                    gitiypkw = Color(gitiypkw[0], gitiypkw[1], gitiypkw[2], gitiypkw[3])
+                if lqlpndek.size() == 3:
+                    lqlpndek = Color(lqlpndek[0], lqlpndek[1], lqlpndek[2], 1.0)
+                elif lqlpndek.size() == 4:
+                    lqlpndek = Color(lqlpndek[0], lqlpndek[1], lqlpndek[2], lqlpndek[3])
                                                                        
                                            
             
                                                                     
-    elif afxuthpd == TYPE_VECTOR3 and typeof(gitiypkw):
-        gitiypkw = Vector3(gitiypkw.x, gitiypkw.y, 0)
+    elif gliveyjy == TYPE_VECTOR3 and typeof(lqlpndek):
+        lqlpndek = Vector3(lqlpndek.x, lqlpndek.y, 0)
 
                     
-    yxalqqcc.set(xasbezua, gitiypkw)
+    cfoozzqt.set(odjspbjh, lqlpndek)
 
                                                    
-    var lmjbbvsj = yxalqqcc.get(xasbezua)
+    var tzaikhwp = cfoozzqt.get(odjspbjh)
     
-    var sgrykuyx : bool
+    var rkdaszxh : bool
     
-    if typeof(gitiypkw) in [TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4]:
-        if typeof(lmjbbvsj) == typeof(gitiypkw):
-            sgrykuyx = lmjbbvsj.is_equal_approx(gitiypkw)
+    if typeof(lqlpndek) in [TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4]:
+        if typeof(tzaikhwp) == typeof(lqlpndek):
+            rkdaszxh = tzaikhwp.is_equal_approx(lqlpndek)
         else:
-            push_error("Wrong data type for property %s" % [xasbezua])
-            sgrykuyx = false
-    elif typeof(gitiypkw) == TYPE_FLOAT and typeof(lmjbbvsj) == TYPE_FLOAT:
+            push_error("Wrong data type for property %s" % [odjspbjh])
+            rkdaszxh = false
+    elif typeof(lqlpndek) == TYPE_FLOAT and typeof(tzaikhwp) == TYPE_FLOAT:
                              
                          
-        sgrykuyx = is_equal_approx(gitiypkw, lmjbbvsj)
+        rkdaszxh = is_equal_approx(lqlpndek, tzaikhwp)
     else:
-        sgrykuyx = lmjbbvsj == gitiypkw
+        rkdaszxh = tzaikhwp == lqlpndek
 
                                                                               
-    if typeof(lmjbbvsj) == typeof(gitiypkw) and not sgrykuyx:
-        push_error("Failed to set resource property '%s' on resource '%s' value: %s " % [xasbezua, yxalqqcc.get_class(), gitiypkw])
+    if typeof(tzaikhwp) == typeof(lqlpndek) and not rkdaszxh:
+        push_error("Failed to set resource property '%s' on resource '%s' value: %s " % [odjspbjh, cfoozzqt.get_class(), lqlpndek])
         return false
 
     return true
@@ -254,54 +254,54 @@ static func wgsfzmnb(yxalqqcc: Resource, xasbezua: String, gitiypkw: Variant) ->
                                                                
                                                                              
                            
-static func parse_line(gbbmexet: String, tegmgohy: String) -> Dictionary:
-    if gbbmexet.begins_with("add_subresource("):
-        var ljqemdux = gbbmexet.replace("add_subresource(", "")
-        if ljqemdux.ends_with(")"):
-            ljqemdux = ljqemdux.substr(0, ljqemdux.length() - 1)
-        ljqemdux = ljqemdux.strip_edges()
+static func parse_line(dowkhjhr: String, qusqvzsm: String) -> Dictionary:
+    if dowkhjhr.begins_with("add_subresource("):
+        var duarctgk = dowkhjhr.replace("add_subresource(", "")
+        if duarctgk.ends_with(")"):
+            duarctgk = duarctgk.substr(0, duarctgk.length() - 1)
+        duarctgk = duarctgk.strip_edges()
 
-        var iyxmilil = []
-        var qcczhgzl = 0
+        var gpswudvb = []
+        var dqvbboyu = 0
         while true:
-            var ieirzmte = ljqemdux.find('"',qcczhgzl)
-            if ieirzmte == -1:
+            var ihhkhnyi = duarctgk.find('"',dqvbboyu)
+            if ihhkhnyi == -1:
                 break
-            var tblzrfkv = ljqemdux.find('"', ieirzmte + 1)
-            if tblzrfkv == -1:
+            var nlppuwvb = duarctgk.find('"', ihhkhnyi + 1)
+            if nlppuwvb == -1:
                 break
-            iyxmilil.append(ljqemdux.substr(ieirzmte + 1, tblzrfkv - (ieirzmte + 1)))
-            qcczhgzl = tblzrfkv + 1
+            gpswudvb.append(duarctgk.substr(ihhkhnyi + 1, nlppuwvb - (ihhkhnyi + 1)))
+            dqvbboyu = nlppuwvb + 1
 
-        var mqqbmqab = ljqemdux.find("{")
-        var yugwksoh = ljqemdux.rfind("}")
-        if mqqbmqab == -1 or yugwksoh == -1:
+        var xnjvdvqe = duarctgk.find("{")
+        var tooblvno = duarctgk.rfind("}")
+        if xnjvdvqe == -1 or tooblvno == -1:
             return {}
 
-        var wsuhvgvs = ljqemdux.substr(mqqbmqab, yugwksoh - mqqbmqab + 1)
-        var xcrxrcbl = ktulliya.pfgxqbkw(wsuhvgvs)
+        var wtiiilia = duarctgk.substr(xnjvdvqe, tooblvno - xnjvdvqe + 1)
+        var abyswyii = pqsypxta.copjdxfr(wtiiilia)
 
                                                                                
                                                                                 
                                   
-        for key in xcrxrcbl.keys():
-            var kvmleoqq = xcrxrcbl[key]
-            if kvmleoqq is String:
-                var jumctxnx = kvmleoqq.strip_edges()
-                if jumctxnx.begins_with("\"") and jumctxnx.ends_with("\"") and jumctxnx.length() > 1:
-                    jumctxnx = jumctxnx.substr(1, jumctxnx.length() - 2)
-                xcrxrcbl[key] = jumctxnx
+        for key in abyswyii.keys():
+            var vbjknapq = abyswyii[key]
+            if vbjknapq is String:
+                var pzoshorh = vbjknapq.strip_edges()
+                if pzoshorh.begins_with("\"") and pzoshorh.ends_with("\"") and pzoshorh.length() > 1:
+                    pzoshorh = pzoshorh.substr(1, pzoshorh.length() - 2)
+                abyswyii[key] = pzoshorh
                                                                                
 
-        if iyxmilil.size() < 3:
+        if gpswudvb.size() < 3:
             return {}
 
         return {
             "type": "add_subresource",
-            "node_name": iyxmilil[0],
-            "scene_path": iyxmilil[1],
-            "subresource_type": iyxmilil[2],
-            "properties": xcrxrcbl
+            "node_name": gpswudvb[0],
+            "scene_path": gpswudvb[1],
+            "subresource_type": gpswudvb[2],
+            "properties": abyswyii
         }
 
     return {}

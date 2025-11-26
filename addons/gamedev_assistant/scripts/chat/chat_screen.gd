@@ -2,50 +2,50 @@
 @tool
 extends GDAScreenBase
 
-signal hmflmgwe
+signal ynsjnasz
 
-var ecclpgck : RichTextLabel = null
+var sleoypka : RichTextLabel = null
 
-@onready var gkmeqqjg : TextEdit = $Footer/PromptInput
-@onready var pzwmnuui : Button = $Footer/SendPromptButton
-@onready var kuusqhfm : Control = $Footer
-@onready var tilbhicu : Control = $Body
+@onready var nrwdayyb : TextEdit = $Footer/PromptInput
+@onready var lgwvuihd : Button = $Footer/SendPromptButton
+@onready var fqpygdrb : Control = $Footer
+@onready var osfzpgjy : Control = $Body
 
-@onready var advccbjl = $"../APIManager"
-@onready var adxxbihq = $"../ActionManager"
+@onready var wsjjotez = $"../APIManager"
+@onready var uohokutw = $"../ActionManager"
 
-var fgcrrelc = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_UserPrompt.tscn")
-var ddnlyhzm = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_ServerResponse.tscn")
-var ekwohscp = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_ErrorMessage.tscn")
-const tiaiaeom = preload("res://addons/gamedev_assistant/scripts/chat/markdown_to_bbcode.gd")
-var oibtmokk = preload("res://addons/gamedev_assistant/scripts/chat/message_tagger.gd").new()
-var rzbhoprz = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_CodeBlockResponse.tscn")
-var sxjnqnxd = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_CodeBlockUser.tscn")
-var tgkqotbb = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_Spacing.tscn")
+var hnsgilay = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_UserPrompt.tscn")
+var kqbnqnee = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_ServerResponse.tscn")
+var snhqqtfo = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_ErrorMessage.tscn")
+const kzvpdeuj = preload("res://addons/gamedev_assistant/scripts/chat/markdown_to_bbcode.gd")
+var oohxhybu = preload("res://addons/gamedev_assistant/scripts/chat/message_tagger.gd").new()
+var zbgtiuts = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_CodeBlockResponse.tscn")
+var fpimppud = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_CodeBlockUser.tscn")
+var sqsqijqy = preload("res://addons/gamedev_assistant/dock/scenes/chat/Chat_Spacing.tscn")
 
-var viejzfkt := false
-var awdciply: String = ""
+var xrjgtzha := false
+var royaxhij: String = ""
 
                                                    
-var rxvcguqx : String = ""
-var zjqgxpzh : String = ""
-var fviotzrz  : String = ""
-var prnksxtj : String = ""
-var ydyhzesj  : String = ""
+var gcyjaose : String = ""
+var sreezxfj : String = ""
+var zhsgqvdf  : String = ""
+var dvnltken : String = ""
+var mgzvbyao  : String = ""
 
-var loshxijd : int = -1
+var zvodnnyg : int = -1
 
-@onready var azzhgcuh = $Body/MessagesContainer
-@onready var yvnflayx = $Body/MessagesContainer/ThinkingLabel
-@onready var ewaxhhdk = $Bottom/AddContext
-@onready var irvynlml : CheckButton = $Bottom/ReasoningToggle
-@onready var sxdrbbmq = $Body/MessagesContainer/RatingContainer
-@onready var iazahhjv = $Bottom/Mode
+@onready var mkpjaltp = $Body/MessagesContainer
+@onready var illyuhdb = $Body/MessagesContainer/ThinkingLabel
+@onready var hjgbgsoy = $Bottom/AddContext
+@onready var egxzshyy : CheckButton = $Bottom/ReasoningToggle
+@onready var gfttvzgo = $Body/MessagesContainer/RatingContainer
+@onready var dbjicuis = $Bottom/Mode
 
-@onready var ulkiqljt = preload("res://addons/gamedev_assistant/dock/icons/stop.png")  
-@onready var vzkfrpkr = preload("res://addons/gamedev_assistant/dock/icons/arrowUp.png")  
+@onready var gijfzhgi = preload("res://addons/gamedev_assistant/dock/icons/stop.png")  
+@onready var xvgkttti = preload("res://addons/gamedev_assistant/dock/icons/arrowUp.png")  
 
-var gbiysgdn = [
+var pacwzfrl = [
     "",
     " @OpenScripts ",
     " @Output ",
@@ -54,7 +54,7 @@ var gbiysgdn = [
     " @ProjectSettings"
 ]
 
-@onready var mcesucae = $"../ConversationManager"
+@onready var gxenjgig = $"../ConversationManager"
 
 var waiting_nonthinking = "Thinking ⚡"
 var waiting_thinking = "Reasoning ⌛ This could take multiple minutes"
@@ -64,367 +64,376 @@ var notice_actions_thinking = "Generating one-click actions ⌛ To skip, press �
 
 
 func _ready ():
-    advccbjl.xpdubjyj.connect(khvsreux)
-    advccbjl.sfrwatqp.connect(trqhmtww)
+    wsjjotez.hmjvhfxe.connect(yyikacab)
+    wsjjotez.edbyckzj.connect(lsoofvbt)
     
-    mcesucae.hgyhkthb.connect(sxoosjxc)
-    gkmeqqjg.gcivoxej.connect(xxrmjkct)
+    gxenjgig.uulcclje.connect(djtnohdb)
+    nrwdayyb.gzopntpm.connect(pbjhrbxh)
     
                        
-    advccbjl.zeqbitvq.connect(uddncbvb)
-    advccbjl.ngabjzqt.connect(aiunpzwr)
-    advccbjl.eeanuqxm.connect(iczfnjvd)
-    advccbjl.kgrvsdiw.connect(lnmaezsx)
+    wsjjotez.xifwqalw.connect(gnpcxmot)
+    wsjjotez.hudonhfc.connect(pedalnke)
+    wsjjotez.hizgvnpl.connect(fpbrrjrp)
+    wsjjotez.celmjbwb.connect(wfufjpoo)
 
-    ewaxhhdk.item_selected.connect(mwiiwivk)    
-    pzwmnuui.pressed.connect(ufoecmju)   
+    hjgbgsoy.item_selected.connect(asgipbff)    
+    lgwvuihd.pressed.connect(knlrroul)   
     
-    sxdrbbmq.get_node("UpButton").pressed.connect(ugfrznij)
-    sxdrbbmq.get_node("DownButton").pressed.connect(wljlfxin)
-    sxdrbbmq.visible = false 
+    gfttvzgo.get_node("UpButton").pressed.connect(qgebrpcb)
+    gfttvzgo.get_node("DownButton").pressed.connect(bcvmvdhy)
+    gfttvzgo.visible = false 
 
 func _on_open ():
-    gkmeqqjg.text = ""
-    yvnflayx.visible = false
-    sxdrbbmq.visible = false 
-    xeidstiu(false)
-    kiyemvod()
-    ewaxhhdk.selected = 0
-    awdciply = ''
+    nrwdayyb.text = ""
+    illyuhdb.visible = false
+    gfttvzgo.visible = false 
+    eqqqnhhs(false)
+    mvgdrjtm()
+    hjgbgsoy.selected = 0
+    royaxhij = ''
     
 
                                                             
-func nfxknjao ():
-    viejzfkt = true
-    xeidstiu(true)
-    loshxijd = -1
-    sxdrbbmq.visible = false
-    oibtmokk.dhwyisqo()
+func fnnfodqx ():
+    xrjgtzha = true
+    eqqqnhhs(true)
+    zvodnnyg = -1
+    gfttvzgo.visible = false
+    oohxhybu.knboekch()
     
                     
-    zjqgxpzh = ""
-    fviotzrz  = ""
-    prnksxtj = ""
-    ydyhzesj  = ""
-    rxvcguqx = ""
+    sreezxfj = ""
+    zhsgqvdf  = ""
+    dvnltken = ""
+    mgzvbyao  = ""
+    gcyjaose = ""
+    
+                          
+    var kwjhhjdo = EditorInterface.get_editor_settings()
+    var braklqwd = kwjhhjdo.has_setting("gamedev_assistant/add_openscripts") and kwjhhjdo.get_setting('gamedev_assistant/add_openscripts') == true    
+    if braklqwd:
+        nrwdayyb.text = "\n@OpenScripts"
+    
+                                 
+    nrwdayyb.grab_focus()
 
-func uddncbvb(egfqhsgh: String, bbxcapht: int, arnxkcdg: int) -> void:
-    if ecclpgck == null:
-        ecclpgck = ddnlyhzm.instantiate()
-        ecclpgck.bbcode_enabled = true
-        azzhgcuh.add_child(ecclpgck)
-        var vkrfwdtl = tgkqotbb.instantiate()
-        azzhgcuh.add_child(vkrfwdtl)
-        yvnflayx.visible = false
-        awdciply = egfqhsgh
+func gnpcxmot(paqteoni: String, mnmqheir: int, jwjcdpjd: int) -> void:
+    if sleoypka == null:
+        sleoypka = kqbnqnee.instantiate()
+        sleoypka.bbcode_enabled = true
+        mkpjaltp.add_child(sleoypka)
+        var kigwupnr = sqsqijqy.instantiate()
+        mkpjaltp.add_child(kigwupnr)
+        illyuhdb.visible = false
+        royaxhij = paqteoni
         
-        if arnxkcdg != -1:
-            loshxijd = arnxkcdg
+        if jwjcdpjd != -1:
+            zvodnnyg = jwjcdpjd
     else:
-        awdciply += egfqhsgh
+        royaxhij += paqteoni
         
                                                   
-    ecclpgck.text = tiaiaeom.rcrlccwv(awdciply)
+    sleoypka.text = kzvpdeuj.zlxkhaha(royaxhij)
     
                                                                      
-    if not ecclpgck.meta_clicked.is_connected(lentdndo):  
-        ecclpgck.meta_clicked.connect(lentdndo)  
+    if not sleoypka.meta_clicked.is_connected(loqzqgcy):  
+        sleoypka.meta_clicked.connect(loqzqgcy)  
     
-    if bbxcapht > 0:
-        mcesucae.uhclkmsr(bbxcapht)
+    if mnmqheir > 0:
+        gxenjgig.pdcvcxsj(mnmqheir)
 
-func iczfnjvd(esoozonm: int, wbngsoiu: int) -> void:
-    if ecclpgck:
-        ecclpgck.visible = false
+func fpbrrjrp(czbavnqd: int, jyefhjuq: int) -> void:
+    if sleoypka:
+        sleoypka.visible = false
 
                                                                 
-    rryuvbrl(awdciply, ddnlyhzm, azzhgcuh, rzbhoprz)
+    btcosjji(royaxhij, kqbnqnee, mkpjaltp, zbgtiuts)
     
                               
-    azzhgcuh.move_child(yvnflayx, azzhgcuh.get_child_count() - 1)
-    yvnflayx.visible = true
-    yvnflayx.text = notice_actions_nonthinking
+    mkpjaltp.move_child(illyuhdb, mkpjaltp.get_child_count() - 1)
+    illyuhdb.visible = true
+    illyuhdb.text = notice_actions_nonthinking
 
-func aiunpzwr(gxxqetbq: int, edhahmho: int) -> void:
+func pedalnke(tebfgpdn: int, mhgnjlmb: int) -> void:
                                          
-    if ecclpgck:
-        ecclpgck.queue_free()
-        ecclpgck = null
+    if sleoypka:
+        sleoypka.queue_free()
+        sleoypka = null
         
-    yvnflayx.visible = false
+    illyuhdb.visible = false
     
                                                     
-    azzhgcuh.move_child(sxdrbbmq, azzhgcuh.get_child_count() - 1)
-    sxdrbbmq.visible = edhahmho > 0
+    mkpjaltp.move_child(gfttvzgo, mkpjaltp.get_child_count() - 1)
+    gfttvzgo.visible = mhgnjlmb > 0
     
                           
-    var krkorvhh = adxxbihq.rcrmbsak(awdciply, edhahmho)
-    adxxbihq.eqfdbevf(krkorvhh, azzhgcuh)
+    var jditrtra = uohokutw.kofqnnoc(royaxhij, mhgnjlmb)
+    uohokutw.bdplldig(jditrtra, mkpjaltp)
 
-    awdciply = ""
-    xeidstiu(true)
-    yvnflayx.visible = false
-    pzwmnuui.icon = vzkfrpkr
+    royaxhij = ""
+    eqqqnhhs(true)
+    illyuhdb.visible = false
+    lgwvuihd.icon = xvgkttti
 
-func lnmaezsx(xmarzkha: String):
-    fqfvgjue(xmarzkha)
-    xeidstiu(true)
-    yvnflayx.visible = false
-    ecclpgck = null
-    pzwmnuui.icon = vzkfrpkr
+func wfufjpoo(trbcruej: String):
+    razkdifo(trbcruej)
+    eqqqnhhs(true)
+    illyuhdb.visible = false
+    sleoypka = null
+    lgwvuihd.icon = xvgkttti
 
-func ufoecmju():  
-    if advccbjl.lzgpswvj():  
+func knlrroul():  
+    if wsjjotez.cbzghnwn():  
                                          
-        advccbjl.tyylnebm.emit()  
+        wsjjotez.yjpopcuv.emit()  
         
                                              
-        if ecclpgck:
-            ecclpgck.queue_free()
-            ecclpgck = null
+        if sleoypka:
+            sleoypka.queue_free()
+            sleoypka = null
         
-        xeidstiu(true)  
-        pzwmnuui.icon = vzkfrpkr  
+        eqqqnhhs(true)  
+        lgwvuihd.icon = xvgkttti  
         
-        if not yvnflayx.visible:
+        if not illyuhdb.visible:
                                                                         
-            rryuvbrl(awdciply, ddnlyhzm, azzhgcuh, rzbhoprz)
+            btcosjji(royaxhij, kqbnqnee, mkpjaltp, zbgtiuts)
         
-        yvnflayx.visible = false  
+        illyuhdb.visible = false  
         
                                                    
-        azzhgcuh.move_child(sxdrbbmq, azzhgcuh.get_child_count() - 1)
-        sxdrbbmq.visible = loshxijd > 0
+        mkpjaltp.move_child(gfttvzgo, mkpjaltp.get_child_count() - 1)
+        gfttvzgo.visible = zvodnnyg > 0
 
     else:  
                                              
-        duuhanhp()  
+        olvtuhan()  
 
-func duuhanhp():
+func olvtuhan():
                                                         
-    adxxbihq.ccumjrwb()
+    uohokutw.rdfwvlxa()
     
-    sxdrbbmq.visible = false
+    gfttvzgo.visible = false
     
-    loshxijd = -1
+    zvodnnyg = -1
     
-    if len(gkmeqqjg.text) < 1:
+    if len(nrwdayyb.text) < 1:
         return
     
-    var ofqjgytg = gkmeqqjg.text
+    var vvvmmxgj = nrwdayyb.text
 
                                                         
-    var eflzhzhk := false
-    if viejzfkt:
-        var fplgtham = Engine.get_singleton("EditorInterface") if Engine.is_editor_hint() else null
-        prnksxtj = oibtmokk.yijkksyp("", fplgtham)
-        ydyhzesj  = oibtmokk.lmwlhiys("", fplgtham)
-        rxvcguqx = "[gds_context]Current project context:[/gds_context]\n" \
-            + prnksxtj + "\n" + ydyhzesj
-        eflzhzhk = true
+    var oxtsfsbt := false
+    if xrjgtzha:
+        var curhmwih = Engine.get_singleton("EditorInterface") if Engine.is_editor_hint() else null
+        dvnltken = oohxhybu.hkyyfanc("", curhmwih)
+        mgzvbyao  = oohxhybu.mydpeuby("", curhmwih)
+        gcyjaose = "[gds_context]Current project context:[/gds_context]\n" \
+            + dvnltken + "\n" + mgzvbyao
+        oxtsfsbt = true
     else:
-        eflzhzhk = bqrwprds()
+        oxtsfsbt = erpscwyx()
 
-    if eflzhzhk and rxvcguqx != "":
-        ofqjgytg += rxvcguqx
+    if oxtsfsbt and gcyjaose != "":
+        vvvmmxgj += gcyjaose
                           
-        zjqgxpzh = prnksxtj
-        fviotzrz  = ydyhzesj
+        sreezxfj = dvnltken
+        zhsgqvdf  = mgzvbyao
 
-    viejzfkt = false
+    xrjgtzha = false
 
     if Engine.is_editor_hint():
-        var fplgtham = Engine.get_singleton("EditorInterface")
-        ofqjgytg = oibtmokk.swsmygoy(ofqjgytg, fplgtham)
+        var curhmwih = Engine.get_singleton("EditorInterface")
+        vvvmmxgj = oohxhybu.zppctpmw(vvvmmxgj, curhmwih)
         
-    var vskrxdec = irvynlml.button_pressed
-    var mwnpfniw : int = iazahhjv.selected
-    var rdniqnzb : String
+    var orwzyvkb = egxzshyy.button_pressed
+    var kfzikwcz : int = dbjicuis.selected
+    var keszfcht : String
     
-    if mwnpfniw == 0:
-        rdniqnzb = "CHAT"
+    if kfzikwcz == 0:
+        keszfcht = "CHAT"
     else:
-        rdniqnzb = "AGENT"        
+        keszfcht = "AGENT"        
     
-    advccbjl.kgmbijzb(ofqjgytg, vskrxdec, rdniqnzb)
-    qcciwnig(gkmeqqjg.text)                               
-    xeidstiu(false)
-    gkmeqqjg.text = ""
+    wsjjotez.qoazlqdk(vvvmmxgj, orwzyvkb, keszfcht)
+    ffjfnaul(nrwdayyb.text)                               
+    eqqqnhhs(false)
+    nrwdayyb.text = ""
     
-    if vskrxdec:
-        yvnflayx.text = waiting_thinking
+    if orwzyvkb:
+        illyuhdb.text = waiting_thinking
     else:
-        yvnflayx.text = waiting_nonthinking
+        illyuhdb.text = waiting_nonthinking
         
-    yvnflayx.visible = true
-    azzhgcuh.move_child(yvnflayx, azzhgcuh.get_child_count() - 1)
+    illyuhdb.visible = true
+    mkpjaltp.move_child(illyuhdb, mkpjaltp.get_child_count() - 1)
     
                                                
-    hmflmgwe.emit()
+    ynsjnasz.emit()
     
-func xeidstiu (kvoxktlo : bool):
-    if kvoxktlo:  
-        pzwmnuui.icon = vzkfrpkr  
+func eqqqnhhs (dzksaeol : bool):
+    if dzksaeol:  
+        lgwvuihd.icon = xvgkttti  
     else:  
-        pzwmnuui.icon = ulkiqljt  
+        lgwvuihd.icon = gijfzhgi  
 
-func khvsreux (wibupdyb : String, njjwbnaf : int):
-    mnpyvrkm(wibupdyb)
-    xeidstiu(true)
-    yvnflayx.visible = false
+func yyikacab (gcimyhps : String, qbkecjfk : int):
+    luqzfyfn(gcimyhps)
+    eqqqnhhs(true)
+    illyuhdb.visible = false
 
-func trqhmtww (uljivche : String):
-    fqfvgjue(uljivche)
-    xeidstiu(true)
-    yvnflayx.visible = false
+func lsoofvbt (ytraotne : String):
+    razkdifo(ytraotne)
+    eqqqnhhs(true)
+    illyuhdb.visible = false
 
-func qcciwnig(gkrridhs: String):
+func ffjfnaul(nddswqoz: String):
                                                                                
-    rryuvbrl(gkrridhs, fgcrrelc, azzhgcuh, sxjnqnxd)
+    btcosjji(nddswqoz, hnsgilay, mkpjaltp, fpimppud)
     
-    var cvvkbsfk = tgkqotbb.instantiate()
-    azzhgcuh.add_child(cvvkbsfk)
+    var ecbmbtvk = sqsqijqy.instantiate()
+    mkpjaltp.add_child(ecbmbtvk)
 
 
-func mnpyvrkm(gdakwvsw: String):
+func luqzfyfn(lxzpxyhw: String):
                                                                                 
-    rryuvbrl(gdakwvsw, ddnlyhzm, azzhgcuh, rzbhoprz)
+    btcosjji(lxzpxyhw, kqbnqnee, mkpjaltp, zbgtiuts)
     
-    var bkcawqqp = tgkqotbb.instantiate()
-    azzhgcuh.add_child(bkcawqqp)
+    var upyhthgw = sqsqijqy.instantiate()
+    mkpjaltp.add_child(upyhthgw)
 
-func fqfvgjue (vcxbokyt : String):
-    var vkeceqhz = ekwohscp.instantiate()
-    azzhgcuh.add_child(vkeceqhz)
-    vkeceqhz.text = vcxbokyt
+func razkdifo (irrageka : String):
+    var cgmwbwbs = snhqqtfo.instantiate()
+    mkpjaltp.add_child(cgmwbwbs)
+    cgmwbwbs.text = irrageka
 
-func kiyemvod ():
-    for node in azzhgcuh.get_children():
-        if node == yvnflayx or node == sxdrbbmq:
+func mvgdrjtm ():
+    for node in mkpjaltp.get_children():
+        if node == illyuhdb or node == gfttvzgo:
             continue
         node.queue_free()
-    azzhgcuh.custom_minimum_size = Vector2.ZERO
+    mkpjaltp.custom_minimum_size = Vector2.ZERO
     
-    hmflmgwe.emit()
+    ynsjnasz.emit()
     
                   
-    oibtmokk.dhwyisqo()
+    oohxhybu.knboekch()
     
                             
-    zjqgxpzh = ""
-    fviotzrz  = ""
-    prnksxtj = ""
-    ydyhzesj  = ""
-    rxvcguqx = ""
+    sreezxfj = ""
+    zhsgqvdf  = ""
+    dvnltken = ""
+    mgzvbyao  = ""
+    gcyjaose = ""
 
-func sxoosjxc ():
-    var dtknsawj = mcesucae.srlihurr()
-    kiyemvod()
+func djtnohdb ():
+    var fmuvwafw = gxenjgig.uziqrmqg()
+    mvgdrjtm()
     
-    for msg in dtknsawj.messages:
+    for msg in fmuvwafw.messages:
         if msg.role == "user":
-            qcciwnig(msg.content)
+            ffjfnaul(msg.content)
         elif msg.role == "assistant":
-            mnpyvrkm(msg.content)
+            luqzfyfn(msg.content)
     
-    xeidstiu(true)
+    eqqqnhhs(true)
 
-func mwiiwivk(skkybkdy: int):
-    if skkybkdy >= 0 and skkybkdy < gbiysgdn.size():
-        gkmeqqjg.text += " " + gbiysgdn[skkybkdy]
-        ewaxhhdk.select(0)
+func asgipbff(jdhjyqww: int):
+    if jdhjyqww >= 0 and jdhjyqww < pacwzfrl.size():
+        nrwdayyb.text += " " + pacwzfrl[jdhjyqww]
+        hjgbgsoy.select(0)
 
-func lentdndo(hnsxuhng):
-    OS.shell_open(str(hnsxuhng))
+func loqzqgcy(fmjkshfw):
+    OS.shell_open(str(fmjkshfw))
 
                                                 
-func amipepnz(osfitkym: String) -> String:
+func ryuopbxf(jjkkfbae: String) -> String:
     
-    var komvjriy = RegEx.new()
+    var qpbizmyq = RegEx.new()
                                  
-    komvjriy.compile("\\[gds_context\\](.|\\n)*?\\[/gds_context\\]")
-    osfitkym = komvjriy.sub(osfitkym, "", true)
+    qpbizmyq.compile("\\[gds_context\\](.|\\n)*?\\[/gds_context\\]")
+    jjkkfbae = qpbizmyq.sub(jjkkfbae, "", true)
     
                                        
-    komvjriy.compile("<internal_tool_use>(.|\\n)*?</internal_tool_use>")
-    return komvjriy.sub(osfitkym, "", true)
+    qpbizmyq.compile("<internal_tool_use>(.|\\n)*?</internal_tool_use>")
+    return qpbizmyq.sub(jjkkfbae, "", true)
     
                                                 
-func dpbixstu(lhduufav: String) -> String:
+func ecdugbjn(usksrjwx: String) -> String:
         
-    var ruiatbtd = RegEx.new()
-    ruiatbtd.compile("\\[gds_actions\\](.|\\n)*?\\[/gds_actions\\]")
-    return ruiatbtd.sub(lhduufav, "", true)
+    var llsfgwxf = RegEx.new()
+    llsfgwxf.compile("\\[gds_actions\\](.|\\n)*?\\[/gds_actions\\]")
+    return llsfgwxf.sub(usksrjwx, "", true)
 
-func ecwhtqef(wsvrbpep: String):
-    wsvrbpep = wsvrbpep.replace(notice_actions_nonthinking, '').replace(notice_actions_thinking, '').strip_edges()
-    return wsvrbpep
+func iieakaig(edeyjzhe: String):
+    edeyjzhe = edeyjzhe.replace(notice_actions_nonthinking, '').replace(notice_actions_thinking, '').strip_edges()
+    return edeyjzhe
     
-func rryuvbrl(ouojnvdd: String, jdxgwezx: PackedScene, rigbtnpb: Node, edvqowhi: PackedScene) -> void:
+func btcosjji(ycoojvlq: String, pqimsbmt: PackedScene, rfspzgol: Node, lkxzrrqj: PackedScene) -> void:
     
-    ouojnvdd = ouojnvdd.strip_edges()
-    ouojnvdd = amipepnz(ouojnvdd)
+    ycoojvlq = ycoojvlq.strip_edges()
+    ycoojvlq = ryuopbxf(ycoojvlq)
     
                        
-    var jgwmaoev = tiaiaeom.naehoovr(ouojnvdd)
+    var ozrtpjeu = kzvpdeuj.wdyafadg(ycoojvlq)
 
-    for block in jgwmaoev:
+    for block in ozrtpjeu:
         if block["type"] == "text":
-            var nxjuqgrd = jdxgwezx.instantiate()
-            nxjuqgrd.bbcode_enabled = true
-            rigbtnpb.add_child(nxjuqgrd)
+            var mwezcfee = pqimsbmt.instantiate()
+            mwezcfee.bbcode_enabled = true
+            rfspzgol.add_child(mwezcfee)
             
-            var qnmohacm = block["content"]
+            var rngchtha = block["content"]
             
                                                       
-            qnmohacm = tiaiaeom.exbodwiv(qnmohacm)
-            qnmohacm = tiaiaeom.rjvcowrz(qnmohacm)
-            qnmohacm = qnmohacm.strip_edges()
+            rngchtha = kzvpdeuj.xrufinik(rngchtha)
+            rngchtha = kzvpdeuj.omxollrz(rngchtha)
+            rngchtha = rngchtha.strip_edges()
             
-            nxjuqgrd.text = qnmohacm
+            mwezcfee.text = rngchtha
 
                                  
-            if not nxjuqgrd.meta_clicked.is_connected(lentdndo):
-                nxjuqgrd.meta_clicked.connect(lentdndo)
+            if not mwezcfee.meta_clicked.is_connected(loqzqgcy):
+                mwezcfee.meta_clicked.connect(loqzqgcy)
 
         elif block["type"] == "code":
-            var kogzztvo = edvqowhi.instantiate()
-            rigbtnpb.add_child(kogzztvo)
-            kogzztvo.text = block["content"]
+            var hjskfdjc = lkxzrrqj.instantiate()
+            rfspzgol.add_child(hjskfdjc)
+            hjskfdjc.text = block["content"]
 
                            
-func bqrwprds() -> bool:
-    var vcodpedg = Engine.get_singleton("EditorInterface") if Engine.is_editor_hint() else null
-    prnksxtj = oibtmokk.yijkksyp("", vcodpedg)
-    ydyhzesj  = oibtmokk.lmwlhiys("", vcodpedg)
+func erpscwyx() -> bool:
+    var dtpgppxc = Engine.get_singleton("EditorInterface") if Engine.is_editor_hint() else null
+    dvnltken = oohxhybu.hkyyfanc("", dtpgppxc)
+    mgzvbyao  = oohxhybu.mydpeuby("", dtpgppxc)
 
-    var jzajzlwy = prnksxtj != zjqgxpzh
-    var xivxpple  = ydyhzesj  != fviotzrz
+    var nccsabva = dvnltken != sreezxfj
+    var kghoyzgd  = mgzvbyao  != zhsgqvdf
 
-    var btqmawbc = []
-    if jzajzlwy:
-        btqmawbc.append(prnksxtj)
-    if xivxpple:
-        btqmawbc.append(ydyhzesj)
+    var ehoyktmi = []
+    if nccsabva:
+        ehoyktmi.append(dvnltken)
+    if kghoyzgd:
+        ehoyktmi.append(mgzvbyao)
 
-    rxvcguqx = ""
-    if btqmawbc.size() > 0:
-        rxvcguqx = "[gds_context]Current project context:[/gds_context]\n" + "\n".join(btqmawbc)
+    gcyjaose = ""
+    if ehoyktmi.size() > 0:
+        gcyjaose = "[gds_context]Current project context:[/gds_context]\n" + "\n".join(ehoyktmi)
 
-    return jzajzlwy or xivxpple
+    return nccsabva or kghoyzgd
 
                                
-func xxrmjkct() -> void:
-    var dvytfvex = not advccbjl.lzgpswvj()
-    if dvytfvex:
-        duuhanhp()
+func pbjhrbxh() -> void:
+    var nvlxgsag = not wsjjotez.cbzghnwn()
+    if nvlxgsag:
+        olvtuhan()
         
-func ugfrznij():
-    if loshxijd > 0:
-        advccbjl.goknswzz(loshxijd, 5)
-        sxdrbbmq.visible = false                     
+func qgebrpcb():
+    if zvodnnyg > 0:
+        wsjjotez.oxkuymyc(zvodnnyg, 5)
+        gfttvzgo.visible = false                     
 
-func wljlfxin():
-    if loshxijd > 0:
-        advccbjl.goknswzz(loshxijd, 1)
-        sxdrbbmq.visible = false
+func bcvmvdhy():
+    if zvodnnyg > 0:
+        wsjjotez.oxkuymyc(zvodnnyg, 1)
+        gfttvzgo.visible = false
