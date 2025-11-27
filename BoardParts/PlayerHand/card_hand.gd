@@ -15,6 +15,7 @@ var is_chosen: bool = false:
 
 func _ready() -> void:
 	super()
+	card_name.hide()
 	print("CardHand _ready() called for: ", card_data.card_name if card_data else "null")
 	# If card_data was set before _ready(), ensure signals are connected
 	if card_data:

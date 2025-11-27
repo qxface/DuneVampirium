@@ -14,6 +14,7 @@ func _ready():
 		# Ensure minion zoom gets the minion_normal stylebox
 		add_theme_stylebox_override("panel", MINION_NORMAL)
 	
+	card_name.show()
 	icons.custom_minimum_size.y = 100
 	v_split_container.add_theme_constant_override("separation", 10)
 	

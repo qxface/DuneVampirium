@@ -220,6 +220,8 @@ func initialize_player_cards():
 			var random_minion = Helper.create_random_minion()
 			player.minion_pile.append(random_minion)
  
+		var simple_plan: Card = CardExamples.create_simple_plan()
+		player.plan_hand.append(simple_plan)
 		# Add some random plans
 		for i in range(5):
 			var random_plan = Helper.create_random_plan()

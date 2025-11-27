@@ -40,6 +40,8 @@ var origin_color: Dictionary ={
 #@onready var background: TextureRect = get_node_or_null("Background") as TextureRect
 @onready var icons: HBoxContainer = %Icons
 @onready var v_split_container: VSplitContainer = %VSplitContainer
+@onready var card_name: RichTextLabel = %CardName
+
 
 @onready var primori_bg: ColorRect = %Primori_BG
 @onready var primori_icon: TextureRect = %Primori_Icon
@@ -108,6 +110,16 @@ func _update_display():
 	assert(is_inside_tree(), "Setting Card data before adding Plan to Scene Tree")
 	if !ready:
 		await get_tree().process_frame 
+	
+	card_name.text = card_data.card_name
+	match card_data.card_type:
+		Card.CardType.PLAN:
+			card_name.add_theme_stylebox_override("background", PLAN_NORMAL)
+			card_name.add_theme_color_override("default_color", PALETTE.grey)
+		Card.CardType.MINION:
+			card_name.add_theme_stylebox_override("background", MINION_NORMAL)
+			card_name.add_theme_color_override("default_color", PALETTE.light)
+	
 
 	# Update clan indicators (only show if true)
 	primori_bg.visible = card_data.is_primori

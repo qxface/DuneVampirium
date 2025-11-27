@@ -4,7 +4,7 @@ class_name CardExamples
 extends Node
 
 # Create the 'Simple Card' - a basic test card with Action and Reveal activations
-static func create_simple_card() -> Card:
+static func create_simple_plan() -> Card:
 	var card = Card.new()
 	
 	# Basic card properties
@@ -13,10 +13,10 @@ static func create_simple_card() -> Card:
 	card.card_type = Card.CardType.PLAN
 	
 	# Clan and action properties (minimal setup)
-	card.is_primori = true
+	card.is_primori = false
 	card.is_volupta = false
 	card.is_vorace = false
-	card.is_intrigue = true
+	card.is_intrigue = false
 	card.is_hunting = false
 	card.is_battle = false
 	card.origin = Card.OriginType.NONE

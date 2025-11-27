@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://dsmra417pedqn"]
+[gd_scene load_steps=10 format=3 uid="uid://dsmra417pedqn"]
 
 [ext_resource type="Script" uid="uid://cy8pofrrxl74" path="res://BoardParts/card_base.gd" id="1_xbj0o"]
+[ext_resource type="StyleBox" uid="uid://cxtb8u2qyj1pb" path="res://UI/StyleBox/minion_normal.tres" id="2_bcamq"]
 [ext_resource type="Texture2D" uid="uid://eo3tcu0xkg7n" path="res://assets/icons/clans/primori.png" id="2_yfn8i"]
 [ext_resource type="Texture2D" uid="uid://ptq3trepb5r6" path="res://assets/icons/clans/volupta.png" id="3_bcamq"]
 [ext_resource type="Texture2D" uid="uid://ccwja3gvw6swa" path="res://assets/icons/clans/vorace.png" id="4_lhwet"]
@@ -31,37 +32,45 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer"]
-unique_name_in_owner = true
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-collapsed = true
-dragging_enabled = false
+theme_override_constants/separation = 0
 
-[node name="Icons" type="HBoxContainer" parent="MarginContainer/VSplitContainer"]
+[node name="CardName" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/default_color = Color(0.95686275, 0.9529412, 0.9372549, 1)
+theme_override_styles/background = ExtResource("2_bcamq")
+text = "This is the Card Name"
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Icons" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-size_flags_vertical = 0
 theme_override_constants/separation = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VSplitContainer/Icons"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Icons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="Clans" type="HBoxContainer" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer"]
+[node name="Clans" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 
-[node name="Primori_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans"]
+[node name="Primori_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Clans"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 color = Color(0.95686275, 0.9529412, 0.9372549, 1)
 
-[node name="Primori_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans/Primori_BG"]
+[node name="Primori_Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Clans/Primori_BG"]
 unique_name_in_owner = true
 self_modulate = Color(0.078431375, 0.039215688, 0.10980392, 1)
 layout_mode = 1
@@ -74,14 +83,14 @@ texture = ExtResource("2_yfn8i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Volupta_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans"]
+[node name="Volupta_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Clans"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 color = Color(0.95686275, 0.9529412, 0.9372549, 1)
 
-[node name="Volupta_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans/Volupta_BG"]
+[node name="Volupta_Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Clans/Volupta_BG"]
 unique_name_in_owner = true
 self_modulate = Color(0.16470589, 0.047058824, 0.0627451, 1)
 layout_mode = 1
@@ -94,14 +103,14 @@ texture = ExtResource("3_bcamq")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Vorace_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans"]
+[node name="Vorace_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Clans"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 color = Color(0.95686275, 0.9529412, 0.9372549, 1)
 
-[node name="Vorace_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Clans/Vorace_BG"]
+[node name="Vorace_Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Clans/Vorace_BG"]
 unique_name_in_owner = true
 self_modulate = Color(0.05490196, 0.16470589, 0.07058824, 1)
 layout_mode = 1
@@ -114,19 +123,19 @@ texture = ExtResource("4_lhwet")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Actions" type="HBoxContainer" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer"]
+[node name="Actions" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 
-[node name="Intrigue_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions"]
+[node name="Intrigue_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Actions"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 color = Color(0.08627451, 0.09019608, 0.105882354, 1)
 
-[node name="Intrigue_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions/Intrigue_BG"]
+[node name="Intrigue_Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Actions/Intrigue_BG"]
 unique_name_in_owner = true
 self_modulate = Color(0.9490196, 0.85490197, 0.38431373, 1)
 layout_mode = 1
@@ -139,14 +148,14 @@ texture = ExtResource("5_v52c1")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Hunting_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions"]
+[node name="Hunting_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Actions"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 color = Color(0.08627451, 0.09019608, 0.105882354, 1)
 
-[node name="Hunting_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions/Hunting_BG"]
+[node name="Hunting_Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Actions/Hunting_BG"]
 unique_name_in_owner = true
 self_modulate = Color(0.12156863, 0.24313726, 0.3372549, 1)
 layout_mode = 1
@@ -159,14 +168,14 @@ texture = ExtResource("6_0kofa")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Battle_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions"]
+[node name="Battle_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Actions"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 color = Color(0.08627451, 0.09019608, 0.105882354, 1)
 
-[node name="Battle_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/VBoxContainer/Actions/Battle_BG"]
+[node name="Battle_Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Actions/Battle_BG"]
 unique_name_in_owner = true
 self_modulate = Color(0.80784315, 0.40392157, 0.13333334, 1)
 layout_mode = 1
@@ -179,7 +188,7 @@ texture = ExtResource("7_w2s76")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Origin_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Icons"]
+[node name="Origin_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Icons"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -187,7 +196,7 @@ size_flags_vertical = 3
 mouse_filter = 1
 color = Color(0.6039216, 0.50980395, 0.41960785, 1)
 
-[node name="Origin_Icon" type="TextureRect" parent="MarginContainer/VSplitContainer/Icons/Origin_BG"]
+[node name="Origin_Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/Icons/Origin_BG"]
 unique_name_in_owner = true
 self_modulate = Color(0.03529412, 0.03529412, 0.043137256, 1)
 layout_mode = 1
@@ -200,11 +209,12 @@ texture = ExtResource("7_w2s76")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Activations" type="VBoxContainer" parent="MarginContainer/VSplitContainer"]
+[node name="Activations" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/separation = 0
 
-[node name="Acquire_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Activations"]
+[node name="Acquire_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Activations"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -212,11 +222,11 @@ size_flags_vertical = 3
 mouse_filter = 1
 color = Color(0.58431375, 0.78039217, 0.3019608, 1)
 
-[node name="AcquireIcons" parent="MarginContainer/VSplitContainer/Activations/Acquire_BG" instance=ExtResource("8_f710g")]
+[node name="AcquireIcons" parent="MarginContainer/VBoxContainer/Activations/Acquire_BG" instance=ExtResource("8_f710g")]
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="Action_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Activations"]
+[node name="Action_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Activations"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -224,11 +234,11 @@ size_flags_vertical = 3
 mouse_filter = 1
 color = Color(0.4862745, 0.627451, 0.95686275, 1)
 
-[node name="ActionIcons" parent="MarginContainer/VSplitContainer/Activations/Action_BG" instance=ExtResource("8_f710g")]
+[node name="ActionIcons" parent="MarginContainer/VBoxContainer/Activations/Action_BG" instance=ExtResource("8_f710g")]
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="Reveal_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Activations"]
+[node name="Reveal_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Activations"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -236,11 +246,11 @@ size_flags_vertical = 3
 mouse_filter = 1
 color = Color(0.40392157, 0.22352941, 0.7372549, 1)
 
-[node name="RevealIcons" parent="MarginContainer/VSplitContainer/Activations/Reveal_BG" instance=ExtResource("8_f710g")]
+[node name="RevealIcons" parent="MarginContainer/VBoxContainer/Activations/Reveal_BG" instance=ExtResource("8_f710g")]
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="Discard_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Activations"]
+[node name="Discard_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Activations"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -248,11 +258,11 @@ size_flags_vertical = 3
 mouse_filter = 1
 color = Color(0.7921569, 0.15686275, 0.15686275, 1)
 
-[node name="DiscardIcons" parent="MarginContainer/VSplitContainer/Activations/Discard_BG" instance=ExtResource("8_f710g")]
+[node name="DiscardIcons" parent="MarginContainer/VBoxContainer/Activations/Discard_BG" instance=ExtResource("8_f710g")]
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="Trash_BG" type="ColorRect" parent="MarginContainer/VSplitContainer/Activations"]
+[node name="Trash_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Activations"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -260,9 +270,16 @@ size_flags_vertical = 3
 mouse_filter = 1
 color = Color(0.05490196, 0.003921569, 0.08627451, 1)
 
-[node name="TrashIcons" parent="MarginContainer/VSplitContainer/Activations/Trash_BG" instance=ExtResource("8_f710g")]
+[node name="TrashIcons" parent="MarginContainer/VBoxContainer/Activations/Trash_BG" instance=ExtResource("8_f710g")]
 unique_name_in_owner = true
 layout_mode = 1
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+collapsed = true
+dragging_enabled = false
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
