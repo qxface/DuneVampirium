@@ -169,10 +169,12 @@ func _set_border() -> void:
 
 func _minimize_clan_and_origin_icons_only() -> void:
 	# Set clan and action ColorRect colors from their TextureRects
+	#if card_data.is_primori || card_data.is_volupta || card_data.is_vorace:
 	primori_bg.color = primori_icon.self_modulate
 	volupta_bg.color = volupta_icon.self_modulate
 	vorace_bg.color = vorace_icon.self_modulate
 
+	#if card_data.is_intrigue || card_data.is_hunting || card_data.is_battle:
 	intrigue_bg.color = intrigue_icon.self_modulate
 	hunting_bg.color = hunting_icon.self_modulate
 	battle_bg.color = battle_icon.self_modulate

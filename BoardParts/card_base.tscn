@@ -123,6 +123,13 @@ texture = ExtResource("4_lhwet")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="NoClans_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Clans"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.95686275, 0.9529412, 0.9372549, 1)
+
 [node name="Actions" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -187,6 +194,13 @@ grow_vertical = 2
 texture = ExtResource("7_w2s76")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="NoActions_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Icons/VBoxContainer/Actions"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.15540308, 0.16118789, 0.1843152, 1)
 
 [node name="Origin_BG" type="ColorRect" parent="MarginContainer/VBoxContainer/Icons"]
 unique_name_in_owner = true

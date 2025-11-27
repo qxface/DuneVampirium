@@ -41,6 +41,8 @@ var origin_color: Dictionary ={
 @onready var icons: HBoxContainer = %Icons
 @onready var v_split_container: VSplitContainer = %VSplitContainer
 @onready var card_name: RichTextLabel = %CardName
+@onready var no_clans_bg: ColorRect = %NoClans_BG
+@onready var no_actions_bg: ColorRect = %NoActions_BG
 
 
 @onready var primori_bg: ColorRect = %Primori_BG
@@ -125,10 +127,12 @@ func _update_display():
 	primori_bg.visible = card_data.is_primori
 	volupta_bg.visible = card_data.is_volupta
 	vorace_bg.visible = card_data.is_vorace
+	no_clans_bg.visible = !(card_data.is_primori || card_data.is_volupta || card_data.is_vorace)
 	
 	intrigue_bg.visible = card_data.is_intrigue
 	hunting_bg.visible = card_data.is_hunting
 	battle_bg.visible = card_data.is_battle
+	no_actions_bg.visible = !(card_data.is_intrigue || card_data.is_hunting || card_data.is_battle)
 	
 	acquire_bg.visible = card_data.has_acquire
 	action_bg.visible = card_data.has_action
