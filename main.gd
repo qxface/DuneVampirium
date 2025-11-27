@@ -216,7 +216,7 @@ func initialize_player_cards():
 		player.minion_pile.append(skitterfang)
  
 		# Add 2 more random minions
-		for i in range(2):
+		for i in range(12):
 			var random_minion = Helper.create_random_minion()
 			player.minion_pile.append(random_minion)
  

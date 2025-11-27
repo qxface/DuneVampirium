@@ -188,3 +188,6 @@ func _set_icon_colors():
 	intrigue_icon.self_modulate = PALETTE.color(IconTypes.get_hue(IconTypes.Type.INTRIGUE), light)
 	hunting_icon.self_modulate = PALETTE.color(IconTypes.get_hue(IconTypes.Type.HUNTING), light)
 	battle_icon.self_modulate = PALETTE.color(IconTypes.get_hue(IconTypes.Type.BATTLE), light)
+	
+	var normal:= PALETTE.Tint.NORMAL
+	origin_bg.color = PALETTE.color(PALETTE.Hue.RED, normal)
