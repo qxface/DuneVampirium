@@ -80,7 +80,7 @@ var player: Player
 var card_data: Card
 
 func _ready():
-	pass
+	_set_icon_colors()
 
 func _on_gui_input(event):
 	if event is InputEventMouseButton:
@@ -177,3 +177,14 @@ func _hide_all_indicators():
 	reveal_bg.visible = false
 	discard_bg.visible = false
 	trash_bg.visible = false
+
+func _set_icon_colors():
+	var dark:= PALETTE.Tint.DARK
+	primori_icon.self_modulate = PALETTE.color(IconTypes.get_hue(IconTypes.Type.PRIMORI), dark)
+	volupta_icon.self_modulate = PALETTE.color(IconTypes.get_hue(IconTypes.Type.VOLUPTA), dark)
+	vorace_icon.self_modulate = PALETTE.color(IconTypes.get_hue(IconTypes.Type.VORACE), dark)
+	
+	var light:= PALETTE.Tint.LIGHT
+	intrigue_icon.self_modulate = PALETTE.color(IconTypes.get_hue(IconTypes.Type.INTRIGUE), light)
+	hunting_icon.self_modulate = PALETTE.color(IconTypes.get_hue(IconTypes.Type.HUNTING), light)
+	battle_icon.self_modulate = PALETTE.color(IconTypes.get_hue(IconTypes.Type.BATTLE), light)

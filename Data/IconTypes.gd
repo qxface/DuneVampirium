@@ -9,7 +9,13 @@ enum Type {
 	SECRETS,
 	PLAN,
 	PLAN_TRASH,
-	INFLUENCE
+	INFLUENCE,
+	PRIMORI,
+	VOLUPTA,
+	VORACE,
+	INTRIGUE,
+	HUNTING,
+	BATTLE,
 }
 
 # Dictionary mapping each type to its Hue
@@ -19,7 +25,13 @@ static var hue_mapping: Dictionary = {
 	Type.SECRETS: PALETTE.Hue.PURPLE,
 	Type.PLAN: PALETTE.Hue.BLUE,
 	Type.PLAN_TRASH: PALETTE.Hue.NEUTRAL,
-	Type.INFLUENCE: PALETTE.Hue.GREEN
+	Type.INFLUENCE: PALETTE.Hue.GREEN,
+	Type.PRIMORI: PALETTE.Hue.PURPLE,
+	Type.VOLUPTA: PALETTE.Hue.RED,
+	Type.VORACE: PALETTE.Hue.GREEN,
+	Type.INTRIGUE: PALETTE.Hue.YELLOW,
+	Type.HUNTING: PALETTE.Hue.BLUE,
+	Type.BATTLE: PALETTE.Hue.ORANGE,
 }
 
 # Dictionary mapping each type to its icon texture path

@@ -2,7 +2,7 @@
 extends Node
 
 enum Hue {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, METAL, NEUTRAL}
-enum Tint {LIGHT, NORMAL, DARK}
+enum Tint {DARK, NORMAL, LIGHT}
 
 # Load the palette resource
 var palette_resource: Resource = preload("res://UI/vampire_palette.tres")
