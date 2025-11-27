@@ -11,6 +11,11 @@ signal plan_zoom_hide(plan_hand: CardHand)
 signal plan_chosen()
 signal plan_unchosen()
 
+signal minion_zoom_show(minion_hand: CardHand)
+signal minion_zoom_hide(minion_hand: CardHand)
+signal minion_chosen()
+signal minion_unchosen()
+
 signal draw_pile_pressed()
 signal draw_pile_right_pressed()
 

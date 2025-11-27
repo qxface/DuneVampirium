@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://d1m7mj85xran2" path="res://main.gd" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://docs8xbbyc615" path="res://BoardParts/PlayerHand/player_hand.tscn" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://bexwjtfox12au" path="res://assets/UI/arrow_right.png" id="2_h2yge"]
-[ext_resource type="StyleBox" uid="uid://ce52ar8aullls" path="res://UI/StyleBox/plan_normal.tres" id="3_lquwl"]
+[ext_resource type="StyleBox" uid="uid://cxtb8u2qyj1pb" path="res://UI/StyleBox/minion_normal.tres" id="3_lquwl"]
 [ext_resource type="PackedScene" uid="uid://ds7jatgbi07fv" path="res://BoardParts/ZoomArea/card_zoom.tscn" id="4_1bvp3"]
 
 [node name="Main" type="Node2D"]
@@ -40,12 +40,27 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 
-[node name="PlanHover" parent="CanvasLayer/MarginContainer/Screen/Top/SelectedItems" instance=ExtResource("4_1bvp3")]
+[node name="SpacerZoomTop" type="Control" parent="CanvasLayer/MarginContainer/Screen/Top/SelectedItems"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MinionZoom" parent="CanvasLayer/MarginContainer/Screen/Top/SelectedItems" instance=ExtResource("4_1bvp3")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+display_plans = false
 border = ExtResource("3_lquwl")
 
-[node name="Control" type="Control" parent="CanvasLayer/MarginContainer/Screen/Top/SelectedItems"]
+[node name="PlanZoom" parent="CanvasLayer/MarginContainer/Screen/Top/SelectedItems" instance=ExtResource("4_1bvp3")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="SpacerZoomBottom" type="Control" parent="CanvasLayer/MarginContainer/Screen/Top/SelectedItems"]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 

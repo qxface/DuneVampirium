@@ -18,3 +18,4 @@ func clear_players():
 	current_player_index = 0
 
 var plan_chosen: CardHand
+var minion_chosen: CardHand = null

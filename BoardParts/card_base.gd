@@ -1,7 +1,11 @@
+# res://BoardParts/card_base.gd
+# TODO: CardZoom should connect to plan/minion signals based on `display_plans` (see res://BoardParts/ZoomArea/card_zoom.gd)
 # res://BoardParts/plan_base.gd
 # res://BoardParts/PlayerHand/plan_hand.gd
 class_name CardBase
 extends Panel
+
+@export var display_plans: bool = true
 
 #enum CardParts {
 	#PRIMORI_BG, VOLUPTA, VORACE,

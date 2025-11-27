@@ -62,6 +62,12 @@ static func discard_plan(player: Player, card: Card) -> bool:
 	Signals.update_current_player_hand_display.emit()
 
 	return true
+static func discard_minion(player: Player, minion: Card) -> bool:
+	if player and minion and player.minion_pile.has(minion):
+		player.minion_pile.erase(minion)
+		player.discard_pile.append(minion)
+		return true
+	return false
 
 static func draw_minion(player: Player) -> void:
 	print("Drawing a minion card for ", player.player_name)

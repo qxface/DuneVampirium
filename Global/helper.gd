@@ -32,6 +32,7 @@ func create_random_plan() -> Card:
 	card.card_type = Card.CardType.PLAN
 	card.card_name = "Plan %s" % randi_range(1, 99)
 	card.card_description = "A plan that does %s" % randi_range(1, 99)
+	#var origins = [Card.OriginType.VAMPIRE, Card.OriginType.SUPERNATURAL, Card.OriginType.HUMAN, Card.OriginType.NONE]
 	card.origin = Card.OriginType.NONE
 	if odds_low():
 		card.origin = Card.OriginType.VAMPIRE
