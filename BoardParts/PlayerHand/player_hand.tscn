@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://docs8xbbyc615"]
+[gd_scene load_steps=5 format=3 uid="uid://docs8xbbyc615"]
 
 [ext_resource type="Script" uid="uid://7ltvmr1vitsq" path="res://BoardParts/PlayerHand/player_hand.gd" id="1_ms1yv"]
 [ext_resource type="PackedScene" uid="uid://cegqj5en7kabq" path="res://BoardParts/pile.tscn" id="1_vgske"]
 [ext_resource type="PackedScene" uid="uid://bq2ulfrqe5p4s" path="res://BoardParts/PlayerHand/card_hand.tscn" id="4_ggfjk"]
-[ext_resource type="StyleBox" uid="uid://ce52ar8aullls" path="res://UI/StyleBox/plan_normal.tres" id="4_ms1yv"]
 [ext_resource type="Texture2D" uid="uid://01vobardlvxa" path="res://assets/piles/discard_pile.png" id="7_ec6sj"]
 
 [node name="PlayerHand" type="MarginContainer"]
@@ -38,9 +37,12 @@ alignment = 2
 [node name="TopScrollContainer" type="ScrollContainer" parent="HBoxContainer/PlayerHand"]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 4
+vertical_scroll_mode = 0
 
 [node name="TopRow" type="HBoxContainer" parent="HBoxContainer/PlayerHand/TopScrollContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 alignment = 1
 
@@ -48,17 +50,15 @@ alignment = 1
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-border = ExtResource("4_ms1yv")
 
 [node name="HandCard4" parent="HBoxContainer/PlayerHand/TopScrollContainer/TopRow" instance=ExtResource("4_ggfjk")]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-border = ExtResource("4_ms1yv")
 
 [node name="BottomScrollContainer" type="ScrollContainer" parent="HBoxContainer/PlayerHand"]
 layout_mode = 2
-horizontal_scroll_mode = 2
+horizontal_scroll_mode = 4
 vertical_scroll_mode = 0
 
 [node name="BottomRow" type="HBoxContainer" parent="HBoxContainer/PlayerHand/BottomScrollContainer"]
@@ -72,13 +72,11 @@ alignment = 1
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-border = ExtResource("4_ms1yv")
 
 [node name="HandCard2" parent="HBoxContainer/PlayerHand/BottomScrollContainer/BottomRow" instance=ExtResource("4_ggfjk")]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-border = ExtResource("4_ms1yv")
 
 [node name="DiscardPile" parent="HBoxContainer" instance=ExtResource("1_vgske")]
 unique_name_in_owner = true

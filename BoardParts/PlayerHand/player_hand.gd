@@ -5,6 +5,8 @@ extends MarginContainer
 
 const PLAN_HAND = preload("res://BoardParts/PlayerHand/card_hand.tscn")
 const PLAN_WIDTH: int = 75
+const MINION_HAND = PLAN_HAND
+const MINION_WIDTH: int = 75
 
 @onready var top_row: HBoxContainer = %TopRow
 @onready var bottom_row: HBoxContainer = %BottomRow
@@ -42,6 +44,11 @@ func add_plan_hand() -> Control:
 	var plan_hand = PLAN_HAND.instantiate()
 	bottom_row.add_child(plan_hand)
 	return plan_hand
+# Function to add a new MinionHandCard dynamically
+func add_minion_hand() -> Control:
+	var minion_hand = PLAN_HAND.instantiate()
+	top_row.add_child(minion_hand)
+	return minion_hand
 
 # Function to add multiple PlanHandCards
 func add_plan_hands(count: int):
@@ -53,6 +60,15 @@ func add_plan_hands(count: int):
 			_set_plan_hand_sizing(plan_hand)
 	return plan_hands
 
+# Function to add multiple MinionHandCards
+func add_minion_hands(count: int):
+	var minion_hands = []
+	for i in range(count):
+		var minion_hand = add_minion_hand()
+		if minion_hand:
+			minion_hands.append(minion_hand)
+			_set_minion_hand_sizing(minion_hand)
+	return minion_hands
 
 func update_hand_display(player: Player):
 	if player == null:
@@ -65,7 +81,17 @@ func update_hand_display(player: Player):
 		discard_pile.update_card_count(player.discard_pile.size())
 	# Clear existing hand display
 	_clear_existing_card_hands()
-	# Create card displays for each card in hand
+	# Create minion displays for each minion in pile (TopRow)
+	for minion in player.minion_pile:
+		var minion_hand_instance: CardHand = PLAN_HAND.instantiate()
+		minion_hand_instance.player = player
+		top_row.add_child(minion_hand_instance)
+		if minion_hand_instance.has_method("set_card_data"):
+			minion_hand_instance.set_card_data(minion)
+		elif minion_hand_instance.has_method('load_minion'):
+			minion_hand_instance.load_minion(minion)
+		_set_minion_hand_sizing(minion_hand_instance)
+	# Create card displays for each card in hand (BottomRow)
 	for card in player.plan_hand:
 		var hand_card_instance: CardHand = PLAN_HAND.instantiate()
 		hand_card_instance.player = player
@@ -77,6 +103,7 @@ func update_hand_display(player: Player):
 			hand_card_instance.load_plan(card)
 		_set_plan_hand_sizing(hand_card_instance)
 	print("Updated hand display for ", player.player_name)
+	print("Minions: ", player.minion_pile.size())
 	print("Hand size: ", player.plan_hand.size())
 	print("Draw pile: ", player.draw_pile.size())
 	print("Discard pile: ", player.discard_pile.size())
@@ -86,10 +113,13 @@ func _set_plan_hand_sizing(plan_hand: Control):
 	plan_hand.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	# Also set vertical sizing to shrink center for consistency
 	plan_hand.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	# If you want the PlanHand to expand to fill available space instead, use:
-	# plan_hand.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	# plan_hand.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	pass
+
+func _set_minion_hand_sizing(minion_hand: Control):
+	minion_hand.custom_minimum_size.x = MINION_WIDTH
+	# Set horizontal sizing flags to shrink center
+	minion_hand.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	# Also set vertical sizing to shrink center for consistency
+	minion_hand.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 func _on_draw_pile_pressed() -> void:
 	Signals.draw_pile_pressed.emit()

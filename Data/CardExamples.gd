@@ -43,6 +43,80 @@ static func create_simple_card() -> Card:
 	
 	return card
 
+# Create Count Vladimir - aristocratic vampire minion
+static func create_count_vladimir() -> Card:
+	var card = Card.new()
+	
+	# Basic card properties
+	card.card_name = "Count Vladimir"
+	card.card_description = "An aristocratic Primori vampire with a taste for intrigue"
+	card.card_type = Card.CardType.MINION
+	
+	# Clan and action properties
+	card.is_primori = true
+	card.is_intrigue = true
+	card.origin = Card.OriginType.VAMPIRE
+	
+	# Activation 1: Action - Gain 2 secrets (intrigue action)
+	var action_reward = Reward.new()
+	action_reward.icon_type = IconTypes.Type.SECRETS
+	action_reward.amount = 2
+	action_reward.tag = "2"
+	card.action_activation = Activation.new(null, null, action_reward)
+	
+	# Activation 2: Reveal - Cost 1 blood, Gain 1 money
+	var reveal_cost = Cost.new()
+	reveal_cost.icon_type = IconTypes.Type.BLOOD
+	reveal_cost.amount = 1
+	reveal_cost.tag = "1"
+	
+	var reveal_reward = Reward.new()
+	reveal_reward.icon_type = IconTypes.Type.MONEY
+	reveal_reward.amount = 1
+	reveal_reward.tag = "1"
+	
+	card.reveal_activation = Activation.new(null, reveal_cost, reveal_reward)
+	
+	return card
+
+# Create Skitterfang - wererat minion
+static func create_skitterfang() -> Card:
+	var card = Card.new()
+	
+	# Basic card properties
+	card.card_name = "Skitterfang"
+	card.card_description = "A cunning wererat ally with hunting and battle prowess"
+	card.card_type = Card.CardType.MINION
+	
+	# Action properties (no clans)
+	card.is_hunting = true
+	card.is_battle = true
+	card.origin = Card.OriginType.SUPERNATURAL
+	
+	# Activation 1: Action - Gain 1 blood (hunting action)
+	var action_reward = Reward.new()
+	action_reward.icon_type = IconTypes.Type.BLOOD
+	action_reward.amount = 1
+	action_reward.tag = "1"
+	card.action_activation = Activation.new(null, null, action_reward)
+	
+	# Activation 2: Reveal - Gain 2 money
+	var reveal_reward = Reward.new()
+	reveal_reward.icon_type = IconTypes.Type.MONEY
+	reveal_reward.amount = 2
+	reveal_reward.tag = "2"
+	card.reveal_activation = Activation.new(null, null, reveal_reward)
+	
+	# Activation 3: Discard - Gain 1 secret
+	var discard_reward = Reward.new()
+	discard_reward.icon_type = IconTypes.Type.SECRETS
+	discard_reward.amount = 1
+	discard_reward.tag = "1"
+	card.discard_activation = Activation.new(null, null, discard_reward)
+	
+	return card
+
+
 
 # Create the "Vamp Out!" card with all the specified activations
 static func create_vamp_out_card() -> Card:

@@ -198,40 +198,109 @@ func update_current_player_label(player: Player):
 
 
 func initialize_player_cards():
-	# Initialize piles and add random plan/minion cards to each player
+	# Initialize piles and add cards to each player
 	for player: Player in Ref.players:
 		player.draw_pile = []
 		player.discard_pile = []
 		player.plan_hand = []
 		player.minion_pile = []
-
-		## Add "Vamp Out!" card to each player's hand
-		#var vamp_out_card = CardExamples.create_vamp_out_card()
-		#player.plan_hand.append(vamp_out_card)
-		#print("Added 'Vamp Out!' card to ", player.player_name, "'s hand")
-		#
-		## Add "Simple Card" after Vamp Out!
-		#var simple_card = CardExamples.create_simple_card()
-		#player.plan_hand.append(simple_card)
-		#print("Added 'Simple Card' to ", player.player_name, "'s hand")
-		
-		# Add remaining random cards to hand (two less since we added Vamp Out! and Simple Card)
-		for i in range(randi_range(4, 6)):
-			var random_card = Helper.create_random_plan()
-			player.plan_hand.append(random_card)
-			
+ 
+		# Add the two custom minions first
+		var vladimir = CardExamples.create_count_vladimir()
+		var skitterfang = CardExamples.create_skitterfang()
+		player.minion_pile.append(vladimir)
+		player.minion_pile.append(skitterfang)
+ 
+		# Add 2 more random minions
+		for i in range(2):
+			var random_minion = create_random_minion()
+			player.minion_pile.append(random_minion)
+ 
+		# Add some random plans
+		for i in range(5):
+			var random_plan = create_random_plan()
+			player.plan_hand.append(random_plan)
+ 
 		# Add cards to draw pile
 		for i in range(randi_range(10, 16)):
-			var random_card = Helper.create_random_plan()
+			var random_card = create_random_plan()
 			player.draw_pile.append(random_card)
-			
-		# Add minion cards
-		for i in range(randi_range(2, 4)):
-			var random_card = Helper.create_random_minion()
-			if random_card and random_card.card_type == Card.CardType.MINION:
-				player.minion_pile.append(random_card)
-			
-		print(player.player_name + " - Hand: " + str(player.plan_hand.size()) + " plan cards (including Vamp Out! and Simple Card), Draw Pile: " + str(player.draw_pile.size()) + " plan cards, Minions: " + str(player.minion_pile.size()) + " minion cards")
+ 
+		print(player.player_name + " - Hand: " + str(player.plan_hand.size()) + " plan cards, Draw Pile: " + str(player.draw_pile.size()) + " plan cards, Minions: " + str(player.minion_pile.size()) + " minion cards")
+func create_random_minion() -> Card:
+	var minion = Card.new()
+	minion.card_type = Card.CardType.MINION
+	# Random name and description
+	minion.card_name = "Random Minion " + str(randi() % 100)
+	minion.card_description = "A randomly generated minion"
+	# Random clan (at least one)
+	var clans = [true, false, false]
+	clans.shuffle()
+	minion.is_primori = clans[0]
+	minion.is_volupta = clans[1]
+	minion.is_vorace = clans[2]
+	# Random action (at least one)
+	var actions = [true, false, false]
+	actions.shuffle()
+	minion.is_intrigue = actions[0]
+	minion.is_hunting = actions[1]
+	minion.is_battle = actions[2]
+	# Random origin
+	var origins = [Card.OriginType.VAMPIRE, Card.OriginType.SUPERNATURAL, Card.OriginType.HUMAN]
+	minion.origin = origins[randi() % origins.size()]
+	# Random activation (1-2 activations)
+	var activation_count = randi() % 2 + 1
+	if activation_count >= 1:
+		var action_reward = Reward.new()
+		action_reward.icon_type = [IconTypes.Type.MONEY, IconTypes.Type.BLOOD, IconTypes.Type.SECRETS][randi() % 3]
+		action_reward.amount = randi() % 3 + 1
+		action_reward.tag = str(action_reward.amount)
+		minion.action_activation = Activation.new(null, null, action_reward)
+	if activation_count >= 2:
+		var reveal_reward = Reward.new()
+		reveal_reward.icon_type = [IconTypes.Type.MONEY, IconTypes.Type.BLOOD, IconTypes.Type.SECRETS][randi() % 3]
+		reveal_reward.amount = randi() % 3 + 1
+		reveal_reward.tag = str(reveal_reward.amount)
+		minion.reveal_activation = Activation.new(null, null, reveal_reward)
+	return minion
+
+func create_random_plan() -> Card:
+	var plan = Card.new()
+	plan.card_type = Card.CardType.PLAN
+	# Random name and description
+	plan.card_name = "Random Plan " + str(randi() % 100)
+	plan.card_description = "A randomly generated plan"
+	# Random clan (at least one)
+	var clans = [true, false, false]
+	clans.shuffle()
+	plan.is_primori = clans[0]
+	plan.is_volupta = clans[1]
+	plan.is_vorace = clans[2]
+	# Random action (at least one)
+	var actions = [true, false, false]
+	actions.shuffle()
+	plan.is_intrigue = actions[0]
+	plan.is_hunting = actions[1]
+	plan.is_battle = actions[2]
+	# Random origin
+	var origins = [Card.OriginType.VAMPIRE, Card.OriginType.SUPERNATURAL, Card.OriginType.HUMAN, Card.OriginType.NONE]
+	plan.origin = origins[randi() % origins.size()]
+	# Random activation (1 activation)
+	var activation_type = [Card.Activations.ACQUIRE, Card.Activations.ACTION, Card.Activations.REVEAL][randi() % 3]
+	var reward = Reward.new()
+	reward.icon_type = [IconTypes.Type.MONEY, IconTypes.Type.BLOOD, IconTypes.Type.SECRETS][randi() % 3]
+	reward.amount = randi() % 3 + 1
+	reward.tag = str(reward.amount)
+	match activation_type:
+		Card.Activations.ACQUIRE:
+			plan.acquire_activation = Activation.new(null, null, reward)
+		Card.Activations.ACTION:
+			plan.action_activation = Activation.new(null, null, reward)
+		Card.Activations.REVEAL:
+			plan.reveal_activation = Activation.new(null, null, reward)
+	return plan
+
+
 func draw_cards(player, count: int):
 	for i in range(count):
 		if player.draw_pile.is_empty():
