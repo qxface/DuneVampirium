@@ -1,0 +1,2 @@
+Effect
+CardData

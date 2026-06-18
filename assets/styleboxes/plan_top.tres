@@ -1,0 +1,5 @@
+[gd_resource type="StyleBoxFlat" format=3 uid="uid://b8cece11fau6u"]
+
+[resource]
+corner_radius_top_left = 7
+corner_radius_top_right = 7

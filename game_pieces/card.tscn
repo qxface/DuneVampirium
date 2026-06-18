@@ -1,0 +1,226 @@
+[gd_scene format=3 uid="uid://bkyqfqlxbnhql"]
+
+[ext_resource type="StyleBox" uid="uid://djf0c66c23ehw" path="res://assets/styleboxes/plan_normal.tres" id="1_hmfue"]
+[ext_resource type="Script" uid="uid://ch46kp4tyjki6" path="res://game_pieces/card.gd" id="2_hmfue"]
+[ext_resource type="Texture2D" uid="uid://b071i07wjkri4" path="res://assets/images/cards/minions/minion_02.png" id="3_1i5pp"]
+[ext_resource type="StyleBox" uid="uid://b8cece11fau6u" path="res://assets/styleboxes/plan_top.tres" id="3_jtuto"]
+[ext_resource type="Texture2D" uid="uid://bkkvqsxlqh60o" path="res://assets/icons/actions/battle.png" id="4_kicxe"]
+[ext_resource type="Texture2D" uid="uid://d0bau0mve7v8b" path="res://assets/icons/actions/hunting.png" id="5_oaj0s"]
+[ext_resource type="Texture2D" uid="uid://c3y84xua6m18p" path="res://assets/icons/actions/intrigue.png" id="6_lbpyt"]
+[ext_resource type="Texture2D" uid="uid://cpij7h4qc4i0i" path="res://assets/icons/origins/vampire.png" id="7_h8qr4"]
+[ext_resource type="Texture2D" uid="uid://6lqnj8qgqwsn" path="res://assets/icons/origins/supernatural.png" id="8_kvrdl"]
+[ext_resource type="Texture2D" uid="uid://ccwkfkibyebxn" path="res://assets/icons/origins/human.png" id="9_soe5h"]
+[ext_resource type="Texture2D" uid="uid://eo3tcu0xkg7n" path="res://assets/icons/clans/primori.png" id="10_cd7f1"]
+[ext_resource type="Texture2D" uid="uid://ccwja3gvw6swa" path="res://assets/icons/clans/vorace.png" id="11_3jvtn"]
+[ext_resource type="Texture2D" uid="uid://ptq3trepb5r6" path="res://assets/icons/clans/volupta.png" id="12_astg2"]
+[ext_resource type="StyleBox" uid="uid://bp5jfw8lkt0su" path="res://assets/styleboxes/minion_bottom.tres" id="13_vhwgv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b4rk6"]
+bg_color = Color(0.05490196, 0.003921569, 0.08627451, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6lcat"]
+bg_color = Color(0.972549, 0.96862745, 0.9490196, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ut1v0"]
+bg_color = Color(0.17254902, 0.5882353, 0.22352941, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vno60"]
+bg_color = Color(0.40392157, 0.22352941, 0.7372549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l0gnn"]
+bg_color = Color(0.7921569, 0.15686275, 0.15686275, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_is7yf"]
+bg_color = Color(0.05490196, 0.003921569, 0.08627451, 1)
+
+[node name="Card" type="Button" unique_id=989521482]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = ExtResource("1_hmfue")
+script = ExtResource("2_hmfue")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=954830392]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=176431963]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ImagePanel" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=567312032]
+unique_name_in_owner = true
+clip_children = 1
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("3_jtuto")
+
+[node name="Image" type="TextureRect" parent="MarginContainer/VBoxContainer/ImagePanel" unique_id=2146858355]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_1i5pp")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="PipsPanel" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=1334860062]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_b4rk6")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PipsPanel" unique_id=1185437889]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer" unique_id=788994857]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ActionPipsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer" unique_id=717180699]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer/ActionPipsContainer" unique_id=2109054611]
+layout_mode = 2
+texture = ExtResource("4_kicxe")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer/ActionPipsContainer" unique_id=1037125590]
+layout_mode = 2
+texture = ExtResource("5_oaj0s")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="TextureRect3" type="TextureRect" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer/ActionPipsContainer" unique_id=609538361]
+layout_mode = 2
+texture = ExtResource("6_lbpyt")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="OriginPipsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer" unique_id=1231886288]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="OriginVampire" type="TextureRect" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer/OriginPipsContainer" unique_id=151246665]
+layout_mode = 2
+texture = ExtResource("7_h8qr4")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="OriginSupernatural" type="TextureRect" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer/OriginPipsContainer" unique_id=97958441]
+visible = false
+layout_mode = 2
+texture = ExtResource("8_kvrdl")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="OriginHuman" type="TextureRect" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer/OriginPipsContainer" unique_id=604446155]
+visible = false
+layout_mode = 2
+texture = ExtResource("9_soe5h")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="TraitPipsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer" unique_id=1789512934]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer/TraitPipsContainer" unique_id=507588589]
+layout_mode = 2
+texture = ExtResource("10_cd7f1")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer/TraitPipsContainer" unique_id=967405403]
+visible = false
+layout_mode = 2
+texture = ExtResource("11_3jvtn")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="TextureRect3" type="TextureRect" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer/TraitPipsContainer" unique_id=2041129877]
+visible = false
+layout_mode = 2
+texture = ExtResource("12_astg2")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="ActionsPanel" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=1748047849]
+unique_name_in_owner = true
+clip_children = 1
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("13_vhwgv")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ActionsPanel" unique_id=233895626]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="AcquirePanel" type="Panel" parent="MarginContainer/VBoxContainer/ActionsPanel/VBoxContainer" unique_id=360850261]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_6lcat")
+
+[node name="AgentPanel" type="Panel" parent="MarginContainer/VBoxContainer/ActionsPanel/VBoxContainer" unique_id=382475413]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_ut1v0")
+
+[node name="RevealPanel" type="Panel" parent="MarginContainer/VBoxContainer/ActionsPanel/VBoxContainer" unique_id=318745772]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_vno60")
+
+[node name="DiscardPanel" type="Panel" parent="MarginContainer/VBoxContainer/ActionsPanel/VBoxContainer" unique_id=577035934]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_l0gnn")
+
+[node name="TrashPanel" type="Panel" parent="MarginContainer/VBoxContainer/ActionsPanel/VBoxContainer" unique_id=1546717679]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_is7yf")

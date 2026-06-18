@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://3wp5sg60ls1t"]
+
+[ext_resource type="PackedScene" uid="uid://bkyqfqlxbnhql" path="res://game_pieces/card.tscn" id="1_oyyit"]
+[ext_resource type="Script" uid="uid://doahmyco7m6dw" path="res://game_pieces/minion.gd" id="2_v6usv"]
+
+[node name="Minion" unique_id=989521482 instance=ExtResource("1_oyyit")]
+script = ExtResource("2_v6usv")

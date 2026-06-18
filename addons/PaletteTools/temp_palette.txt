@@ -1,0 +1,1 @@
+{"name":"vampire-16","author":"polyphrog","colors":["0e0116","340a43","6d1a3d","ca2828","e99039","f4e27b","95c74d","2c9639","0b4b3b","6739bc","7ca0f4","f8f7f2","9a826b","4b2933","9d442c","f8b97f"]}

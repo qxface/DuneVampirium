@@ -1,0 +1,8 @@
+res://game_pieces/card.gd
+res://game_pieces/board.tscn
+res://addons/PaletteTools/Resources/section_label_settings_contrast.tres
+res://game_pieces/plan.gd
+res://minion.gd
+res://game_pieces/card.tscn
+res://globals/event_manager.gd
+res://game_pieces/minion.tscn

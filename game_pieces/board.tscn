@@ -1,0 +1,79 @@
+[gd_scene format=3 uid="uid://dh1oh33iiy7b8"]
+
+[ext_resource type="Script" uid="uid://8i5e826ufvj7" path="res://game_pieces/card_scroller.gd" id="1_7tatt"]
+[ext_resource type="PackedScene" uid="uid://d1je5nhbvmmcy" path="res://game_pieces/plan.tscn" id="2_7tatt"]
+[ext_resource type="PackedScene" uid="uid://3wp5sg60ls1t" path="res://game_pieces/minion.tscn" id="2_amdnb"]
+[ext_resource type="Texture2D" uid="uid://d2jxjs4xpw5i" path="res://assets/dune.png" id="4_6nve1"]
+
+[node name="Board" type="Node2D" unique_id=548609043]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1446006295]
+
+[node name="HandHBoxContainer" type="HBoxContainer" parent="CanvasLayer" unique_id=421317124]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 571.0
+offset_top = 888.0
+offset_right = -304.0
+offset_bottom = 196.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MinionScrollContainer" type="ScrollContainer" parent="CanvasLayer/HandHBoxContainer" unique_id=16288140]
+custom_minimum_size = Vector2(500, 312)
+layout_mode = 2
+size_flags_vertical = 8
+script = ExtResource("1_7tatt")
+
+[node name="MinionHBoxContainer" type="HBoxContainer" parent="CanvasLayer/HandHBoxContainer/MinionScrollContainer" unique_id=945474847]
+layout_mode = 2
+
+[node name="Minion" parent="CanvasLayer/HandHBoxContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=1920950214 instance=ExtResource("2_amdnb")]
+layout_mode = 2
+
+[node name="Minion2" parent="CanvasLayer/HandHBoxContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=1983174667 instance=ExtResource("2_amdnb")]
+layout_mode = 2
+
+[node name="PlanScrollContainer" type="ScrollContainer" parent="CanvasLayer/HandHBoxContainer" unique_id=699583926]
+custom_minimum_size = Vector2(0, 312)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+script = ExtResource("1_7tatt")
+
+[node name="PlanHBoxContainer" type="HBoxContainer" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer" unique_id=517578962]
+layout_mode = 2
+
+[node name="Plan" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=989521482 instance=ExtResource("2_7tatt")]
+layout_mode = 2
+
+[node name="Plan2" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1424404299 instance=ExtResource("2_7tatt")]
+layout_mode = 2
+
+[node name="Plan3" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1159098316 instance=ExtResource("2_7tatt")]
+layout_mode = 2
+
+[node name="Plan4" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1593824595 instance=ExtResource("2_7tatt")]
+layout_mode = 2
+
+[node name="Plan5" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=425750903 instance=ExtResource("2_7tatt")]
+layout_mode = 2
+
+[node name="Plan6" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1513242304 instance=ExtResource("2_7tatt")]
+layout_mode = 2
+
+[node name="Plan7" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=755904273 instance=ExtResource("2_7tatt")]
+layout_mode = 2
+
+[node name="Dune" type="Sprite2D" parent="." unique_id=1834547570]
+texture = ExtResource("4_6nve1")
+centered = false
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1559144812]
+visible = false
+offset_left = 1234.0
+offset_top = 918.0
+offset_right = 1409.0
+offset_bottom = 1168.0
+color = Color(0, 1, 1, 1)
