@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SpaceData" format=3 uid="uid://dfgr8cgcw35aa"]
+
+[ext_resource type="Script" uid="uid://bs4qvqwaspx01" path="res://data/space_data/space_requirement.gd" id="1_hl"]
+[ext_resource type="Script" uid="uid://dqu08kcpq6id0" path="res://data/space_data/space_data.gd" id="2_hl"]
+
+[sub_resource type="Resource" id="Resource_hl1"]
+script = ExtResource("1_hl")
+origin = 1
+aspect = 3
+
+[resource]
+script = ExtResource("2_hl")
+requirement_clauses = Array[ExtResource("1_hl")]([SubResource("Resource_hl1")])
+metadata/_custom_type_script = "uid://dqu08kcpq6id0"

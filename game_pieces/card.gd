@@ -20,6 +20,10 @@ const LONG_PRESS_DURATION: float = 0.5
 @onready var image: TextureRect = %Image
 @onready var pips_panel: Panel = %PipsPanel
 
+@onready var action_pips: HBoxContainer = %ActionPipsContainer
+@onready var origin_pips: HBoxContainer = %OriginPipsContainer
+@onready var trait_pips: HBoxContainer = %TraitPipsContainer
+
 @onready var actions_panel: Panel = %ActionsPanel
 @onready var acquire_panel: Panel = %AcquirePanel
 @onready var agent_panel: Panel = %AgentPanel
@@ -41,6 +45,8 @@ var card_data: CardData:
 	set(value):
 		card_data = value
 		_load_card_image()
+		if is_node_ready():
+			_update_pips()
 
 var card_type: CardData.CardType = CardData.CardType.PLAN:
 	set(value):
@@ -70,6 +76,7 @@ var _move_tween: Tween
 # Guards the long-press timer below: cleared by button_up (or a fresh press)
 # so a short tap doesn't trigger the zoomed-in view.
 var _long_press_active: bool = false
+var _was_selected_on_press: bool = false
 
 # Timestamp (ms) of the last button_up, used to suppress the long-press timer
 # when a second press arrives quickly enough to be a double-click.
@@ -112,16 +119,14 @@ var selected: bool = false:
 			_move_to_holder()
 		else:
 			_move_to_hand()
+		Availability.update.call_deferred()
 
 func _ready() -> void:
 	button_down.connect(_on_button_down)
 	button_up.connect(_on_button_up)
 	card_type = card_type
-
-	# TEMP: until turn/game logic decides this, availability is randomized
-	# on startup.
-	available = randf() < 0.5
-
+	if card_data:
+		_update_pips()
 	# Start with processing off since cards aren't selected by default
 	set_process(false)
 
@@ -250,6 +255,28 @@ func _load_card_image() -> void:
 	else:
 		push_warning("Card: no artwork found for '%s' (tried %s)" % [base_name, path])
 
+# Shows/hides each pip icon to match the current card_data.
+# Action pips: index 0=battle, 1=hunt, 2=politics (intrigue icon).
+# Origin pips: index 0=vampire, 1=supernatural, 2=human.
+# Trait pips:  index 0=madness, 1=hideous, 2=sorcerous.
+func _update_pips() -> void:
+	if card_data == null:
+		return
+	if action_pips == null or origin_pips == null or trait_pips == null:
+		return
+
+	action_pips.get_child(0).visible = card_data.battle
+	action_pips.get_child(1).visible = card_data.hunt
+	action_pips.get_child(2).visible = card_data.politics
+
+	origin_pips.get_child(0).visible = card_data.origin == CardData.OriginType.VAMPIRE
+	origin_pips.get_child(1).visible = card_data.origin == CardData.OriginType.SUPERNATURAL
+	origin_pips.get_child(2).visible = card_data.origin == CardData.OriginType.HUMAN
+
+	trait_pips.get_child(0).visible = card_data.madness
+	trait_pips.get_child(1).visible = card_data.hideous
+	trait_pips.get_child(2).visible = card_data.sorcerous
+
 func _apply_availability_stylebox() -> void:
 	_set_stylebox(_sb_selected if available else _sb_normal)
 
@@ -261,8 +288,8 @@ func _set_stylebox(new_stylebox: StyleBoxFlat) -> void:
 	add_theme_stylebox_override("hover_pressed", new_stylebox)
 
 func _on_button_down() -> void:
-	print_debug("Card Size: %s" % [size])
-	if available and !selected:
+	_was_selected_on_press = selected
+	if not selected and available:
 		selected = true
 
 	var now_ms: int = Time.get_ticks_msec()
@@ -271,8 +298,10 @@ func _on_button_down() -> void:
 		_start_long_press_timer()
 
 func _on_button_up() -> void:
-	# A short tap releases before the timer fires, so this just prevents
-	# that pending timer from doing anything when it does go off.
+	# Deselect only on a short press of an already-selected card.
+	# If _long_press_active is false here the timer already fired (zoom), so skip.
+	if _was_selected_on_press and _long_press_active:
+		selected = false
 	_long_press_active = false
 	_last_button_up_ms = Time.get_ticks_msec()
 

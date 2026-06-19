@@ -24,6 +24,7 @@ func _ready() -> void:
 	if hand_row:
 		hand_row.sort_children.connect(_raise_holders)
 	_raise_holders.call_deferred()
+	Availability.update.call_deferred()
 
 func _raise_holders() -> void:
 	var viewport_height: float = get_viewport().get_visible_rect().size.y

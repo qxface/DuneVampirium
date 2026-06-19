@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SpaceData" format=3 uid="uid://d1pseiq07xhnf"]
+
+[ext_resource type="Script" uid="uid://bs4qvqwaspx01" path="res://data/space_data/space_requirement.gd" id="1_04rh6"]
+[ext_resource type="Script" uid="uid://dqu08kcpq6id0" path="res://data/space_data/space_data.gd" id="2_xvykx"]
+
+[sub_resource type="Resource" id="Resource_04rh6"]
+script = ExtResource("1_04rh6")
+origin = 0
+action = 2
+
+[sub_resource type="Resource" id="Resource_xvykx"]
+script = ExtResource("1_04rh6")
+origin = 1
+action = 2
+
+[resource]
+script = ExtResource("2_xvykx")
+requirement_clauses = Array[ExtResource("1_04rh6")]([SubResource("Resource_04rh6"), SubResource("Resource_xvykx")])
+metadata/_custom_type_script = "uid://dqu08kcpq6id0"

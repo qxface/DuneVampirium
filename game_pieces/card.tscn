@@ -101,6 +101,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="ActionPipsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer" unique_id=717180699]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
@@ -124,6 +125,7 @@ expand_mode = 2
 stretch_mode = 4
 
 [node name="OriginPipsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer" unique_id=1231886288]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
@@ -150,6 +152,7 @@ expand_mode = 2
 stretch_mode = 4
 
 [node name="TraitPipsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PipsPanel/MarginContainer/HBoxContainer" unique_id=1789512934]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0

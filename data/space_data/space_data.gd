@@ -24,56 +24,27 @@ var space_name: String = "New Space":
 # ==============================================================================
 # REQUIREMENTS
 # ------------------------------------------------------------------------------
-# A Card HAS traits (an Origin, plus whichever Action/Aspect booleans are
-# true). A Space instead REQUIRES traits: to make a move, a player sends one
-# Minion and one Plan from their hand to a Space, and between that pair, every
-# requirement flagged true below must be covered by at least one of the two
-# cards. Any extra traits the cards have beyond what's required are
-# irrelevant.
+# A Space has zero or more SpaceRequirement clauses. Each clause is an AND of
+# up to one pip per category (Origin, Action, Aspect). The clauses are OR'd:
+# a Minion+Plan pair satisfies the Space when it satisfies ANY one clause.
+#
+# Examples:
+#   [ {Supernatural, Politics} ]              → must have Supernatural AND Politics
+#   [ {Vampire}, {Human, Battle} ]            → Vampire OR (Human AND Battle)
+#   []                                        → open space, any pair qualifies
 # ==============================================================================
+@export_group("Requirements")
+@export var requirement_clauses: Array[SpaceRequirement] = []
 
-@export_group("Origin Requirements")
-@export var requires_vampire: bool = false
-@export var requires_supernatural: bool = false
-@export var requires_human: bool = false
-
-@export_group("Action Requirements")
-@export var requires_politics: bool = false
-@export var requires_hunt: bool = false
-@export var requires_battle: bool = false
-
-@export_group("Aspect Requirements")
-@export var requires_madness: bool = false
-@export var requires_hideous: bool = false
-@export var requires_sorcerous: bool = false
-
-# Whether the given Minion + Plan pair, together, satisfy every requirement
-# this Space has. For each requirement flag set true above, at least one of
-# the two cards must have that corresponding trait true; which of the two
-# cards covers it doesn't matter.
+# Whether the given Minion+Plan pair satisfies this Space's requirements.
+# An empty clause list means the space is open — any pair qualifies.
 func is_satisfied_by(minion: CardData, plan: CardData) -> bool:
-	if requires_vampire and !(minion.vampire or plan.vampire):
-		return false
-	if requires_supernatural and !(minion.supernatural or plan.supernatural):
-		return false
-	if requires_human and !(minion.human or plan.human):
-		return false
-
-	if requires_politics and !(minion.politics or plan.politics):
-		return false
-	if requires_hunt and !(minion.hunt or plan.hunt):
-		return false
-	if requires_battle and !(minion.battle or plan.battle):
-		return false
-
-	if requires_madness and !(minion.madness or plan.madness):
-		return false
-	if requires_hideous and !(minion.hideous or plan.hideous):
-		return false
-	if requires_sorcerous and !(minion.sorcerous or plan.sorcerous):
-		return false
-
-	return true
+	if requirement_clauses.is_empty():
+		return true
+	for clause in requirement_clauses:
+		if clause != null and clause.is_satisfied_by(minion, plan):
+			return true
+	return false
 
 # ==============================================================================
 # INTERNAL RESOURCE VALIDATION ENGINE
@@ -81,11 +52,15 @@ func is_satisfied_by(minion: CardData, plan: CardData) -> bool:
 func _get_data_warnings() -> PackedStringArray:
 	var warnings := PackedStringArray()
 
-	var has_any_requirement: bool = requires_vampire or requires_supernatural or requires_human \
-		or requires_politics or requires_hunt or requires_battle \
-		or requires_madness or requires_hideous or requires_sorcerous
+	if requirement_clauses.is_empty():
+		warnings.append("No requirement clauses — any pair of cards satisfies this space.")
+		return warnings
 
-	if !has_any_requirement:
-		warnings.append("Space has no requirements set - any pair of cards would satisfy it.")
+	for i in requirement_clauses.size():
+		var clause: SpaceRequirement = requirement_clauses[i]
+		if clause == null:
+			warnings.append("Clause %d is null." % (i + 1))
+		elif clause.is_empty():
+			warnings.append("Clause %d has no requirements set — it will always pass." % (i + 1))
 
 	return warnings

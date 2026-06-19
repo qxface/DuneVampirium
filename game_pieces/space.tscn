@@ -1,0 +1,114 @@
+[gd_scene format=3 uid="uid://space000001"]
+
+[ext_resource type="Script" uid="uid://c1sbl40nn3m6x" path="res://game_pieces/space.gd" id="1_space"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.12, 0.1, 0.08, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.35, 0.28, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_reqs"]
+bg_color = Color(0.08, 0.06, 0.05, 1)
+corner_radius_top_left = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_image"]
+bg_color = Color(0.05, 0.04, 0.03, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_future"]
+bg_color = Color(0.1, 0.08, 0.07, 1)
+corner_radius_bottom_right = 4
+
+[node name="Space" type="Button" unique_id=751063739]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_bg")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bg")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bg")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bg")
+script = ExtResource("1_space")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=2111297735]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=735032476]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RequirementsPanel" type="Panel" parent="MarginContainer/HBoxContainer" unique_id=1065640833]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_reqs")
+
+[node name="ReqsMargin" type="MarginContainer" parent="MarginContainer/HBoxContainer/RequirementsPanel" unique_id=816318778]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 6
+
+[node name="RequirementsContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/RequirementsPanel/ReqsMargin" unique_id=1519166542]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="RightColumn" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=120810785]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="ImagePanel" type="Panel" parent="MarginContainer/HBoxContainer/RightColumn" unique_id=794297849]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_image")
+
+[node name="SpaceImage" type="TextureRect" parent="MarginContainer/HBoxContainer/RightColumn/ImagePanel" unique_id=333576964]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 402.0
+offset_top = -316.0
+offset_right = 402.0
+offset_bottom = -316.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 2
+stretch_mode = 6
+
+[node name="FuturePanel" type="Panel" parent="MarginContainer/HBoxContainer/RightColumn" unique_id=620031332]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_future")

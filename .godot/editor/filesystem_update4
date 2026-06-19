@@ -14,3 +14,12 @@ res://globals/card_zoom.gd
 res://game_pieces/minion_zoom.gd
 res://game_pieces/plan_zoom.gd
 res://game_pieces/card.tscn
+res://data/space_data/space_data.gd
+res://data/space_data/eat_a_human.tres
+res://data/space_data/vampire_ministry.tres
+res://game_pieces/space.gd
+res://game_pieces/space_zoom.gd
+res://game_pieces/space.tscn
+res://globals/availability.gd
+res://data/card_data/bodice_ripping_catfight.tres
+res://data/card_data/vorace_newblood.tres

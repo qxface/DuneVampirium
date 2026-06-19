@@ -6,6 +6,7 @@ const CARD_SIZE: Vector2 = Vector2(175, 250)
 const DATA_OPTIONS: Array[CardData] = [
 	preload("res://data/card_data/volupta_newblood.tres"),
 	preload("res://data/card_data/primori_newblood.tres"),
+	preload("res://data/card_data/vorace_newblood.tres"),
 ]
 
 const ZOOM_SCENE: PackedScene = preload("res://game_pieces/minion_zoom.tscn")

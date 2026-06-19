@@ -6,6 +6,7 @@ const CARD_SIZE: Vector2 = Vector2(175, 250)
 const DATA_OPTIONS: Array[CardData] = [
 	preload("res://data/card_data/campaign.tres"),
 	preload("res://data/card_data/feed.tres"),
+	preload("res://data/card_data/bodice_ripping_catfight.tres"),
 ]
 
 const ZOOM_SCENE: PackedScene = preload("res://game_pieces/plan_zoom.tscn")
