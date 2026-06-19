@@ -5,3 +5,12 @@ res://addons/PaletteTools/Resources/section_label_settings_contrast.tres
 res://game_pieces/board.gd
 res://game_pieces/minion.gd
 res://game_pieces/plan.gd
+res://data/card_data/campaign.tres
+res://globals/helper.gd
+res://data/card_data/feed.tres
+res://data/card_data/volupta_newblood.tres
+res://data/card_data/primori_newblood.tres
+res://globals/card_zoom.gd
+res://game_pieces/minion_zoom.gd
+res://game_pieces/plan_zoom.gd
+res://game_pieces/card.tscn

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://syuxxmxmps4v"
-path="res://.godot/imported/plan_01.png-0aceeb540303d928ea90df178336f061.ctex"
+uid="uid://dxo34g7sy5f2k"
+path="res://.godot/imported/campaign.png-e3210a9fccfcad536e486622bb1c75f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/cards/plans/plan_01.png"
-dest_files=["res://.godot/imported/plan_01.png-0aceeb540303d928ea90df178336f061.ctex"]
+source_file="res://assets/images/cards/plans/campaign.png"
+dest_files=["res://.godot/imported/campaign.png-e3210a9fccfcad536e486622bb1c75f7.ctex"]
 
 [params]
 

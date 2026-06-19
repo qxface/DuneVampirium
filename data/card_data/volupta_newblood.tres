@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://d068m2rnkynrp"]
+
+[ext_resource type="Script" uid="uid://bmdj0vckfab1y" path="res://data/effects/effect.gd" id="1_gn6dd"]
+[ext_resource type="Script" uid="uid://dou2ghrkgygj0" path="res://data/card_data/card_data.gd" id="2_pwmc7"]
+
+[resource]
+script = ExtResource("2_pwmc7")
+status_check = "✅ ALL ACTIONS VALID"
+card_type = 1
+origin = 0
+hunt = true
+metadata/_custom_type_script = "uid://dou2ghrkgygj0"

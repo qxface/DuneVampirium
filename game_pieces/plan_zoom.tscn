@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://d1je5nhbvmmcy" path="res://game_pieces/plan.tscn" id="1_zoom"]
+[ext_resource type="Script" path="res://game_pieces/plan_zoom.gd" id="2_zoom"]
+
+[node name="PlanZoom" instance=ExtResource("1_zoom")]
+script = ExtResource("2_zoom")

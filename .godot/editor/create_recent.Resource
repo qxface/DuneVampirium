@@ -1,2 +1,2 @@
-Effect
 CardData
+Effect

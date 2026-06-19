@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b6flv1qf1nktg"
-path="res://.godot/imported/minion_01.png-532135e6bdf12865169515470911bace.ctex"
+path="res://.godot/imported/default_minion.png-6cc5fce4b3676751bd339c4bfe467601.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/cards/minions/minion_01.png"
-dest_files=["res://.godot/imported/minion_01.png-532135e6bdf12865169515470911bace.ctex"]
+source_file="res://assets/images/cards/minions/default_minion.png"
+dest_files=["res://.godot/imported/default_minion.png-6cc5fce4b3676751bd339c4bfe467601.ctex"]
 
 [params]
 

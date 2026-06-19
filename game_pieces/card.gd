@@ -12,10 +12,13 @@ const PLAN_NORMAL = preload("uid://djf0c66c23ehw")
 const PLAN_TOP = preload("uid://b8cece11fau6u")
 
 const MOVE_DURATION: float = 0.25
+const LONG_PRESS_DURATION: float = 0.5
 
 #On Ready
+@onready var outer_margin: MarginContainer = %MarginContainer
 @onready var image_panel: Panel = %ImagePanel
 @onready var image: TextureRect = %Image
+@onready var pips_panel: Panel = %PipsPanel
 
 @onready var actions_panel: Panel = %ActionsPanel
 @onready var acquire_panel: Panel = %AcquirePanel
@@ -29,6 +32,15 @@ const MOVE_DURATION: float = 0.25
 #Internal
 var _sb_normal: StyleBoxFlat
 var _sb_selected: StyleBoxFlat
+
+# The gameplay data (Origin/Actions/Aspects/etc.) this card instance
+# represents. Randomly assigned at _ready by the Plan/Minion subclass from
+# its own pool of possible CardData resources. Setting it loads the matching
+# artwork into the Image node.
+var card_data: CardData:
+	set(value):
+		card_data = value
+		_load_card_image()
 
 var card_type: CardData.CardType = CardData.CardType.PLAN:
 	set(value):
@@ -54,6 +66,15 @@ var _origin_index: int = -1
 # wins out over any layout container trying to reposition us mid-flight.
 var _target_global_position: Vector2
 var _move_tween: Tween
+
+# Guards the long-press timer below: cleared by button_up (or a fresh press)
+# so a short tap doesn't trigger the zoomed-in view.
+var _long_press_active: bool = false
+
+# Timestamp (ms) of the last button_up, used to suppress the long-press timer
+# when a second press arrives quickly enough to be a double-click.
+var _last_button_up_ms: int = -1
+const DOUBLE_CLICK_MS: int = 400
 
 # Whether this card can currently be interacted with. Drives the stylebox
 # (highlighted vs normal); selection no longer changes the stylebox.
@@ -94,6 +115,7 @@ var selected: bool = false:
 
 func _ready() -> void:
 	button_down.connect(_on_button_down)
+	button_up.connect(_on_button_up)
 	card_type = card_type
 
 	# TEMP: until turn/game logic decides this, availability is randomized
@@ -208,6 +230,26 @@ func deselect() -> void:
 func _setup_styleboxes() -> void:
 	pass
 
+# Loads the artwork matching card_data's resource file name (e.g.
+# "feed.tres" -> "feed.png") from this card type's image folder. Falls back
+# to a "default_<type>.png" in that same folder if no matching file exists.
+func _load_card_image() -> void:
+	if image == null or card_data == null:
+		return
+
+	var type_keyword: String = CardData.CardType.keys()[card_type].to_lower()
+	var folder: String = "res://assets/images/cards/%ss" % type_keyword
+	var base_name: String = card_data.resource_path.get_file().get_basename()
+
+	var path: String = "%s/%s.png" % [folder, base_name]
+	if not ResourceLoader.exists(path):
+		path = "%s/default_%s.png" % [folder, type_keyword]
+
+	if ResourceLoader.exists(path):
+		image.texture = load(path)
+	else:
+		push_warning("Card: no artwork found for '%s' (tried %s)" % [base_name, path])
+
 func _apply_availability_stylebox() -> void:
 	_set_stylebox(_sb_selected if available else _sb_normal)
 
@@ -222,3 +264,115 @@ func _on_button_down() -> void:
 	print_debug("Card Size: %s" % [size])
 	if available and !selected:
 		selected = true
+
+	var now_ms: int = Time.get_ticks_msec()
+	var is_double_click: bool = _last_button_up_ms >= 0 and (now_ms - _last_button_up_ms) < DOUBLE_CLICK_MS
+	if not is_double_click:
+		_start_long_press_timer()
+
+func _on_button_up() -> void:
+	# A short tap releases before the timer fires, so this just prevents
+	# that pending timer from doing anything when it does go off.
+	_long_press_active = false
+	_last_button_up_ms = Time.get_ticks_msec()
+
+# Long-pressing works on any card - available or not, regardless of who it
+# belongs to - since it's just for getting a closer look, not an action.
+func _start_long_press_timer() -> void:
+	_long_press_active = true
+	get_tree().create_timer(LONG_PRESS_DURATION).timeout.connect(_on_long_press_timeout)
+
+func _on_long_press_timeout() -> void:
+	if _long_press_active:
+		_long_press_active = false
+		CardZoom.show_zoom_of(self)
+
+# Called by card_scroller.gd when a drag has moved far enough to trigger a
+# hand scroll, so a long-press that was just starting (because the player's
+# initial touch happened to land on a card) doesn't pop up a zoom view out
+# from under a scroll gesture.
+func cancel_long_press() -> void:
+	_long_press_active = false
+
+# Returns the PackedScene to instantiate for this card's long-press zoom
+# popup. Overridden by Minion/Plan to point at their *Zoom scene; base Card
+# has none.
+func _get_zoom_scene() -> PackedScene:
+	return null
+
+# Resizes this card to fill the screen vertically while preserving the given
+# width/height aspect ratio. Used by the *Zoom variants (MinionZoom,
+# PlanZoom) to blow themselves up to a large, readable size - since the
+# internal layout is all Containers/anchors, growing the root size like this
+# makes every child resize right along with it, staying crisp rather than
+# stretching a small captured texture.
+#
+# card.tscn's outer MarginContainer uses this on all four sides, matching
+# the root stylebox's border_width so the inner content starts right at the
+# inside edge of the border. _make_scaled_stylebox grows that border by
+# _size_scale_factor, so the margin needs to grow by the same amount to keep
+# matching it.
+const OUTER_MARGIN_BASE: int = 8
+
+# image_panel is the one exception: Minion/Plan give it a fixed pixel height
+# (so it looks right at hand-sized CARD_SIZE), which doesn't grow on its own
+# just because the root got bigger. Rescale it - and pips_panel's minimum
+# height, and the outer margin - by the same factor the card as a whole just
+# grew by, so everything keeps the same proportion of the card at any size.
+func _resize_to_fill_screen_vertically(aspect_ratio: float) -> void:
+	var viewport_height: float = get_viewport().get_visible_rect().size.y
+	var target_size: Vector2 = Vector2(viewport_height * aspect_ratio, viewport_height)
+	_size_scale_factor = target_size.y / size.y
+
+	size = target_size
+	custom_minimum_size = target_size
+
+	if image_panel:
+		image_panel.custom_minimum_size.y *= _size_scale_factor
+
+	if pips_panel:
+		pips_panel.custom_minimum_size.y *= _size_scale_factor
+
+	if outer_margin:
+		var scaled_margin: int = roundi(OUTER_MARGIN_BASE * _size_scale_factor)
+		outer_margin.add_theme_constant_override("margin_left", scaled_margin)
+		outer_margin.add_theme_constant_override("margin_top", scaled_margin)
+		outer_margin.add_theme_constant_override("margin_right", scaled_margin)
+		outer_margin.add_theme_constant_override("margin_bottom", scaled_margin)
+
+# How much bigger (or smaller) than CARD_SIZE this instance currently is.
+# Set by _resize_to_fill_screen_vertically; stays 1.0 for ordinary
+# hand-sized cards. The *Zoom variants use this to scale up corner radii and
+# border widths to match, via _make_scaled_stylebox below - otherwise a
+# stylebox tuned to look right at CARD_SIZE (e.g. a corner radius just big
+# enough to clamp into a half-circle cap) stops looking right once the card
+# is blown up much bigger.
+var _size_scale_factor: float = 1.0
+
+# Returns a copy of base with its corner radii and border widths scaled by
+# _size_scale_factor, so a stylebox designed for hand-sized CARD_SIZE still
+# looks correctly proportioned on a much bigger zoomed-in card.
+func _make_scaled_stylebox(base: StyleBoxFlat) -> StyleBoxFlat:
+	var scaled: StyleBoxFlat = base.duplicate()
+	if _size_scale_factor == 1.0:
+		return scaled
+
+	scaled.corner_radius_top_left = roundi(base.corner_radius_top_left * _size_scale_factor)
+	scaled.corner_radius_top_right = roundi(base.corner_radius_top_right * _size_scale_factor)
+	scaled.corner_radius_bottom_left = roundi(base.corner_radius_bottom_left * _size_scale_factor)
+	scaled.corner_radius_bottom_right = roundi(base.corner_radius_bottom_right * _size_scale_factor)
+	scaled.border_width_left = roundi(base.border_width_left * _size_scale_factor)
+	scaled.border_width_top = roundi(base.border_width_top * _size_scale_factor)
+	scaled.border_width_right = roundi(base.border_width_right * _size_scale_factor)
+	scaled.border_width_bottom = roundi(base.border_width_bottom * _size_scale_factor)
+
+	# StyleBoxFlat approximates rounded corners with a fixed number of
+	# straight segments (corner_detail). That count was fine for the small
+	# radii at hand-sized CARD_SIZE, but the same segment count stretched
+	# around a much bigger curve is what's producing the faceted/jagged
+	# diagonal edges - so use the max for any corner that's actually rounded.
+	if base.corner_radius_top_left > 0 or base.corner_radius_top_right > 0 \
+			or base.corner_radius_bottom_left > 0 or base.corner_radius_bottom_right > 0:
+		scaled.corner_detail = 20
+
+	return scaled

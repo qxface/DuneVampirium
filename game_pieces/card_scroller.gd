@@ -49,5 +49,17 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and _dragging:
 		var delta_x: float = event.position.x - _drag_start_x
 		if abs(delta_x) > _drag_threshold:
+			# The press that started this drag landed on some card; if it was
+			# mid-long-press, the player is scrolling instead of holding
+			# still to inspect it, so don't let the zoom popup fire.
+			_cancel_pending_long_presses()
 			scroll_horizontal = _scroll_start_horizontal - int(delta_x)
 			get_viewport().set_input_as_handled()
+
+# Cancels any card's pending long-press timer. At most one card can
+# realistically be mid-press when a scroll drag starts, so it's simplest to
+# just sweep the whole CARD group rather than track which one was pressed.
+func _cancel_pending_long_presses() -> void:
+	for card in get_tree().get_nodes_in_group("CARD"):
+		if card is Card:
+			card.cancel_long_press()
