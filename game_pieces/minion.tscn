@@ -4,7 +4,11 @@
 [ext_resource type="StyleBox" uid="uid://dkl6uaeopqebv" path="res://assets/styleboxes/minion_normal.tres" id="2_nhi2g"]
 [ext_resource type="Script" uid="uid://doahmyco7m6dw" path="res://game_pieces/minion.gd" id="2_v6usv"]
 [ext_resource type="StyleBox" uid="uid://c0dvkjiuc6ckk" path="res://assets/styleboxes/minion_top.tres" id="4_o7ha7"]
-[ext_resource type="StyleBox" uid="uid://bp5jfw8lkt0su" path="res://assets/styleboxes/minion_bottom.tres" id="5_o7ha7"]
+[ext_resource type="FontFile" uid="uid://0twfd34avp1p" path="res://assets/fonts/GrenzeGotisch-VariableFont_wght.ttf" id="5_o7ha7"]
+[ext_resource type="LabelSettings" uid="uid://djkh735gqoly2" path="res://assets/styleboxes/card_name_label.tres" id="6_t6it3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t6it3"]
+bg_color = Color(0.972549, 0.96862745, 0.9490196, 1)
 
 [node name="Minion" unique_id=989521482 instance=ExtResource("1_oyyit")]
 custom_minimum_size = Vector2(175, 250)
@@ -17,5 +21,10 @@ script = ExtResource("2_v6usv")
 custom_minimum_size = Vector2(0, 88)
 theme_override_styles/panel = ExtResource("4_o7ha7")
 
-[node name="ActionsPanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="2" unique_id=1748047849]
-theme_override_styles/panel = ExtResource("5_o7ha7")
+[node name="NamePanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="1" unique_id=547166090]
+custom_minimum_size = Vector2(0, 20)
+theme_override_styles/panel = SubResource("StyleBoxFlat_t6it3")
+
+[node name="NameLabel" parent="MarginContainer/VBoxContainer/NamePanel" index="0" unique_id=1237052193]
+theme_override_fonts/font = ExtResource("5_o7ha7")
+label_settings = ExtResource("6_t6it3")

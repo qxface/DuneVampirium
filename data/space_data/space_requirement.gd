@@ -3,20 +3,25 @@ class_name SpaceRequirement
 extends Resource
 
 # One AND-clause in a Space's requirement list.
-# Each category is optional (NONE = no requirement for that category).
-# A Minion+Plan pair satisfies this clause when, for every non-NONE field,
+# Each category is optional (false = no requirement for that category).
+# A Minion+Plan pair satisfies this clause when, for every non-false field,
 # at least one of the two cards carries that pip.
 
 enum ActionRequirement { NONE, POLITICS, HUNT, BATTLE }
 enum AspectRequirement { NONE, MADNESS, HIDEOUS, SORCEROUS }
 
-@export var origin: CardData.OriginType = CardData.OriginType.NONE
+@export_group("Origin")
+@export var vampire: bool = false
+@export var supernatural: bool = false
+@export var human: bool = false
+
+@export_group("Other")
 @export var action: ActionRequirement = ActionRequirement.NONE
 @export var aspect: AspectRequirement = AspectRequirement.NONE
 
 # True when this clause imposes no requirements at all.
 func is_empty() -> bool:
-	return origin == CardData.OriginType.NONE \
+	return not vampire and not supernatural and not human \
 		and action == ActionRequirement.NONE \
 		and aspect == AspectRequirement.NONE
 
@@ -31,16 +36,15 @@ func is_satisfied_by(minion: CardData, plan: CardData) -> bool:
 	return true
 
 func _check_origin(minion: CardData, plan: CardData) -> bool:
-	match origin:
-		CardData.OriginType.NONE:
-			return true
-		CardData.OriginType.VAMPIRE:
-			return minion.vampire or plan.vampire
-		CardData.OriginType.SUPERNATURAL:
-			return minion.supernatural or plan.supernatural
-		CardData.OriginType.HUMAN:
-			return minion.human or plan.human
-	return true
+	if not vampire and not supernatural and not human:
+		return true
+	if vampire and (minion.vampire or plan.vampire):
+		return true
+	if supernatural and (minion.supernatural or plan.supernatural):
+		return true
+	if human and (minion.human or plan.human):
+		return true
+	return false
 
 func _check_action(minion: CardData, plan: CardData) -> bool:
 	match action:
@@ -66,11 +70,15 @@ func _check_aspect(minion: CardData, plan: CardData) -> bool:
 			return minion.sorcerous or plan.sorcerous
 	return true
 
-# Human-readable summary, e.g. "Vampire · Politics · Madness" or "Human"
+# Human-readable summary, e.g. "Vampire · Supernatural · Politics"
 func to_label() -> String:
 	var parts: Array[String] = []
-	if origin != CardData.OriginType.NONE:
-		parts.append(CardData.OriginType.keys()[origin].capitalize())
+	if vampire:
+		parts.append("Vampire")
+	if supernatural:
+		parts.append("Supernatural")
+	if human:
+		parts.append("Human")
 	if action != ActionRequirement.NONE:
 		parts.append(ActionRequirement.keys()[action].capitalize())
 	if aspect != AspectRequirement.NONE:

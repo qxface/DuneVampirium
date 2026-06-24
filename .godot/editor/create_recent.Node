@@ -1,3 +1,6 @@
+Panel
+Label
+RichTextLabel
 HBoxContainer
 TextureRect
 GridContainer
@@ -7,6 +10,5 @@ Area2D
 MarginContainer
 ScrollContainer
 CanvasLayer
-Panel
 VBoxContainer
 Button

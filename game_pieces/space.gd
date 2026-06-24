@@ -97,8 +97,12 @@ func _populate_requirements() -> void:
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 0)
 
-		if clause.origin != CardData.OriginType.NONE:
-			_add_icon(row, _origin_icon_path(clause.origin))
+		if clause.vampire:
+			_add_icon(row, "res://assets/icons/origins/vampire.png")
+		if clause.supernatural:
+			_add_icon(row, "res://assets/icons/origins/supernatural.png")
+		if clause.human:
+			_add_icon(row, "res://assets/icons/origins/human.png")
 		if clause.action != SpaceRequirement.ActionRequirement.NONE:
 			_add_icon(row, _action_icon_path(clause.action))
 		if clause.aspect != SpaceRequirement.AspectRequirement.NONE:
@@ -116,13 +120,6 @@ func _add_icon(container: HBoxContainer, icon_path: String) -> void:
 	icon.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	icon.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	container.add_child(icon)
-
-func _origin_icon_path(origin: CardData.OriginType) -> String:
-	match origin:
-		CardData.OriginType.VAMPIRE:      return "res://assets/icons/origins/vampire.png"
-		CardData.OriginType.SUPERNATURAL: return "res://assets/icons/origins/supernatural.png"
-		CardData.OriginType.HUMAN:        return "res://assets/icons/origins/human.png"
-	return ""
 
 func _action_icon_path(action: SpaceRequirement.ActionRequirement) -> String:
 	match action:

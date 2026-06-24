@@ -7,13 +7,6 @@ enum CardType {
 	MINION
 }
 
-enum OriginType {
-	VAMPIRE,
-	SUPERNATURAL,
-	HUMAN,
-	NONE
-}
-
 enum CostType {
 	MONEY,
 	BLOOD,
@@ -54,38 +47,12 @@ var card_name: String = "New Card":
 @export var card_type: CardType = CardType.PLAN:
 	set(value):
 		card_type = value
-		# Data Validation Rule 1: If it's a Plan, force origin to NONE
-		if card_type == CardType.PLAN:
-			origin = OriginType.NONE
-		# Data Validation Rule 2: If switched to Minion and origin is NONE, default to HUMAN
-		elif card_type == CardType.MINION and origin == OriginType.NONE:
-			origin = OriginType.HUMAN
-		
-		notify_property_list_changed() # Refreshes the inspector view
+		notify_property_list_changed()
 
 @export_group("Origin")
-@export var origin: OriginType = OriginType.NONE:
-	set(value):
-		# Data Validation Rule 3: Enforce that Minions can't be NONE, and Plans MUST be NONE
-		if card_type == CardType.PLAN:
-			origin = OriginType.NONE
-		elif card_type == CardType.MINION and value == OriginType.NONE:
-			# Prevent changing to NONE if it's a minion (keep old value or default to HUMAN)
-			if origin == OriginType.NONE:
-				origin = OriginType.HUMAN 
-			else:
-				push_warning("Minions cannot have an origin of NONE!")
-		else:
-			origin = value
-var vampire: bool:
-	get:
-		return origin == OriginType.VAMPIRE
-var supernatural: bool:
-	get:
-		return origin == OriginType.VAMPIRE || origin == OriginType.SUPERNATURAL
-var human: bool:
-	get:
-		return origin == OriginType.HUMAN
+@export var vampire: bool = false
+@export var supernatural: bool = false
+@export var human: bool = false
 
 @export_group("Actions")
 @export var politics: bool = false
@@ -204,13 +171,16 @@ var trash_action: bool:
 
 func _get_data_warnings() -> PackedStringArray:
 	var warnings = PackedStringArray()
-	
+
+	if card_type == CardType.MINION and not vampire and not supernatural and not human:
+		warnings.append("Minion must have at least one Origin (Vampire, Supernatural, or Human)")
+
 	_check_action_warnings(warnings, "Acquire", acquire_effects, acquire_cost, acquire_cost_amount, acquire_requirement, acquire_requirement_amount)
 	_check_action_warnings(warnings, "Agent", agent_effects, agent_cost, agent_cost_amount, agent_requirement, agent_requirement_amount)
 	_check_action_warnings(warnings, "Reveal", reveal_effects, reveal_cost, reveal_cost_amount, reveal_requirement, reveal_requirement_amount)
 	_check_action_warnings(warnings, "Discard", discard_effects, discard_cost, discard_cost_amount, discard_requirement, discard_requirement_amount)
 	_check_action_warnings(warnings, "Trash", trash_effects, trash_cost, trash_cost_amount, trash_requirement, trash_requirement_amount)
-	
+
 	return warnings
 
 func _check_action_warnings(warnings: PackedStringArray, action_name: String, effects: Array, cost_type: int, cost_amount: int, req_type: int, req_amount: int) -> void:

@@ -33,3 +33,10 @@ res://game_pieces/plan.gd
 res://game_pieces/minion.gd
 res://game_pieces/plan_zoom.gd
 res://game_pieces/board.gd
+res://data/card_data/card_data.gd
+res://data/card_data/volupta_newblood.tres
+res://data/card_data/vorace_newblood.tres
+res://data/space_data/space_requirement.gd
+res://assets/styleboxes/card_name_label.tres
+res://assets/styleboxes/cardzoom_name_label.tres
+res://data/card_data/fightened_human.tres

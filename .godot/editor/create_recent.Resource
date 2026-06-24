@@ -1,3 +1,3 @@
-SpaceData
 CardData
+SpaceData
 Effect

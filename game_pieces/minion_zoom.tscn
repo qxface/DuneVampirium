@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cultv6u6axl8n" path="res://game_pieces/minion_zoom.gd" id="2_zoom"]
 [ext_resource type="StyleBox" uid="uid://wk0bdg8bmowx" path="res://assets/styleboxes/minionzoom_top.tres" id="4_35eqs"]
 [ext_resource type="StyleBox" uid="uid://ryqkqx3hd6fd" path="res://assets/styleboxes/minionzoom_bottom.tres" id="5_35eqs"]
+[ext_resource type="LabelSettings" uid="uid://dnekxlpgd5uvt" path="res://assets/styleboxes/cardzoom_name_label.tres" id="5_yrf71"]
 
 [node name="MinionZoom" unique_id=1300098639 instance=ExtResource("1_zoom")]
 custom_minimum_size = Vector2(700, 1000)
@@ -23,8 +24,16 @@ theme_override_constants/margin_bottom = 32
 custom_minimum_size = Vector2(0, 352)
 theme_override_styles/panel = ExtResource("4_35eqs")
 
-[node name="PipsPanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="1" unique_id=1334860062]
+[node name="NamePanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="1" unique_id=547166090]
+visible = true
 custom_minimum_size = Vector2(0, 80)
 
-[node name="ActionsPanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="2" unique_id=1748047849]
+[node name="NameLabel" parent="MarginContainer/VBoxContainer/NamePanel" index="0" unique_id=1237052193]
+unique_name_in_owner = true
+label_settings = ExtResource("5_yrf71")
+
+[node name="PipsPanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="2" unique_id=1334860062]
+custom_minimum_size = Vector2(0, 80)
+
+[node name="ActionsPanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="3" unique_id=1748047849]
 theme_override_styles/panel = ExtResource("5_35eqs")

@@ -34,6 +34,9 @@ const WIDTH: int = 175
 @onready var discard_panel: Panel = %DiscardPanel
 @onready var trash_panel: Panel = %TrashPanel
 
+@onready var name_panel: Panel = %NamePanel
+@onready var name_label: Label = %NameLabel
+
 #Export
 
 #Internal
@@ -50,6 +53,7 @@ var card_data: CardData:
 		_load_card_image()
 		if is_node_ready():
 			_update_pips()
+			name_label.text = card_data.card_name
 
 var card_type: CardData.CardType = CardData.CardType.PLAN:
 	set(value):
@@ -126,6 +130,7 @@ func _ready() -> void:
 	button_down.connect(_on_button_down)
 	button_up.connect(_on_button_up)
 	card_type = card_type
+	_apply_availability_stylebox.call_deferred()
 	if card_data:
 		_update_pips()
 	# Start with processing off since cards aren't selected by default
@@ -185,29 +190,44 @@ func _move_to_hand() -> void:
 	_origin_container = null
 	_origin_index = -1
 
+	if _move_tween:
+		_move_tween.kill()
+	set_process(false)
+
 	var start_global: Vector2 = global_position
+
 	get_parent().remove_child(self)
 	origin.add_child(self)
 	origin.move_child(self, index)
 
-	top_level = true
-	set_process(true)
-
-	# Hold steady at our starting position until we know where the
-	# HBoxContainer actually wants to put us.
-	_target_global_position = start_global
-	global_position = start_global
+	# Hide for one frame with top_level = false so the HBox runs its layout
+	# and gives us the correct target global position. With top_level = true
+	# the HBox's position assignments and _process conflict, making the card
+	# end up double-offset or off-screen.
+	modulate.a = 0.0
+	top_level = false
 
 	await get_tree().process_frame
 
-	var target_global: Vector2 = origin.global_position + position
+	var target_global: Vector2 = global_position
+	modulate.a = 1.0
+
+	top_level = true
+	_target_global_position = start_global
+	global_position = start_global
+	set_process(true)
 	_fly_to(target_global, _on_arrived_at_hand)
 
 func _on_arrived_at_hand() -> void:
 	# Guard against a reselect happening mid-flight.
 	if !selected:
-		top_level = false
 		set_process(false)
+		# _process was setting position = _target_global_position (a screen coordinate).
+		# With top_level = false, global_position = parent.global + position, which
+		# would double-offset the card. Convert back to local space first.
+		var local_pos: Vector2 = _target_global_position - get_parent().global_position
+		top_level = false
+		position = local_pos
 
 func _fly_to(target_global: Vector2, on_finished: Callable = Callable()) -> void:
 	if _move_tween:
@@ -268,9 +288,9 @@ func _update_pips() -> void:
 	action_pips.get_child(1).visible = card_data.hunt
 	action_pips.get_child(2).visible = card_data.politics
 
-	origin_pips.get_child(0).visible = card_data.origin == CardData.OriginType.VAMPIRE
-	origin_pips.get_child(1).visible = card_data.origin == CardData.OriginType.SUPERNATURAL
-	origin_pips.get_child(2).visible = card_data.origin == CardData.OriginType.HUMAN
+	origin_pips.get_child(0).visible = card_data.vampire
+	origin_pips.get_child(1).visible = card_data.supernatural
+	origin_pips.get_child(2).visible = card_data.human
 
 	trait_pips.get_child(0).visible = card_data.madness
 	trait_pips.get_child(1).visible = card_data.hideous

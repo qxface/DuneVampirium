@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://cjslglc7d0h78"]
+
+[ext_resource type="Script" uid="uid://bmdj0vckfab1y" path="res://data/effects/effect.gd" id="1_cj4yt"]
+[ext_resource type="Script" uid="uid://7cey1nbxdsrx" path="res://data/effects/gain_resource.gd" id="2_cqdw2"]
+[ext_resource type="Script" uid="uid://dou2ghrkgygj0" path="res://data/card_data/card_data.gd" id="2_ed1q7"]
+
+[sub_resource type="Resource" id="Resource_diw6i"]
+script = ExtResource("2_cqdw2")
+type = 1
+metadata/_custom_type_script = "uid://7cey1nbxdsrx"
+
+[resource]
+script = ExtResource("2_ed1q7")
+status_check = "✅ ALL ACTIONS VALID"
+hunt = true
+agent_effects = Array[ExtResource("1_cj4yt")]([SubResource("Resource_diw6i")])
+metadata/_custom_type_script = "uid://dou2ghrkgygj0"

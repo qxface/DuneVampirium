@@ -5,12 +5,12 @@
 
 [sub_resource type="Resource" id="Resource_04rh6"]
 script = ExtResource("1_04rh6")
-origin = 0
+vampire = true
 action = 2
 
 [sub_resource type="Resource" id="Resource_xvykx"]
 script = ExtResource("1_04rh6")
-origin = 1
+supernatural = true
 action = 2
 
 [resource]

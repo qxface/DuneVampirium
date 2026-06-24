@@ -1,0 +1,8 @@
+[gd_resource type="LabelSettings" format=3 uid="uid://dnekxlpgd5uvt"]
+
+[ext_resource type="FontFile" uid="uid://0twfd34avp1p" path="res://assets/fonts/GrenzeGotisch-VariableFont_wght.ttf" id="1_kahcj"]
+
+[resource]
+font = ExtResource("1_kahcj")
+font_size = 72
+font_color = Color(0, 0, 0, 1)
