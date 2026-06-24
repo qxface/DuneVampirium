@@ -1,7 +1,30 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://e52feq2111vs"]
 
 [ext_resource type="PackedScene" uid="uid://d1je5nhbvmmcy" path="res://game_pieces/plan.tscn" id="1_zoom"]
-[ext_resource type="Script" path="res://game_pieces/plan_zoom.gd" id="2_zoom"]
+[ext_resource type="StyleBox" uid="uid://staarstgndwj" path="res://assets/styleboxes/planzoom_normal.tres" id="2_nuakw"]
+[ext_resource type="Script" uid="uid://bdn4iopgf4rmf" path="res://game_pieces/plan_zoom.gd" id="2_zoom"]
+[ext_resource type="StyleBox" uid="uid://bv0v6wriddkwx" path="res://assets/styleboxes/planzoom_top.tres" id="4_rbrfp"]
+[ext_resource type="StyleBox" uid="uid://dy4u53swnppo6" path="res://assets/styleboxes/planzoom_bottom.tres" id="5_hgf15"]
 
-[node name="PlanZoom" instance=ExtResource("1_zoom")]
+[node name="PlanZoom" unique_id=892692448 instance=ExtResource("1_zoom")]
+custom_minimum_size = Vector2(700, 1000)
+offset_right = -1700.0
+offset_bottom = -80.0
+theme_override_styles/normal = ExtResource("2_nuakw")
 script = ExtResource("2_zoom")
+
+[node name="MarginContainer" parent="." index="0" unique_id=954830392]
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="ImagePanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="0" unique_id=567312032]
+custom_minimum_size = Vector2(0, 352)
+theme_override_styles/panel = ExtResource("4_rbrfp")
+
+[node name="PipsPanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="1" unique_id=1334860062]
+custom_minimum_size = Vector2(0, 80)
+
+[node name="ActionsPanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="2" unique_id=1748047849]
+theme_override_styles/panel = ExtResource("5_hgf15")

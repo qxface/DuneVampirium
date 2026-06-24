@@ -2,6 +2,18 @@
 
 [ext_resource type="PackedScene" uid="uid://bkyqfqlxbnhql" path="res://game_pieces/card.tscn" id="1_770n0"]
 [ext_resource type="Script" uid="uid://d4bgo16wy2237" path="res://game_pieces/plan.gd" id="2_ehge1"]
+[ext_resource type="StyleBox" uid="uid://b8cece11fau6u" path="res://assets/styleboxes/plan_top.tres" id="3_38yo7"]
+[ext_resource type="StyleBox" uid="uid://cmh8lyje2xugq" path="res://assets/styleboxes/plan_bottom.tres" id="4_ebwpl"]
 
 [node name="Plan" unique_id=989521482 instance=ExtResource("1_770n0")]
+custom_minimum_size = Vector2(175, 250)
+offset_right = -2225.0
+offset_bottom = -830.0
 script = ExtResource("2_ehge1")
+
+[node name="ImagePanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="0" unique_id=567312032]
+custom_minimum_size = Vector2(0, 88)
+theme_override_styles/panel = ExtResource("3_38yo7")
+
+[node name="ActionsPanel" parent="MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(176431963) index="2" unique_id=1748047849]
+theme_override_styles/panel = ExtResource("4_ebwpl")

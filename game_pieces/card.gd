@@ -2,17 +2,20 @@ class_name Card
 extends Button
 
 #Constant
-const MINION_BOTTOM = preload("uid://bp5jfw8lkt0su")
-const MINION_HIGHLIGHT = preload("uid://ijg8sosaoco8")
-const MINION_NORMAL = preload("uid://dkl6uaeopqebv")
-const MINION_TOP = preload("uid://c0dvkjiuc6ckk")
-const PLAN_BOTTOM = preload("uid://cmh8lyje2xugq")
-const PLAN_HIGHLIGHT = preload("uid://dbi88yeera2l8")
-const PLAN_NORMAL = preload("uid://djf0c66c23ehw")
-const PLAN_TOP = preload("uid://b8cece11fau6u")
+#const MINION_BOTTOM = preload("uid://bp5jfw8lkt0su")
+#const MINION_HIGHLIGHT = preload("uid://ijg8sosaoco8")
+#const MINION_NORMAL = preload("uid://dkl6uaeopqebv")
+#const MINION_TOP = preload("uid://c0dvkjiuc6ckk")
+#const PLAN_BOTTOM = preload("uid://cmh8lyje2xugq")
+#const PLAN_HIGHLIGHT = preload("uid://dbi88yeera2l8")
+#const PLAN_NORMAL = preload("uid://djf0c66c23ehw")
+#const PLAN_TOP = preload("uid://b8cece11fau6u")
 
 const MOVE_DURATION: float = 0.25
 const LONG_PRESS_DURATION: float = 0.5
+
+const HEIGHT: int = 250
+const WIDTH: int = 175
 
 #On Ready
 @onready var outer_margin: MarginContainer = %MarginContainer
@@ -34,8 +37,8 @@ const LONG_PRESS_DURATION: float = 0.5
 #Export
 
 #Internal
-var _sb_normal: StyleBoxFlat
-var _sb_selected: StyleBoxFlat
+var _sb_normal : StyleBoxFlat = null
+var _sb_selected : StyleBoxFlat = null
 
 # The gameplay data (Origin/Actions/Aspects/etc.) this card instance
 # represents. Randomly assigned at _ready by the Plan/Minion subclass from
@@ -58,8 +61,6 @@ var card_type: CardData.CardType = CardData.CardType.PLAN:
 			remove_from_group(group)
 		add_to_group("CARD")
 		add_to_group(CardData.CardType.keys()[card_type])
-
-		_setup_styleboxes.call_deferred()
 
 # Where in the hand's HBoxContainer this card lives when it's not the
 # selected one. Captured right before it's popped out into the holder so it
@@ -232,8 +233,6 @@ func select() -> void:
 func deselect() -> void:
 	selected = false
 
-func _setup_styleboxes() -> void:
-	pass
 
 # Loads the artwork matching card_data's resource file name (e.g.
 # "feed.tres" -> "feed.png") from this card type's image folder. Falls back
@@ -289,19 +288,19 @@ func _set_stylebox(new_stylebox: StyleBoxFlat) -> void:
 
 func _on_button_down() -> void:
 	_was_selected_on_press = selected
-	if not selected and available:
-		selected = true
-
 	var now_ms: int = Time.get_ticks_msec()
 	var is_double_click: bool = _last_button_up_ms >= 0 and (now_ms - _last_button_up_ms) < DOUBLE_CLICK_MS
 	if not is_double_click:
 		_start_long_press_timer()
 
 func _on_button_up() -> void:
-	# Deselect only on a short press of an already-selected card.
-	# If _long_press_active is false here the timer already fired (zoom), so skip.
-	if _was_selected_on_press and _long_press_active:
-		selected = false
+	# _long_press_active is still true only for a short press — the timer
+	# didn't fire (long press) and the scroller didn't cancel (drag).
+	if _long_press_active:
+		if _was_selected_on_press:
+			selected = false
+		elif available:
+			selected = true
 	_long_press_active = false
 	_last_button_up_ms = Time.get_ticks_msec()
 
@@ -328,80 +327,3 @@ func cancel_long_press() -> void:
 # has none.
 func _get_zoom_scene() -> PackedScene:
 	return null
-
-# Resizes this card to fill the screen vertically while preserving the given
-# width/height aspect ratio. Used by the *Zoom variants (MinionZoom,
-# PlanZoom) to blow themselves up to a large, readable size - since the
-# internal layout is all Containers/anchors, growing the root size like this
-# makes every child resize right along with it, staying crisp rather than
-# stretching a small captured texture.
-#
-# card.tscn's outer MarginContainer uses this on all four sides, matching
-# the root stylebox's border_width so the inner content starts right at the
-# inside edge of the border. _make_scaled_stylebox grows that border by
-# _size_scale_factor, so the margin needs to grow by the same amount to keep
-# matching it.
-const OUTER_MARGIN_BASE: int = 8
-
-# image_panel is the one exception: Minion/Plan give it a fixed pixel height
-# (so it looks right at hand-sized CARD_SIZE), which doesn't grow on its own
-# just because the root got bigger. Rescale it - and pips_panel's minimum
-# height, and the outer margin - by the same factor the card as a whole just
-# grew by, so everything keeps the same proportion of the card at any size.
-func _resize_to_fill_screen_vertically(aspect_ratio: float) -> void:
-	var viewport_height: float = get_viewport().get_visible_rect().size.y
-	var target_size: Vector2 = Vector2(viewport_height * aspect_ratio, viewport_height)
-	_size_scale_factor = target_size.y / size.y
-
-	size = target_size
-	custom_minimum_size = target_size
-
-	if image_panel:
-		image_panel.custom_minimum_size.y *= _size_scale_factor
-
-	if pips_panel:
-		pips_panel.custom_minimum_size.y *= _size_scale_factor
-
-	if outer_margin:
-		var scaled_margin: int = roundi(OUTER_MARGIN_BASE * _size_scale_factor)
-		outer_margin.add_theme_constant_override("margin_left", scaled_margin)
-		outer_margin.add_theme_constant_override("margin_top", scaled_margin)
-		outer_margin.add_theme_constant_override("margin_right", scaled_margin)
-		outer_margin.add_theme_constant_override("margin_bottom", scaled_margin)
-
-# How much bigger (or smaller) than CARD_SIZE this instance currently is.
-# Set by _resize_to_fill_screen_vertically; stays 1.0 for ordinary
-# hand-sized cards. The *Zoom variants use this to scale up corner radii and
-# border widths to match, via _make_scaled_stylebox below - otherwise a
-# stylebox tuned to look right at CARD_SIZE (e.g. a corner radius just big
-# enough to clamp into a half-circle cap) stops looking right once the card
-# is blown up much bigger.
-var _size_scale_factor: float = 1.0
-
-# Returns a copy of base with its corner radii and border widths scaled by
-# _size_scale_factor, so a stylebox designed for hand-sized CARD_SIZE still
-# looks correctly proportioned on a much bigger zoomed-in card.
-func _make_scaled_stylebox(base: StyleBoxFlat) -> StyleBoxFlat:
-	var scaled: StyleBoxFlat = base.duplicate()
-	if _size_scale_factor == 1.0:
-		return scaled
-
-	scaled.corner_radius_top_left = roundi(base.corner_radius_top_left * _size_scale_factor)
-	scaled.corner_radius_top_right = roundi(base.corner_radius_top_right * _size_scale_factor)
-	scaled.corner_radius_bottom_left = roundi(base.corner_radius_bottom_left * _size_scale_factor)
-	scaled.corner_radius_bottom_right = roundi(base.corner_radius_bottom_right * _size_scale_factor)
-	scaled.border_width_left = roundi(base.border_width_left * _size_scale_factor)
-	scaled.border_width_top = roundi(base.border_width_top * _size_scale_factor)
-	scaled.border_width_right = roundi(base.border_width_right * _size_scale_factor)
-	scaled.border_width_bottom = roundi(base.border_width_bottom * _size_scale_factor)
-
-	# StyleBoxFlat approximates rounded corners with a fixed number of
-	# straight segments (corner_detail). That count was fine for the small
-	# radii at hand-sized CARD_SIZE, but the same segment count stretched
-	# around a much bigger curve is what's producing the faceted/jagged
-	# diagonal edges - so use the max for any corner that's actually rounded.
-	if base.corner_radius_top_left > 0 or base.corner_radius_top_right > 0 \
-			or base.corner_radius_bottom_left > 0 or base.corner_radius_bottom_right > 0:
-		scaled.corner_detail = 20
-
-	return scaled

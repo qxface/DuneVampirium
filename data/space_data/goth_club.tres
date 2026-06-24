@@ -15,5 +15,6 @@ action = 2
 
 [resource]
 script = ExtResource("2_xvykx")
+status_check = "✅ ALL REQUIREMENTS VALID"
 requirement_clauses = Array[ExtResource("1_04rh6")]([SubResource("Resource_04rh6"), SubResource("Resource_xvykx")])
 metadata/_custom_type_script = "uid://dqu08kcpq6id0"

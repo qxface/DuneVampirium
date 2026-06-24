@@ -5,12 +5,11 @@ extends Node2D
 @onready var selected_plan_holder: Control = %SelectedPlanHolder
 
 func _ready() -> void:
+	selected_minion_holder.custom_minimum_size.x = Minion.WIDTH
+	selected_plan_holder.custom_minimum_size.x = Plan.WIDTH
 	# Cards look up their holder via group, by type (see Card._get_holder).
 	selected_minion_holder.add_to_group("MINION_HOLDER")
 	selected_plan_holder.add_to_group("PLAN_HOLDER")
-
-	selected_minion_holder.custom_minimum_size.x = Minion.CARD_SIZE.x
-	selected_plan_holder.custom_minimum_size.x = Plan.CARD_SIZE.x
 
 	# HandHBoxContainer's own rect hangs below the bottom of the screen (see
 	# its offsets) so that most of a card in the scrolling hand stays hidden,
@@ -28,8 +27,8 @@ func _ready() -> void:
 
 func _raise_holders() -> void:
 	var viewport_height: float = get_viewport().get_visible_rect().size.y
-	_align_holder_bottom_to_viewport(selected_minion_holder, Minion.CARD_SIZE.y, viewport_height)
-	_align_holder_bottom_to_viewport(selected_plan_holder, Plan.CARD_SIZE.y, viewport_height)
+	_align_holder_bottom_to_viewport(selected_minion_holder, Minion.HEIGHT, viewport_height)
+	_align_holder_bottom_to_viewport(selected_plan_holder, Plan.HEIGHT, viewport_height)
 
 # Shifts holder.position.y (its parent-relative layout position) just enough
 # that its global bottom edge lands exactly on the bottom of the screen.

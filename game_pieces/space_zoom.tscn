@@ -1,7 +1,30 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://t7wsi0i5aamu"]
 
-[ext_resource type="PackedScene" path="res://game_pieces/space.tscn" id="1_zoom"]
-[ext_resource type="Script" path="res://game_pieces/space_zoom.gd" id="2_zoom"]
+[ext_resource type="PackedScene" uid="uid://space000001" path="res://game_pieces/space.tscn" id="1_zoom"]
+[ext_resource type="StyleBox" uid="uid://cj7l25j4vyb2g" path="res://assets/styleboxes/spacezoom_selected.tres" id="2_aj4yl"]
+[ext_resource type="Script" uid="uid://b65dqet673l1u" path="res://game_pieces/space_zoom.gd" id="2_zoom"]
 
-[node name="SpaceZoom" instance=ExtResource("1_zoom")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aj4yl"]
+bg_color = Color(0.05, 0.04, 0.03, 1)
+corner_radius_top_right = 16
+
+[node name="SpaceZoom" unique_id=1147980670 instance=ExtResource("1_zoom")]
+custom_minimum_size = Vector2(2000, 1000)
+offset_right = -400.0
+offset_bottom = -80.0
+theme_override_styles/normal = ExtResource("2_aj4yl")
 script = ExtResource("2_zoom")
+
+[node name="OuterMargin" parent="." index="0" unique_id=2111297735]
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="RequirementsPanel" parent="OuterMargin/HBoxContainer" parent_id_path=PackedInt32Array(735032476) index="0" unique_id=1065640833]
+custom_minimum_size = Vector2(675, 0)
+
+[node name="ImagePanel" parent="OuterMargin/HBoxContainer/RightColumn" parent_id_path=PackedInt32Array(120810785) index="0" unique_id=794297849]
+custom_minimum_size = Vector2(1256, 696)
+size_flags_vertical = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_aj4yl")

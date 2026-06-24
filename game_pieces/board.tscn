@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://d1je5nhbvmmcy" path="res://game_pieces/plan.tscn" id="2_7tatt"]
 [ext_resource type="PackedScene" uid="uid://3wp5sg60ls1t" path="res://game_pieces/minion.tscn" id="2_amdnb"]
 [ext_resource type="Texture2D" uid="uid://d2jxjs4xpw5i" path="res://assets/dune.png" id="4_6nve1"]
-[ext_resource type="PackedScene" path="res://game_pieces/space.tscn" id="5_acunv"]
+[ext_resource type="PackedScene" uid="uid://space000001" path="res://game_pieces/space.tscn" id="5_acunv"]
 [ext_resource type="Resource" uid="uid://bfcsfqtokmse3" path="res://data/space_data/vampire_ministry.tres" id="6_ehfyt"]
 [ext_resource type="Resource" uid="uid://d1pseiq07xhnf" path="res://data/space_data/goth_club.tres" id="7_lomec"]
 
@@ -97,7 +97,7 @@ offset_left = 948.0
 offset_top = 56.0
 offset_right = 2130.0
 offset_bottom = 589.0
-columns = 6
+columns = 2
 
 [node name="Space" parent="CanvasLayer/SpaceContainer" unique_id=143156867 instance=ExtResource("5_acunv")]
 layout_mode = 2
