@@ -42,7 +42,6 @@ func show_zoom_of(source: Card) -> void:
 	# Minion/Plan). Overwrite that now with the real data from the card that
 	# was actually long-pressed, so the popup matches what's on screen.
 	zoom_card.card_data = source.card_data
-	zoom_card.available = source.available
 
 	zoom_card.position = (get_viewport().get_visible_rect().size - zoom_card.size) / 2.0
 

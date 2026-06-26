@@ -2,10 +2,8 @@ class_name Minion
 extends Card
 
 const DATA_DIR: String = "res://data/minions/"
-const ZOOM_SCENE: PackedScene = preload("res://game_pieces/minion_zoom.tscn")
-
 func _get_zoom_scene() -> PackedScene:
-	return ZOOM_SCENE
+	return load("res://game_pieces/minion_zoom.tscn")
 
 func _ready() -> void:
 	_sb_normal = preload("uid://dkl6uaeopqebv")

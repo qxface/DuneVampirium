@@ -7,23 +7,6 @@ enum CardType {
 	MINION
 }
 
-enum CostType {
-	MONEY,
-	BLOOD,
-	SECRETS,
-	RAPPORT,
-	NONE
-}
-
-enum RequirementType {
-	MONEY,
-	BLOOD,
-	SECRETS,
-	PRIMORI,
-	VOLUPTA,
-	VORACE,
-	NONE
-}
 
 # ==============================================================================
 # DYNAMIC WARNING NOTIFIER
@@ -85,11 +68,11 @@ var card_name: String = "New Card":
 
 # --- ACQUIRE ACTION ---
 @export_group("Acquire Action")
-@export var acquire_cost: CostType = CostType.NONE:
+@export var acquire_cost: GameEnums.CostType = GameEnums.CostType.NONE:
 	set(v): acquire_cost = v; notify_property_list_changed()
 @export var acquire_cost_amount: int = 0:
 	set(v): acquire_cost_amount = max(0, v); notify_property_list_changed()
-@export var acquire_requirement: RequirementType = RequirementType.NONE:
+@export var acquire_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): acquire_requirement = v; notify_property_list_changed()
 @export var acquire_requirement_amount: int = 0:
 	set(v): acquire_requirement_amount = max(0, v); notify_property_list_changed()
@@ -101,11 +84,11 @@ var acquire_action: bool:
 
 # --- AGENT ACTION ---
 @export_group("Agent Action")
-@export var agent_cost: CostType = CostType.NONE:
+@export var agent_cost: GameEnums.CostType = GameEnums.CostType.NONE:
 	set(v): agent_cost = v; notify_property_list_changed()
 @export var agent_cost_amount: int = 0:
 	set(v): agent_cost_amount = max(0, v); notify_property_list_changed()
-@export var agent_requirement: RequirementType = RequirementType.NONE:
+@export var agent_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): agent_requirement = v; notify_property_list_changed()
 @export_group("Agent Action") # Repeating group hint ensures order stays clean
 @export var agent_requirement_amount: int = 0:
@@ -118,11 +101,11 @@ var agent_action: bool:
 
 # --- REVEAL ACTION ---
 @export_group("Reveal Action")
-@export var reveal_cost: CostType = CostType.NONE:
+@export var reveal_cost: GameEnums.CostType = GameEnums.CostType.NONE:
 	set(v): reveal_cost = v; notify_property_list_changed()
 @export var reveal_cost_amount: int = 0:
 	set(v): reveal_cost_amount = max(0, v); notify_property_list_changed()
-@export var reveal_requirement: RequirementType = RequirementType.NONE:
+@export var reveal_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): reveal_requirement = v; notify_property_list_changed()
 @export var reveal_requirement_amount: int = 0:
 	set(v): reveal_requirement_amount = max(0, v); notify_property_list_changed()
@@ -134,11 +117,11 @@ var reveal_action: bool:
 
 # --- DISCARD ACTION ---
 @export_group("Discard Action")
-@export var discard_cost: CostType = CostType.NONE:
+@export var discard_cost: GameEnums.CostType = GameEnums.CostType.NONE:
 	set(v): discard_cost = v; notify_property_list_changed()
 @export var discard_cost_amount: int = 0:
 	set(v): discard_cost_amount = max(0, v); notify_property_list_changed()
-@export var discard_requirement: RequirementType = RequirementType.NONE:
+@export var discard_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): discard_requirement = v; notify_property_list_changed()
 @export var discard_requirement_amount: int = 0:
 	set(v): discard_requirement_amount = max(0, v); notify_property_list_changed()
@@ -150,11 +133,11 @@ var discard_action: bool:
 
 # --- TRASH ACTION ---
 @export_group("Trash Action")
-@export var trash_cost: CostType = CostType.NONE:
+@export var trash_cost: GameEnums.CostType = GameEnums.CostType.NONE:
 	set(v): trash_cost = v; notify_property_list_changed()
 @export var trash_cost_amount: int = 0:
 	set(v): trash_cost_amount = max(0, v); notify_property_list_changed()
-@export var trash_requirement: RequirementType = RequirementType.NONE:
+@export var trash_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): trash_requirement = v; notify_property_list_changed()
 @export var trash_requirement_amount: int = 0:
 	set(v): trash_requirement_amount = max(0, v); notify_property_list_changed()
@@ -186,8 +169,8 @@ func _get_data_warnings() -> PackedStringArray:
 func _check_action_warnings(warnings: PackedStringArray, action_name: String, effects: Array, cost_type: int, cost_amount: int, req_type: int, req_amount: int) -> void:
 	# Convert enums to strings using the values you defined above.
 	# We assume the last option in your enum definitions is 'NONE'
-	var is_cost_none: bool = (cost_type == CostType.NONE)
-	var is_req_none: bool = (req_type == RequirementType.NONE)
+	var is_cost_none: bool = (cost_type == GameEnums.CostType.NONE)
+	var is_req_none: bool = (req_type == GameEnums.RequirementType.NONE)
 	
 	var has_effects = !effects.is_empty()
 
@@ -208,8 +191,8 @@ func _check_action_warnings(warnings: PackedStringArray, action_name: String, ef
 	elif is_req_none and req_amount > 0:
 		warnings.append("[%s] Requirement amount is > 0, but type is NONE" % action_name)
 	
-	var has_cost = cost_type != CostType.NONE
-	var has_req = req_type != RequirementType.NONE
+	var has_cost = cost_type != GameEnums.CostType.NONE
+	var has_req = req_type != GameEnums.RequirementType.NONE
 
 	# Error State 1: Trying to set up costs/requirements on an action type that has no effects assigned
 	if !has_effects:

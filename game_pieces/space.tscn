@@ -5,6 +5,12 @@
 [ext_resource type="Script" uid="uid://c1sbl40nn3m6x" path="res://game_pieces/space.gd" id="1_space"]
 [ext_resource type="Texture2D" uid="uid://dfso2fudvgglr" path="res://assets/images/cards/spaces/default_space.png" id="2_q4qkg"]
 [ext_resource type="StyleBox" uid="uid://cdd48o4dcfjie" path="res://assets/styleboxes/space_image.tres" id="4_1ylyo"]
+[ext_resource type="FontFile" uid="uid://0twfd34avp1p" path="res://assets/fonts/GrenzeGotisch-VariableFont_wght.ttf" id="4_oes7t"]
+[ext_resource type="Texture2D" uid="uid://s7yb8w5sek1y" path="res://assets/icons/resources/secret.png" id="7_oes7t"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ds0ys"]
+font = ExtResource("4_oes7t")
+font_size = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_future"]
 bg_color = Color(0.1, 0.08, 0.07, 1)
@@ -63,6 +69,15 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 4
 
+[node name="NameLabel" type="Label" parent="OuterMargin/HBoxContainer/RequirementsPanel/ReqsMargin" unique_id=400124009]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 0
+text = "Creepy Alleyway"
+label_settings = SubResource("LabelSettings_ds0ys")
+horizontal_alignment = 1
+
 [node name="RequirementsContainer" type="VBoxContainer" parent="OuterMargin/HBoxContainer/RequirementsPanel/ReqsMargin" unique_id=1519166542]
 unique_name_in_owner = true
 layout_mode = 2
@@ -95,10 +110,42 @@ texture = ExtResource("2_q4qkg")
 expand_mode = 2
 stretch_mode = 4
 
-[node name="FuturePanel" type="Panel" parent="OuterMargin/HBoxContainer/RightColumn" unique_id=620031332]
+[node name="ActionPanel" type="Panel" parent="OuterMargin/HBoxContainer/RightColumn" unique_id=620031332]
 unique_name_in_owner = true
 clip_children = 1
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_future")
+
+[node name="ActionMarginContainer" type="MarginContainer" parent="OuterMargin/HBoxContainer/RightColumn/ActionPanel" unique_id=1981488411]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="ActionContainer" type="HBoxContainer" parent="OuterMargin/HBoxContainer/RightColumn/ActionPanel/ActionMarginContainer" unique_id=2040341093]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="OuterMargin/HBoxContainer/RightColumn/ActionPanel/ActionMarginContainer/ActionContainer" unique_id=718733768]
+layout_mode = 2
+texture = ExtResource("7_oes7t")
+expand_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="OuterMargin/HBoxContainer/RightColumn/ActionPanel/ActionMarginContainer/ActionContainer" unique_id=498568371]
+layout_mode = 2
+texture = ExtResource("7_oes7t")
+expand_mode = 2
+
+[node name="TextureRect3" type="TextureRect" parent="OuterMargin/HBoxContainer/RightColumn/ActionPanel/ActionMarginContainer/ActionContainer" unique_id=914438003]
+layout_mode = 2
+texture = ExtResource("7_oes7t")
+expand_mode = 2

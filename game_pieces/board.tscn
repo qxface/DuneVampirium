@@ -6,8 +6,32 @@
 [ext_resource type="PackedScene" uid="uid://3wp5sg60ls1t" path="res://game_pieces/minion.tscn" id="2_amdnb"]
 [ext_resource type="Texture2D" uid="uid://d2jxjs4xpw5i" path="res://assets/dune.png" id="4_6nve1"]
 [ext_resource type="PackedScene" uid="uid://space000001" path="res://game_pieces/space.tscn" id="5_acunv"]
-[ext_resource type="Resource" uid="uid://bfcsfqtokmse3" path="res://data/space_data/vampire_ministry.tres" id="6_ehfyt"]
-[ext_resource type="Resource" uid="uid://d1pseiq07xhnf" path="res://data/space_data/goth_club.tres" id="7_lomec"]
+[ext_resource type="Resource" uid="uid://bfcsfqtokmse3" path="res://data/spaces/vampire_ministry.tres" id="6_ehfyt"]
+[ext_resource type="Resource" uid="uid://d1pseiq07xhnf" path="res://data/spaces/goth_club.tres" id="7_lomec"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehfyt"]
+bg_color = Color(0.043137256, 0.29411766, 0.23137255, 0.2509804)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.17254902, 0.5882353, 0.22352941, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lomec"]
+bg_color = Color(0.42745098, 0.101960786, 0.23921569, 0.2509804)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.7921569, 0.15686275, 0.15686275, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="Board" type="Node2D" unique_id=548609043]
 script = ExtResource("1_sd8gd")
@@ -15,81 +39,163 @@ script = ExtResource("1_sd8gd")
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1446006295]
 
 [node name="HandHBoxContainer" type="HBoxContainer" parent="CanvasLayer" unique_id=421317124]
+unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 571.0
-offset_top = 888.0
+offset_top = 830.0
 offset_right = -304.0
-offset_bottom = 196.0
+offset_bottom = 138.0
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_lock_ = true
 
-[node name="MinionScrollContainer" type="ScrollContainer" parent="CanvasLayer/HandHBoxContainer" unique_id=16288140]
-custom_minimum_size = Vector2(500, 312)
+[node name="MinionPanel" type="Panel" parent="CanvasLayer/HandHBoxContainer" unique_id=1093394110]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(263, 258)
 layout_mode = 2
 size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_ehfyt")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/HandHBoxContainer/MinionPanel" unique_id=30121979]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="MinionScrollContainer" type="ScrollContainer" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer" unique_id=16288140]
+layout_mode = 2
 script = ExtResource("1_7tatt")
 
-[node name="MinionHBoxContainer" type="HBoxContainer" parent="CanvasLayer/HandHBoxContainer/MinionScrollContainer" unique_id=945474847]
-layout_mode = 2
-
-[node name="Minion" parent="CanvasLayer/HandHBoxContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=1920950214 instance=ExtResource("2_amdnb")]
-layout_mode = 2
-
-[node name="Minion2" parent="CanvasLayer/HandHBoxContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=1983174667 instance=ExtResource("2_amdnb")]
-layout_mode = 2
-
-[node name="Minion3" parent="CanvasLayer/HandHBoxContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=989521482 instance=ExtResource("2_amdnb")]
-layout_mode = 2
-
-[node name="Minion4" parent="CanvasLayer/HandHBoxContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=308813026 instance=ExtResource("2_amdnb")]
-layout_mode = 2
-
-[node name="SelectedMinionHolder" type="Control" parent="CanvasLayer/HandHBoxContainer" unique_id=800541511]
+[node name="MinionHBoxContainer" type="HBoxContainer" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer/MinionScrollContainer" unique_id=945474847]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="SelectedPlanHolder" type="Control" parent="CanvasLayer/HandHBoxContainer" unique_id=1361520722]
+[node name="Minion" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=1920950214 instance=ExtResource("2_amdnb")]
+layout_mode = 2
+
+[node name="Minion2" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=1983174667 instance=ExtResource("2_amdnb")]
+layout_mode = 2
+
+[node name="Minion3" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=989521482 instance=ExtResource("2_amdnb")]
+layout_mode = 2
+
+[node name="Minion4" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=308813026 instance=ExtResource("2_amdnb")]
+layout_mode = 2
+
+[node name="SelectedMinionPanel" type="Panel" parent="CanvasLayer/HandHBoxContainer" unique_id=567234891]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 258)
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_ehfyt")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/HandHBoxContainer/SelectedMinionPanel" unique_id=178345902]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="SelectedMinionScrollContainer" type="ScrollContainer" parent="CanvasLayer/HandHBoxContainer/SelectedMinionPanel/MarginContainer" unique_id=289456013]
+layout_mode = 2
+script = ExtResource("1_7tatt")
+
+[node name="SelectedMinionHBoxContainer" type="HBoxContainer" parent="CanvasLayer/HandHBoxContainer/SelectedMinionPanel/MarginContainer/SelectedMinionScrollContainer" unique_id=390567124]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="PlanScrollContainer" type="ScrollContainer" parent="CanvasLayer/HandHBoxContainer" unique_id=699583926]
-custom_minimum_size = Vector2(0, 312)
+[node name="SelectedPlanPanel" type="Panel" parent="CanvasLayer/HandHBoxContainer" unique_id=401678235]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 258)
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_lomec")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/HandHBoxContainer/SelectedPlanPanel" unique_id=512789346]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="SelectedPlanScrollContainer" type="ScrollContainer" parent="CanvasLayer/HandHBoxContainer/SelectedPlanPanel/MarginContainer" unique_id=623890457]
+layout_mode = 2
 script = ExtResource("1_7tatt")
 
-[node name="PlanHBoxContainer" type="HBoxContainer" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer" unique_id=517578962]
+[node name="SelectedPlanHBoxContainer" type="HBoxContainer" parent="CanvasLayer/HandHBoxContainer/SelectedPlanPanel/MarginContainer/SelectedPlanScrollContainer" unique_id=734901568]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Plan" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1182021171 instance=ExtResource("2_7tatt")]
+[node name="PlanPanel" type="Panel" parent="CanvasLayer/HandHBoxContainer" unique_id=612938401]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(263, 258)
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_lomec")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/HandHBoxContainer/PlanPanel" unique_id=723847512]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="PlanScrollContainer" type="ScrollContainer" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer" unique_id=699583926]
+layout_mode = 2
+script = ExtResource("1_7tatt")
+
+[node name="PlanHBoxContainer" type="HBoxContainer" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer" unique_id=517578962]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Plan2" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1424404299 instance=ExtResource("2_7tatt")]
+[node name="Plan" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1182021171 instance=ExtResource("2_7tatt")]
 layout_mode = 2
 
-[node name="Plan3" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1159098316 instance=ExtResource("2_7tatt")]
+[node name="Plan2" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1424404299 instance=ExtResource("2_7tatt")]
 layout_mode = 2
 
-[node name="Plan4" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1593824595 instance=ExtResource("2_7tatt")]
+[node name="Plan3" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1159098316 instance=ExtResource("2_7tatt")]
 layout_mode = 2
 
-[node name="Plan5" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=425750903 instance=ExtResource("2_7tatt")]
+[node name="Plan4" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1593824595 instance=ExtResource("2_7tatt")]
 layout_mode = 2
 
-[node name="Plan6" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1513242304 instance=ExtResource("2_7tatt")]
+[node name="Plan5" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=425750903 instance=ExtResource("2_7tatt")]
 layout_mode = 2
 
-[node name="Plan7" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=755904273 instance=ExtResource("2_7tatt")]
+[node name="Plan6" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1513242304 instance=ExtResource("2_7tatt")]
 layout_mode = 2
 
-[node name="Plan8" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=504134011 instance=ExtResource("2_7tatt")]
+[node name="Plan7" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=755904273 instance=ExtResource("2_7tatt")]
 layout_mode = 2
 
-[node name="Plan9" parent="CanvasLayer/HandHBoxContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=513112792 instance=ExtResource("2_7tatt")]
+[node name="Plan8" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=504134011 instance=ExtResource("2_7tatt")]
+layout_mode = 2
+
+[node name="Plan9" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=513112792 instance=ExtResource("2_7tatt")]
 layout_mode = 2
 
 [node name="SpaceContainer" type="GridContainer" parent="CanvasLayer" unique_id=811188335]

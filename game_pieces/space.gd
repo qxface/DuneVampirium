@@ -7,7 +7,9 @@ const LONG_PRESS_DURATION: float = 0.5
 @onready var requirements_panel: Panel = %RequirementsPanel
 @onready var requirements_container: VBoxContainer = %RequirementsContainer
 @onready var image: TextureRect = %SpaceImage
-@onready var future_panel: Panel = %FuturePanel
+@onready var action_panel: Panel = %ActionPanel
+@onready var action_container: HBoxContainer = %ActionContainer
+@onready var name_label: Label = %NameLabel
 
 @export var space_data: SpaceData:
 	set(value):
@@ -68,7 +70,10 @@ func _deselect_other_spaces() -> void:
 
 func _load_space() -> void:
 	_load_image()
+	name_label.text = space_data.space_name
 	_populate_requirements()
+	action_panel.visible = space_data.agent_action
+	ActionDisplay.populate_into(action_container, space_data.agent_effects, space_data.agent_cost, space_data.agent_requirement)
 
 func _load_image() -> void:
 	if image == null or space_data == null:

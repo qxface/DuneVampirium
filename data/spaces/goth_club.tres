@@ -1,7 +1,13 @@
 [gd_resource type="Resource" script_class="SpaceData" format=3 uid="uid://d1pseiq07xhnf"]
 
+[ext_resource type="Script" uid="uid://bmdj0vckfab1y" path="res://data/effects/effect.gd" id="1_1ce4b"]
 [ext_resource type="Script" uid="uid://bs4qvqwaspx01" path="res://data/space_data/space_requirement.gd" id="1_04rh6"]
+[ext_resource type="Script" uid="uid://b8bbea8ml5oiu" path="res://data/effects/draw_card.gd" id="2_shq4j"]
 [ext_resource type="Script" uid="uid://dqu08kcpq6id0" path="res://data/space_data/space_data.gd" id="2_xvykx"]
+
+[sub_resource type="Resource" id="Resource_77fek"]
+script = ExtResource("2_shq4j")
+metadata/_custom_type_script = "uid://b8bbea8ml5oiu"
 
 [sub_resource type="Resource" id="Resource_04rh6"]
 script = ExtResource("1_04rh6")
@@ -15,6 +21,7 @@ action = 2
 
 [resource]
 script = ExtResource("2_xvykx")
-status_check = "✅ ALL REQUIREMENTS VALID"
+status_check = "✅ ALL VALID"
 requirement_clauses = Array[ExtResource("1_04rh6")]([SubResource("Resource_04rh6"), SubResource("Resource_xvykx")])
+agent_effects = Array[ExtResource("1_1ce4b")]([SubResource("Resource_77fek")])
 metadata/_custom_type_script = "uid://dqu08kcpq6id0"

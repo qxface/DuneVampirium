@@ -2,10 +2,8 @@ class_name Plan
 extends Card
 
 const DATA_DIR: String = "res://data/plans/"
-const ZOOM_SCENE: PackedScene = preload("res://game_pieces/plan_zoom.tscn")
-
 func _get_zoom_scene() -> PackedScene:
-	return ZOOM_SCENE
+	return load("res://game_pieces/plan_zoom.tscn")
 
 func _ready() -> void:
 	super()
