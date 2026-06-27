@@ -4,11 +4,11 @@ extends Resource
 
 # One AND-clause in a Space's requirement list.
 # Each category is optional (false = no requirement for that category).
-# A Minion+Plan pair satisfies this clause when, for every non-false field,
-# at least one of the two cards carries that pip.
+# A set of cards (≥1 Minion + ≥1 Plan) satisfies this clause when the union
+# of all their pips covers every non-false field.
 
-enum ActionRequirement { NONE, POLITICS, HUNT, BATTLE }
-enum AspectRequirement { NONE, MADNESS, HIDEOUS, SORCEROUS }
+enum ActionRequirement { NONE, NEGOTIATE, HUNT, FIGHT }
+enum AspectRequirement { NONE, INSANE, HIDEOUS, ARCANE }
 
 @export_group("Origin")
 @export var vampire: bool = false
@@ -25,52 +25,48 @@ func is_empty() -> bool:
 		and action == ActionRequirement.NONE \
 		and aspect == AspectRequirement.NONE
 
-# Whether the given Minion+Plan pair satisfies every pip required by this clause.
-func is_satisfied_by(minion: CardData, plan: CardData) -> bool:
-	if not _check_origin(minion, plan):
-		return false
-	if not _check_action(minion, plan):
-		return false
-	if not _check_aspect(minion, plan):
-		return false
-	return true
-
-func _check_origin(minion: CardData, plan: CardData) -> bool:
-	if not vampire and not supernatural and not human:
-		return true
-	if vampire and (minion.vampire or plan.vampire):
-		return true
-	if supernatural and (minion.supernatural or plan.supernatural):
-		return true
-	if human and (minion.human or plan.human):
-		return true
-	return false
-
-func _check_action(minion: CardData, plan: CardData) -> bool:
+# Whether the union of pips across all cards in minions + plans satisfies this clause.
+func is_satisfied_by(minions: Array, plans: Array) -> bool:
+	var pips := _union_pips(minions + plans)
+	if vampire      and not pips["vampire"]:      return false
+	if supernatural and not pips["supernatural"]: return false
+	if human        and not pips["human"]:        return false
 	match action:
-		ActionRequirement.NONE:
-			return true
-		ActionRequirement.POLITICS:
-			return minion.politics or plan.politics
+		ActionRequirement.NEGOTIATE:
+			if not pips["negotiate"]: return false
 		ActionRequirement.HUNT:
-			return minion.hunt or plan.hunt
-		ActionRequirement.BATTLE:
-			return minion.battle or plan.battle
-	return true
-
-func _check_aspect(minion: CardData, plan: CardData) -> bool:
+			if not pips["hunt"]:      return false
+		ActionRequirement.FIGHT:
+			if not pips["fight"]:     return false
 	match aspect:
-		AspectRequirement.NONE:
-			return true
-		AspectRequirement.MADNESS:
-			return minion.madness or plan.madness
+		AspectRequirement.INSANE:
+			if not pips["insane"]:   return false
 		AspectRequirement.HIDEOUS:
-			return minion.hideous or plan.hideous
-		AspectRequirement.SORCEROUS:
-			return minion.sorcerous or plan.sorcerous
+			if not pips["hideous"]:  return false
+		AspectRequirement.ARCANE:
+			if not pips["arcane"]:   return false
 	return true
 
-# Human-readable summary, e.g. "Vampire · Supernatural · Politics"
+func _union_pips(cards: Array) -> Dictionary:
+	var p := {
+		"vampire": false, "supernatural": false, "human": false,
+		"fight": false, "hunt": false, "negotiate": false,
+		"insane": false, "hideous": false, "arcane": false,
+	}
+	for card: CardData in cards:
+		if card == null: continue
+		if card.vampire:      p["vampire"]      = true
+		if card.supernatural: p["supernatural"] = true
+		if card.human:        p["human"]        = true
+		if card.fight:        p["fight"]        = true
+		if card.hunt:         p["hunt"]         = true
+		if card.negotiate:    p["negotiate"]    = true
+		if card.insane:       p["insane"]       = true
+		if card.hideous:      p["hideous"]      = true
+		if card.arcane:       p["arcane"]       = true
+	return p
+
+# Human-readable summary, e.g. "Vampire · Supernatural · Negotiate"
 func to_label() -> String:
 	var parts: Array[String] = []
 	if vampire:

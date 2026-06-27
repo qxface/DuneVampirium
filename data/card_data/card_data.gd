@@ -38,14 +38,14 @@ var card_name: String = "New Card":
 @export var human: bool = false
 
 @export_group("Actions")
-@export var politics: bool = false
+@export var negotiate: bool = false
 @export var hunt: bool = false
-@export var battle: bool = false
+@export var fight: bool = false
 
 @export_group("Aspects")
-@export var madness: bool = false
+@export var insane: bool = false
 @export var hideous: bool = false
-@export var sorcerous: bool = false
+@export var arcane: bool = false
 
 
 

@@ -1,5 +1,7 @@
 extends Node
 
+signal updated
+
 # Recomputes which Spaces are available based on the combined pips of all
 # currently selected Minions and Plans.
 #
@@ -37,12 +39,14 @@ func update() -> void:
 		else:
 			space.available = _space_satisfied_by(space, combined)
 
+	updated.emit()
+
 # Builds a flat dictionary of which pip types are present across all given cards.
 func _combine_pips(cards: Array) -> Dictionary:
 	var p := {
 		"vampire": false, "supernatural": false, "human": false,
-		"battle": false, "hunt": false, "politics": false,
-		"madness": false, "hideous": false, "sorcerous": false,
+		"fight": false, "hunt": false, "negotiate": false,
+		"insane": false, "hideous": false, "arcane": false,
 	}
 	for card in cards:
 		var d: CardData = card.card_data
@@ -51,17 +55,17 @@ func _combine_pips(cards: Array) -> Dictionary:
 		if d.vampire:      p["vampire"]      = true
 		if d.supernatural: p["supernatural"] = true
 		if d.human:        p["human"]        = true
-		if d.battle:       p["battle"]       = true
+		if d.fight:        p["fight"]        = true
 		if d.hunt:         p["hunt"]         = true
-		if d.politics:     p["politics"]     = true
-		if d.madness:      p["madness"]      = true
+		if d.negotiate:    p["negotiate"]    = true
+		if d.insane:       p["insane"]       = true
 		if d.hideous:      p["hideous"]      = true
-		if d.sorcerous:    p["sorcerous"]    = true
+		if d.arcane:       p["arcane"]       = true
 	return p
 
 # Returns true if the combined pips satisfy at least one requirement clause.
 func _space_satisfied_by(space: Space, pips: Dictionary) -> bool:
-	if space.space_data == null:
+	if space.space_data == null or space.is_occupied:
 		return false
 	for clause in space.space_data.requirement_clauses:
 		if clause != null and _clause_satisfied(clause, pips):
@@ -73,17 +77,17 @@ func _clause_satisfied(clause: SpaceRequirement, pips: Dictionary) -> bool:
 	if clause.supernatural and not pips["supernatural"]: return false
 	if clause.human        and not pips["human"]:        return false
 	match clause.action:
-		SpaceRequirement.ActionRequirement.BATTLE:
-			if not pips["battle"]:   return false
+		SpaceRequirement.ActionRequirement.FIGHT:
+			if not pips["fight"]:     return false
 		SpaceRequirement.ActionRequirement.HUNT:
-			if not pips["hunt"]:     return false
-		SpaceRequirement.ActionRequirement.POLITICS:
-			if not pips["politics"]: return false
+			if not pips["hunt"]:      return false
+		SpaceRequirement.ActionRequirement.NEGOTIATE:
+			if not pips["negotiate"]: return false
 	match clause.aspect:
-		SpaceRequirement.AspectRequirement.MADNESS:
-			if not pips["madness"]:   return false
+		SpaceRequirement.AspectRequirement.INSANE:
+			if not pips["insane"]:   return false
 		SpaceRequirement.AspectRequirement.HIDEOUS:
-			if not pips["hideous"]:   return false
-		SpaceRequirement.AspectRequirement.SORCEROUS:
-			if not pips["sorcerous"]: return false
+			if not pips["hideous"]:  return false
+		SpaceRequirement.AspectRequirement.ARCANE:
+			if not pips["arcane"]:  return false
 	return true

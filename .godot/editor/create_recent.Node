@@ -1,4 +1,6 @@
 TextureRect
+Button
+VBoxContainer
 HBoxContainer
 MarginContainer
 Label
@@ -10,5 +12,3 @@ ColorRect
 Area2D
 ScrollContainer
 CanvasLayer
-VBoxContainer
-Button

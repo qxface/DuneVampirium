@@ -18,7 +18,7 @@ metadata/_custom_type_script = "uid://7cey1nbxdsrx"
 [resource]
 script = ExtResource("1_463nn")
 status_check = "✅ ALL ACTIONS VALID"
-politics = true
+negotiate = true
 agent_effects = Array[ExtResource("1_hk1p1")]([SubResource("Resource_l67xa")])
 reveal_effects = Array[ExtResource("1_hk1p1")]([SubResource("Resource_bnyj1")])
 metadata/_custom_type_script = "uid://dou2ghrkgygj0"

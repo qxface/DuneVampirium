@@ -9,5 +9,5 @@ status_check = "✅ ALL ACTIONS VALID"
 card_type = 1
 vampire = true
 supernatural = true
-battle = true
+fight = true
 metadata/_custom_type_script = "uid://dou2ghrkgygj0"

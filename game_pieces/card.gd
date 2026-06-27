@@ -60,8 +60,12 @@ var _was_selected_on_press: bool = false
 var _last_button_up_ms: int = -1
 const DOUBLE_CLICK_MS: int = 400
 
+var can_select: bool = true
+
 var selected: bool = false:
 	set(value):
+		if value and not can_select:
+			return
 		if selected == value:
 			return
 		selected = value
@@ -241,17 +245,17 @@ func _update_pips() -> void:
 	if action_pips == null or origin_pips == null or trait_pips == null:
 		return
 
-	action_pips.get_child(0).visible = card_data.battle
+	action_pips.get_child(0).visible = card_data.fight
 	action_pips.get_child(1).visible = card_data.hunt
-	action_pips.get_child(2).visible = card_data.politics
+	action_pips.get_child(2).visible = card_data.negotiate
 
 	origin_pips.get_child(0).visible = card_data.vampire
 	origin_pips.get_child(1).visible = card_data.supernatural
 	origin_pips.get_child(2).visible = card_data.human
 
-	trait_pips.get_child(0).visible = card_data.madness
+	trait_pips.get_child(0).visible = card_data.insane
 	trait_pips.get_child(1).visible = card_data.hideous
-	trait_pips.get_child(2).visible = card_data.sorcerous
+	trait_pips.get_child(2).visible = card_data.arcane
 
 func _apply_stylebox() -> void:
 	_set_stylebox(_sb_selected if selected else _sb_normal)

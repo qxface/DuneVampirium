@@ -24,6 +24,8 @@ var available: bool = false:
 
 var selected: bool = false:
 	set(value):
+		if value and is_occupied:
+			return
 		if selected == value:
 			return
 		selected = value
@@ -36,7 +38,13 @@ var _sb_unavailable: StyleBoxFlat = preload("res://assets/styleboxes/space_unava
 var _sb_available:   StyleBoxFlat = preload("res://assets/styleboxes/space_available.tres")
 var _sb_selected:    StyleBoxFlat = preload("res://assets/styleboxes/space_selected.tres")
 
+var _meeple_overlay: Control = null
+var _placed_card_datas: Array[CardData] = []
+var _meeple_long_press_active: bool = false
 var _long_press_active: bool = false
+
+var is_occupied: bool:
+	get: return _meeple_overlay != null
 var _was_selected_on_press: bool = false
 var _last_button_up_ms: int = -1
 const DOUBLE_CLICK_MS: int = 400
@@ -128,16 +136,16 @@ func _add_icon(container: HBoxContainer, icon_path: String) -> void:
 
 func _action_icon_path(action: SpaceRequirement.ActionRequirement) -> String:
 	match action:
-		SpaceRequirement.ActionRequirement.POLITICS: return "res://assets/icons/actions/intrigue.png"
-		SpaceRequirement.ActionRequirement.HUNT:     return "res://assets/icons/actions/hunting.png"
-		SpaceRequirement.ActionRequirement.BATTLE:   return "res://assets/icons/actions/battle.png"
+		SpaceRequirement.ActionRequirement.NEGOTIATE: return "res://assets/icons/actions/negotiate.png"
+		SpaceRequirement.ActionRequirement.HUNT:      return "res://assets/icons/actions/hunting.png"
+		SpaceRequirement.ActionRequirement.FIGHT:     return "res://assets/icons/actions/fight.png"
 	return ""
 
 func _aspect_icon_path(aspect: SpaceRequirement.AspectRequirement) -> String:
 	match aspect:
-		SpaceRequirement.AspectRequirement.MADNESS:   return "res://assets/icons/aspects/madness.png"
+		SpaceRequirement.AspectRequirement.INSANE:    return "res://assets/icons/aspects/insane.png"
 		SpaceRequirement.AspectRequirement.HIDEOUS:   return "res://assets/icons/aspects/hideous.png"
-		SpaceRequirement.AspectRequirement.SORCEROUS: return "res://assets/icons/aspects/sorcerous.png"
+		SpaceRequirement.AspectRequirement.ARCANE:    return "res://assets/icons/aspects/arcane.png"
 	return ""
 
 # --- Input ---
@@ -153,7 +161,7 @@ func _on_button_up() -> void:
 	if _long_press_active:
 		if _was_selected_on_press:
 			selected = false
-		elif available:
+		elif available and not is_occupied:
 			selected = true
 	_long_press_active = false
 	_last_button_up_ms = Time.get_ticks_msec()
@@ -169,3 +177,65 @@ func _on_long_press_timeout() -> void:
 
 func cancel_long_press() -> void:
 	_long_press_active = false
+
+# Adds or replaces the meeple icon on this space.
+# card_datas: all CardData for the minions placed here.
+# The meeple is anchored so its center sits at the space's upper-left corner.
+func add_minion_meeple(card_datas: Array) -> void:
+	if _meeple_overlay:
+		_meeple_overlay.queue_free()
+
+	_placed_card_datas.clear()
+	for d in card_datas:
+		_placed_card_datas.append(d)
+
+	_meeple_overlay = Control.new()
+	_meeple_overlay.size = Vector2(75.0, 50.0)
+	_meeple_overlay.position = Vector2(-18.0, -25.0)
+	_meeple_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	_meeple_overlay.z_index = 1
+	add_child(_meeple_overlay)
+
+	var icon := TextureRect.new()
+	icon.texture = load("res://assets/icons/minions/minion.png")
+	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_meeple_overlay.add_child(icon)
+
+	if card_datas.size() > 1:
+		var count_label := Label.new()
+		count_label.text = "×%d" % card_datas.size()
+		count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		count_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		count_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_meeple_overlay.add_child(count_label)
+
+	_meeple_overlay.gui_input.connect(_on_meeple_input)
+
+func clear_meeple() -> void:
+	if _meeple_overlay:
+		_meeple_overlay.queue_free()
+		_meeple_overlay = null
+	_placed_card_datas.clear()
+
+func _on_meeple_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	var mb := event as InputEventMouseButton
+	if mb.button_index != MOUSE_BUTTON_LEFT:
+		return
+	get_viewport().set_input_as_handled()
+	if mb.pressed:
+		_meeple_long_press_active = true
+		get_tree().create_timer(LONG_PRESS_DURATION).timeout.connect(_on_meeple_long_press_timeout)
+	else:
+		_meeple_long_press_active = false
+
+func _on_meeple_long_press_timeout() -> void:
+	if _meeple_long_press_active:
+		_meeple_long_press_active = false
+		var title: String = "Minions at %s" % (space_data.space_name if space_data else "Space")
+		CardArrayPopup.show_cards(_placed_card_datas, title)

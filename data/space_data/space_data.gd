@@ -29,20 +29,20 @@ var space_name: String = "New Space":
 # a Minion+Plan pair satisfies the Space when it satisfies ANY one clause.
 #
 # Examples:
-#   [ {Supernatural, Politics} ]              → must have Supernatural AND Politics
-#   [ {Vampire}, {Human, Battle} ]            → Vampire OR (Human AND Battle)
+#   [ {Supernatural, Negotiate} ]             → must have Supernatural AND Negotiate
+#   [ {Vampire}, {Human, Fight} ]             → Vampire OR (Human AND Fight)
 #   []                                        → open space, any pair qualifies
 # ==============================================================================
 @export_group("Requirements")
 @export var requirement_clauses: Array[SpaceRequirement] = []
 
-# Whether the given Minion+Plan pair satisfies this Space's requirements.
-# An empty clause list means the space is open — any pair qualifies.
-func is_satisfied_by(minion: CardData, plan: CardData) -> bool:
+# Whether the given set of cards (≥1 Minion + ≥1 Plan) satisfies this Space's requirements.
+# Pass arrays of CardData. An empty clause list means the space is open — any set qualifies.
+func is_satisfied_by(minions: Array, plans: Array) -> bool:
 	if requirement_clauses.is_empty():
 		return true
 	for clause in requirement_clauses:
-		if clause != null and clause.is_satisfied_by(minion, plan):
+		if clause != null and clause.is_satisfied_by(minions, plans):
 			return true
 	return false
 

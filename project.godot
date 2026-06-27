@@ -19,8 +19,10 @@ config/icon="res://icon.svg"
 
 Events="*uid://uig3uweaetwy"
 Availability="*res://globals/availability.gd"
+GameState="*res://globals/game_state.gd"
 CardZoom="*res://globals/card_zoom.gd"
 SpaceZoom="*res://globals/space_zoom.gd"
+CardArrayPopup="*res://globals/card_array_popup.gd"
 
 [display]
 

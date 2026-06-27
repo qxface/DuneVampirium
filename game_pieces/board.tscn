@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://space000001" path="res://game_pieces/space.tscn" id="5_acunv"]
 [ext_resource type="Resource" uid="uid://bfcsfqtokmse3" path="res://data/spaces/vampire_ministry.tres" id="6_ehfyt"]
 [ext_resource type="Resource" uid="uid://d1pseiq07xhnf" path="res://data/spaces/goth_club.tres" id="7_lomec"]
+[ext_resource type="FontFile" uid="uid://0twfd34avp1p" path="res://assets/fonts/GrenzeGotisch-VariableFont_wght.ttf" id="8_lomec"]
+[ext_resource type="Script" path="res://game_pieces/long_press_button.gd" id="9_lpbtn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehfyt"]
 bg_color = Color(0.043137256, 0.29411766, 0.23137255, 0.2509804)
@@ -212,6 +214,44 @@ space_data = ExtResource("6_ehfyt")
 [node name="Space2" parent="CanvasLayer/SpaceContainer" unique_id=1171474845 instance=ExtResource("5_acunv")]
 layout_mode = 2
 space_data = ExtResource("7_lomec")
+
+[node name="TurnButtons" type="VBoxContainer" parent="CanvasLayer" unique_id=1639167394]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -289.0
+offset_top = -177.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="SendMinionsButton" type="Button" parent="CanvasLayer/TurnButtons" unique_id=10796155]
+unique_name_in_owner = true
+script = ExtResource("9_lpbtn")
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("8_lomec")
+theme_override_font_sizes/font_size = 31
+text = "Send Minions"
+
+[node name="RevealButton" type="Button" parent="CanvasLayer/TurnButtons" unique_id=1218644149]
+unique_name_in_owner = true
+script = ExtResource("9_lpbtn")
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("8_lomec")
+theme_override_font_sizes/font_size = 31
+text = "Reveal"
+
+[node name="EndTurnButton" type="Button" parent="CanvasLayer/TurnButtons" unique_id=1028760705]
+unique_name_in_owner = true
+script = ExtResource("9_lpbtn")
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("8_lomec")
+theme_override_font_sizes/font_size = 31
+text = "End Turn"
 
 [node name="Dune" type="Sprite2D" parent="." unique_id=1834547570]
 modulate = Color(1, 1, 1, 0.21568628)

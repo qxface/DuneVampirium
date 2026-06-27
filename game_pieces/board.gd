@@ -32,6 +32,18 @@ const MIN_SEL_PLAN_OCC_W:   float = 1.0 * CARD_SLOT + PANEL_MARGIN  # 1 card
 @onready var selected_plan_hbox: HBoxContainer    = %SelectedPlanHBoxContainer
 @onready var plan_hbox: HBoxContainer             = %PlanHBoxContainer
 
+@onready var send_minions_button: LongPressButton = %SendMinionsButton
+@onready var reveal_button: LongPressButton       = %RevealButton
+@onready var end_turn_button: LongPressButton     = %EndTurnButton
+
+# In Play panel — created at runtime, shows the top Plan in the current player's in-play pile.
+var _in_play_panel: Panel
+var _in_play_card_node: Control
+var _in_play_count_label: Label
+var _in_play_long_press_active: bool = false
+
+const PLAN_SCENE := preload("res://game_pieces/plan.tscn")
+
 func _ready() -> void:
 	add_to_group("BOARD")
 	selected_minion_hbox.add_to_group("MINION_HOLDER")
@@ -41,6 +53,153 @@ func _ready() -> void:
 	_raise_selected_panels.call_deferred()
 	_update_hand_widths.call_deferred()
 	Availability.update.call_deferred()
+
+	_setup_in_play_panel()
+
+	send_minions_button.long_pressed.connect(_do_place)
+	reveal_button.long_pressed.connect(_do_reveal)
+	end_turn_button.long_pressed.connect(_do_end_turn)
+
+	Availability.updated.connect(_update_button_states)
+	GameState.state_changed.connect(_update_button_states)
+	_update_button_states()
+
+# ── Button state ──────────────────────────────────────────────────────────────
+
+func _update_button_states() -> void:
+	send_minions_button.disabled = not (GameState.can_place() and _has_valid_selection())
+	reveal_button.disabled       = not GameState.can_reveal()
+	end_turn_button.disabled     = not GameState.can_end_turn()
+	_update_in_play_display()
+
+func _has_valid_selection() -> bool:
+	var tree := get_tree()
+	var has_minion := tree.get_nodes_in_group("MINION").any(func(n): return n.selected)
+	var has_plan   := tree.get_nodes_in_group("PLAN").any(func(n): return n.selected)
+	var has_space  := tree.get_nodes_in_group("SPACE").any(func(n): return n.selected)
+	return has_minion and has_plan and has_space
+
+# ── Turn actions ──────────────────────────────────────────────────────────────
+
+func _do_place() -> void:
+	var tree := get_tree()
+	var sel_minions: Array = tree.get_nodes_in_group("MINION").filter(func(n): return n.selected)
+	var sel_plans:   Array = tree.get_nodes_in_group("PLAN").filter(func(n): return n.selected)
+	var sel_spaces:  Array = tree.get_nodes_in_group("SPACE").filter(func(n): return n.selected)
+
+	if sel_minions.is_empty() or sel_plans.is_empty() or sel_spaces.is_empty():
+		return
+
+	var space: Space = sel_spaces[0]
+	var minion_datas: Array = sel_minions.map(func(n): return n.card_data)
+	var plan_datas:   Array = sel_plans.map(func(n): return n.card_data)
+
+	GameState.execute_place(minion_datas, plan_datas)
+
+	# Show meeple on the space.
+	space.add_minion_meeple(minion_datas)
+	space.selected = false
+
+	# Remove placed minion cards from the scene (they now live on the board as a meeple).
+	for minion_node in sel_minions:
+		minion_node.queue_free()
+
+	# Remove played plan cards from the scene (they now live in the In Play panel).
+	for plan_node in sel_plans:
+		plan_node.queue_free()
+
+	# Collapse the selected panels immediately — queue_free is deferred so
+	# get_child_count() would still return the old count if we called
+	# _update_hand_widths here. Zero them directly instead.
+	selected_minion_panel.custom_minimum_size.x = 0
+	selected_plan_panel.custom_minimum_size.x   = 0
+
+	Availability.update()
+
+func _do_reveal() -> void:
+	GameState.execute_reveal()
+
+func _do_end_turn() -> void:
+	GameState.end_turn()
+
+# ── In Play panel ─────────────────────────────────────────────────────────────
+
+func _setup_in_play_panel() -> void:
+	var canvas: CanvasLayer = $CanvasLayer
+
+	_in_play_panel = Panel.new()
+	_in_play_panel.custom_minimum_size = Vector2(Card.WIDTH, Card.HEIGHT)
+	_in_play_panel.size = Vector2(Card.WIDTH, Card.HEIGHT)
+	# Anchor bottom-right, sit to the left of the TurnButtons (offset_left = -289 on TurnButtons).
+	_in_play_panel.anchor_left   = 1.0
+	_in_play_panel.anchor_top    = 1.0
+	_in_play_panel.anchor_right  = 1.0
+	_in_play_panel.anchor_bottom = 1.0
+	_in_play_panel.offset_left   = -(289.0 + Card.WIDTH + 16.0)
+	_in_play_panel.offset_top    = -Card.HEIGHT - 8.0
+	_in_play_panel.offset_right  = -(289.0 + 16.0)
+	_in_play_panel.offset_bottom = -8.0
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color     = Color(0.42745098, 0.101960786, 0.23921569, 0.2509804)
+	sb.border_color = Color(0.7921569, 0.15686275, 0.15686275, 1.0)
+	sb.set_border_width_all(4)
+	sb.set_corner_radius_all(8)
+	_in_play_panel.add_theme_stylebox_override("panel", sb)
+
+	canvas.add_child(_in_play_panel)
+
+	_in_play_count_label = Label.new()
+	_in_play_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_in_play_count_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	_in_play_count_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_in_play_count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_in_play_panel.add_child(_in_play_count_label)
+
+	_in_play_panel.gui_input.connect(_on_in_play_panel_input)
+
+func _update_in_play_display() -> void:
+	if _in_play_panel == null:
+		return
+	var pile: Array[CardData] = GameState.current_player().plan_in_play
+	_in_play_panel.visible = not pile.is_empty()
+	if pile.is_empty():
+		if _in_play_card_node:
+			_in_play_card_node.queue_free()
+			_in_play_card_node = null
+		return
+
+	# Re-instantiate the top card whenever the pile changes.
+	if _in_play_card_node:
+		_in_play_card_node.queue_free()
+	_in_play_card_node = PLAN_SCENE.instantiate()
+	# Pass all input through to the panel so long-press-to-expand works.
+	_in_play_card_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_in_play_card_node.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_in_play_panel.add_child(_in_play_card_node)
+	_in_play_card_node.card_data = pile.back()  # set after add_child so @onready vars are valid
+	# Keep the count label on top.
+	_in_play_panel.move_child(_in_play_count_label, -1)
+
+	_in_play_count_label.text = "×%d" % pile.size() if pile.size() > 1 else ""
+
+func _on_in_play_panel_input(event: InputEvent) -> void:
+	# Long-press to expand — stub; full zoom UI is a future task.
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.button_index == MOUSE_BUTTON_LEFT:
+			if mb.pressed:
+				_in_play_long_press_active = true
+				get_tree().create_timer(0.5).timeout.connect(_on_in_play_long_press_timeout)
+			else:
+				_in_play_long_press_active = false
+
+func _on_in_play_long_press_timeout() -> void:
+	if _in_play_long_press_active:
+		_in_play_long_press_active = false
+		var pile: Array[CardData] = GameState.current_player().plan_in_play
+		if not pile.is_empty():
+			CardArrayPopup.show_cards(pile, "Plans In Play")
 
 # Called by cards (via _request_width_update) after any selection change.
 func _update_hand_widths() -> void:
