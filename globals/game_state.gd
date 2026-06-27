@@ -20,6 +20,9 @@ func _ready() -> void:
 func current_player() -> PlayerState:
 	return players[current_player_index]
 
+func get_current_player() -> PlayerState:
+	return players[current_player_index]
+
 # --- Query ---
 
 func can_place() -> bool:
@@ -34,7 +37,7 @@ func can_end_turn() -> bool:
 
 # --- Actions ---
 
-func execute_place(minion_datas: Array, plan_datas: Array) -> void:
+func execute_place(minion_datas: Array, plan_datas: Array, space_data: SpaceData) -> void:
 	var p := current_player()
 	p.actions_remaining -= 1
 	for d: CardData in minion_datas:
@@ -43,8 +46,20 @@ func execute_place(minion_datas: Array, plan_datas: Array) -> void:
 	for d: CardData in plan_datas:
 		p.plan_hand.erase(d)
 		p.plan_in_play.append(d)
+	_trigger_agent_effects(minion_datas, plan_datas, space_data)
 	_action_taken_this_turn = true
 	state_changed.emit()
+
+func _trigger_agent_effects(minion_datas: Array, plan_datas: Array, space_data: SpaceData) -> void:
+	for d: CardData in minion_datas:
+		for effect: Effect in d.agent_effects:
+			effect.trigger(self, d)
+	for d: CardData in plan_datas:
+		for effect: Effect in d.agent_effects:
+			effect.trigger(self, d)
+	if space_data != null:
+		for effect: Effect in space_data.agent_effects:
+			effect.trigger(self, space_data)
 
 func execute_reveal() -> void:
 	current_player().has_revealed = true

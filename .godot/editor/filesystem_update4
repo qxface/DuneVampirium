@@ -9,3 +9,10 @@ res://globals/game_state.gd
 res://game_pieces/space.tscn
 res://globals/card_array_popup.gd
 res://game_pieces/card.gd
+res://data/plans/bodice_ripping_catfight.tres
+res://data/spaces/haunted_library.tres
+res://data/minions/primori_newblood.tres
+res://data/minions/vorace_newblood.tres
+res://data/effects/draw_card.gd
+res://data/effects/effect.gd
+res://data/effects/gain_resource.gd

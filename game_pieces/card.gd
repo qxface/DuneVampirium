@@ -42,7 +42,7 @@ var card_data: CardData:
 var card_type: CardData.CardType = CardData.CardType.PLAN:
 	set(value):
 		card_type = value
-		print_debug(card_type)
+		#print_debug(card_type)
 		for group in get_groups():
 			remove_from_group(group)
 		add_to_group("CARD")

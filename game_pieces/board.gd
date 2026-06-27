@@ -32,12 +32,12 @@ const MIN_SEL_PLAN_OCC_W:   float = 1.0 * CARD_SLOT + PANEL_MARGIN  # 1 card
 @onready var selected_plan_hbox: HBoxContainer    = %SelectedPlanHBoxContainer
 @onready var plan_hbox: HBoxContainer             = %PlanHBoxContainer
 
-@onready var send_minions_button: LongPressButton = %SendMinionsButton
-@onready var reveal_button: LongPressButton       = %RevealButton
-@onready var end_turn_button: LongPressButton     = %EndTurnButton
+@onready var send_minions_button: LongPressButton  = %SendMinionsButton
+@onready var reveal_button: LongPressButton        = %RevealButton
+@onready var end_turn_button: LongPressButton      = %EndTurnButton
+@onready var in_play_panel: Panel                  = %InPlayPanel
+@onready var in_play_margin: MarginContainer       = %InPlayMarginContainer
 
-# In Play panel — created at runtime, shows the top Plan in the current player's in-play pile.
-var _in_play_panel: Panel
 var _in_play_card_node: Control
 var _in_play_count_label: Label
 var _in_play_long_press_active: bool = false
@@ -54,7 +54,14 @@ func _ready() -> void:
 	_update_hand_widths.call_deferred()
 	Availability.update.call_deferred()
 
-	_setup_in_play_panel()
+	# Count label overlays the top of InPlayPanel (above the MarginContainer).
+	_in_play_count_label = Label.new()
+	_in_play_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_in_play_count_label.vertical_alignment   = VERTICAL_ALIGNMENT_BOTTOM
+	_in_play_count_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_in_play_count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	in_play_panel.add_child(_in_play_count_label)
+	in_play_panel.gui_input.connect(_on_in_play_panel_input)
 
 	send_minions_button.long_pressed.connect(_do_place)
 	reveal_button.long_pressed.connect(_do_reveal)
@@ -94,7 +101,7 @@ func _do_place() -> void:
 	var minion_datas: Array = sel_minions.map(func(n): return n.card_data)
 	var plan_datas:   Array = sel_plans.map(func(n): return n.card_data)
 
-	GameState.execute_place(minion_datas, plan_datas)
+	GameState.execute_place(minion_datas, plan_datas, space.space_data)
 
 	# Show meeple on the space.
 	space.add_minion_meeple(minion_datas)
@@ -124,45 +131,9 @@ func _do_end_turn() -> void:
 
 # ── In Play panel ─────────────────────────────────────────────────────────────
 
-func _setup_in_play_panel() -> void:
-	var canvas: CanvasLayer = $CanvasLayer
-
-	_in_play_panel = Panel.new()
-	_in_play_panel.custom_minimum_size = Vector2(Card.WIDTH, Card.HEIGHT)
-	_in_play_panel.size = Vector2(Card.WIDTH, Card.HEIGHT)
-	# Anchor bottom-right, sit to the left of the TurnButtons (offset_left = -289 on TurnButtons).
-	_in_play_panel.anchor_left   = 1.0
-	_in_play_panel.anchor_top    = 1.0
-	_in_play_panel.anchor_right  = 1.0
-	_in_play_panel.anchor_bottom = 1.0
-	_in_play_panel.offset_left   = -(289.0 + Card.WIDTH + 16.0)
-	_in_play_panel.offset_top    = -Card.HEIGHT - 8.0
-	_in_play_panel.offset_right  = -(289.0 + 16.0)
-	_in_play_panel.offset_bottom = -8.0
-
-	var sb := StyleBoxFlat.new()
-	sb.bg_color     = Color(0.42745098, 0.101960786, 0.23921569, 0.2509804)
-	sb.border_color = Color(0.7921569, 0.15686275, 0.15686275, 1.0)
-	sb.set_border_width_all(4)
-	sb.set_corner_radius_all(8)
-	_in_play_panel.add_theme_stylebox_override("panel", sb)
-
-	canvas.add_child(_in_play_panel)
-
-	_in_play_count_label = Label.new()
-	_in_play_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_in_play_count_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-	_in_play_count_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_in_play_count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_in_play_panel.add_child(_in_play_count_label)
-
-	_in_play_panel.gui_input.connect(_on_in_play_panel_input)
-
 func _update_in_play_display() -> void:
-	if _in_play_panel == null:
-		return
 	var pile: Array[CardData] = GameState.current_player().plan_in_play
-	_in_play_panel.visible = not pile.is_empty()
+	in_play_panel.visible = not pile.is_empty()
 	if pile.is_empty():
 		if _in_play_card_node:
 			_in_play_card_node.queue_free()
@@ -175,11 +146,10 @@ func _update_in_play_display() -> void:
 	_in_play_card_node = PLAN_SCENE.instantiate()
 	# Pass all input through to the panel so long-press-to-expand works.
 	_in_play_card_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_in_play_card_node.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_in_play_panel.add_child(_in_play_card_node)
+	in_play_margin.add_child(_in_play_card_node)
 	_in_play_card_node.card_data = pile.back()  # set after add_child so @onready vars are valid
-	# Keep the count label on top.
-	_in_play_panel.move_child(_in_play_count_label, -1)
+	# Keep the count label on top of the panel.
+	in_play_panel.move_child(_in_play_count_label, -1)
 
 	_in_play_count_label.text = "×%d" % pile.size() if pile.size() > 1 else ""
 
