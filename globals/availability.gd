@@ -90,4 +90,10 @@ func _clause_satisfied(clause: SpaceRequirement, pips: Dictionary) -> bool:
 			if not pips["hideous"]:  return false
 		SpaceRequirement.AspectRequirement.ARCANE:
 			if not pips["arcane"]:  return false
+	var p := GameState.current_player()
+	if not GameState.meets_requirement(p, clause.requirement_type, clause.requirement_amount):
+		return false
+	var costs: Dictionary = {clause.cost_type: clause.cost_amount} if clause.cost_type != GameEnums.CostType.NONE else {}
+	if not GameState.can_afford(p, costs):
+		return false
 	return true

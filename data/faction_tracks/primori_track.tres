@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="FactionTrackData" format=3 uid="uid://cc1tgc0vlciql"]
+
+[ext_resource type="Script" uid="uid://cko183oq17r7" path="res://data/faction_tracks/faction_track_data.gd" id="1_trackdata"]
+[ext_resource type="Script" uid="uid://ds0rt5jl04qv6" path="res://data/faction_tracks/faction_milestone.gd" id="2_milestone"]
+[ext_resource type="Script" uid="uid://b8bbea8ml5oiu" path="res://data/effects/draw_card.gd" id="3_4nq3j"]
+[ext_resource type="Script" uid="uid://bmdj0vckfab1y" path="res://data/effects/effect.gd" id="3_effect"]
+[ext_resource type="Script" uid="uid://c8k7du6dte7rb" path="res://data/effects/gain_vp.gd" id="4_gainvp"]
+
+[sub_resource type="Resource" id="Resource_m0o00"]
+script = ExtResource("3_4nq3j")
+metadata/_custom_type_script = "uid://b8bbea8ml5oiu"
+
+[sub_resource type="Resource" id="Resource_4t6cd"]
+script = ExtResource("2_milestone")
+position = 1
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_m0o00")])
+metadata/_custom_type_script = "uid://ds0rt5jl04qv6"
+
+[sub_resource type="Resource" id="GainVP_pos2"]
+script = ExtResource("4_gainvp")
+
+[sub_resource type="Resource" id="Milestone_pos2"]
+script = ExtResource("2_milestone")
+position = 2
+effects = Array[ExtResource("3_effect")]([SubResource("GainVP_pos2")])
+
+[resource]
+script = ExtResource("1_trackdata")
+faction_name = "primori"
+milestones = Array[ExtResource("2_milestone")]([SubResource("Resource_4t6cd"), SubResource("Milestone_pos2")])

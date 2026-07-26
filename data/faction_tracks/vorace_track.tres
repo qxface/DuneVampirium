@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="FactionTrackData" format=3]
+
+[ext_resource type="Script" path="res://data/faction_tracks/faction_track_data.gd" id="1_trackdata"]
+[ext_resource type="Script" path="res://data/faction_tracks/faction_milestone.gd" id="2_milestone"]
+[ext_resource type="Script" path="res://data/effects/effect.gd" id="3_effect"]
+[ext_resource type="Script" path="res://data/effects/gain_vp.gd" id="4_gainvp"]
+
+[sub_resource type="Resource" id="GainVP_pos2"]
+script = ExtResource("4_gainvp")
+amount = 1
+
+[sub_resource type="Resource" id="Milestone_pos2"]
+script = ExtResource("2_milestone")
+position = 2
+effects = Array[ExtResource("3_effect")]([SubResource("GainVP_pos2")])
+
+[resource]
+script = ExtResource("1_trackdata")
+faction_name = "vorace"
+max_position = 4
+leader_vp_position = 4
+milestones = Array[ExtResource("2_milestone")]([SubResource("Milestone_pos2")])

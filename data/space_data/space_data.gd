@@ -51,18 +51,31 @@ func is_satisfied_by(minions: Array, plans: Array) -> bool:
 # ==============================================================================
 @export_group("Agent Action")
 @export var agent_cost: GameEnums.CostType = GameEnums.CostType.NONE:
-	set(v): agent_cost = v; notify_property_list_changed()
+	set(v):
+		agent_cost = v
+		if agent_cost != GameEnums.CostType.NONE: agent_auto_execute = false
+		notify_property_list_changed()
 @export var agent_cost_amount: int = 0:
-	set(v): agent_cost_amount = max(0, v); notify_property_list_changed()
+	set(v):
+		agent_cost_amount = max(0, v)
+		if agent_cost != GameEnums.CostType.NONE: agent_auto_execute = false
+		notify_property_list_changed()
 @export var agent_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): agent_requirement = v; notify_property_list_changed()
 @export var agent_requirement_amount: int = 0:
 	set(v): agent_requirement_amount = max(0, v); notify_property_list_changed()
+@export var agent_auto_execute: bool = true:
+	set(v): agent_auto_execute = v; notify_property_list_changed()
 @export var agent_effects: Array[Effect] = []:
 	set(v): agent_effects = v; notify_property_list_changed()
 
 var agent_action: bool:
 	get: return not agent_effects.is_empty()
+
+# Costed actions can never truly auto-fire — a cost always overrides the stored
+# flag to false, regardless of what's configured in the Inspector.
+var agent_effective_auto_execute: bool:
+	get: return agent_auto_execute and agent_cost == GameEnums.CostType.NONE
 
 # ==============================================================================
 # INTERNAL RESOURCE VALIDATION ENGINE
@@ -80,11 +93,11 @@ func _get_data_warnings() -> PackedStringArray:
 			elif clause.is_empty():
 				warnings.append("Clause %d has no requirements set — it will always pass." % (i + 1))
 
-	_check_action_warnings(warnings, "Agent", agent_effects, agent_cost, agent_cost_amount, agent_requirement, agent_requirement_amount)
+	_check_action_warnings(warnings, "Agent", agent_effects, agent_cost, agent_cost_amount, agent_requirement, agent_requirement_amount, agent_auto_execute)
 
 	return warnings
 
-func _check_action_warnings(warnings: PackedStringArray, action_name: String, effects: Array, cost_type: int, cost_amount: int, req_type: int, req_amount: int) -> void:
+func _check_action_warnings(warnings: PackedStringArray, action_name: String, effects: Array, cost_type: int, cost_amount: int, req_type: int, req_amount: int, auto_execute: bool = true) -> void:
 	var is_cost_none: bool = (cost_type == GameEnums.CostType.NONE)
 	var is_req_none: bool  = (req_type  == GameEnums.RequirementType.NONE)
 	var has_effects: bool  = not effects.is_empty()
@@ -105,3 +118,6 @@ func _check_action_warnings(warnings: PackedStringArray, action_name: String, ef
 		warnings.append("[%s] Requirement type is set, but amount is 0" % action_name)
 	elif is_req_none and req_amount > 0:
 		warnings.append("[%s] Requirement amount is > 0, but type is NONE" % action_name)
+
+	if not is_cost_none and auto_execute:
+		warnings.append("[%s] Has a cost, so auto_execute is forced to false at runtime regardless of the checkbox — uncheck it to match actual behavior." % action_name)

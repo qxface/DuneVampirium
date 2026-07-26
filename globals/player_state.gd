@@ -1,8 +1,15 @@
 class_name PlayerState
 extends RefCounted
 
+enum RoundPhase {
+	ACTIVE,    # Has actions remaining, hasn't revealed yet
+	REVEALING, # Triggered Reveal; plans fired; spending leftover actions on Minion Reveals
+	DONE,      # Ended reveal turn; nothing more until next round
+}
+
 var player_name: String = ""
 var is_ai: bool = false
+var player_color: Color = Color.WHITE
 
 var vp: int = 0
 var money: int = 0
@@ -21,6 +28,7 @@ var plan_in_play: Array[CardData] = []
 var plan_discard: Array[CardData] = []
 
 # Turn economy
-var actions_per_round: int = 2
-var actions_remaining: int = 2
-var has_revealed: bool = false
+# TEMP: bumped from the 2-action baseline to 3 for testing Place/Recall/Place sequences.
+var actions_per_round: int = 3
+var actions_remaining: int = 3
+var round_phase: RoundPhase = RoundPhase.ACTIVE

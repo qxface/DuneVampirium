@@ -2,14 +2,24 @@
 
 [ext_resource type="Script" uid="uid://8i5e826ufvj7" path="res://game_pieces/card_scroller.gd" id="1_7tatt"]
 [ext_resource type="Script" uid="uid://cjva52g5np3yr" path="res://game_pieces/board.gd" id="1_sd8gd"]
-[ext_resource type="PackedScene" uid="uid://d1je5nhbvmmcy" path="res://game_pieces/plan.tscn" id="2_7tatt"]
-[ext_resource type="PackedScene" uid="uid://3wp5sg60ls1t" path="res://game_pieces/minion.tscn" id="2_amdnb"]
+[ext_resource type="PackedScene" uid="uid://7cl0bjb7w66f" path="res://game_pieces/track.tscn" id="3_a52c8"]
 [ext_resource type="Texture2D" uid="uid://d2jxjs4xpw5i" path="res://assets/dune.png" id="4_6nve1"]
 [ext_resource type="PackedScene" uid="uid://space000001" path="res://game_pieces/space.tscn" id="5_acunv"]
 [ext_resource type="Resource" uid="uid://bfcsfqtokmse3" path="res://data/spaces/vampire_ministry.tres" id="6_ehfyt"]
 [ext_resource type="Resource" uid="uid://d1pseiq07xhnf" path="res://data/spaces/goth_club.tres" id="7_lomec"]
 [ext_resource type="FontFile" uid="uid://0twfd34avp1p" path="res://assets/fonts/GrenzeGotisch-VariableFont_wght.ttf" id="8_lomec"]
 [ext_resource type="Script" uid="uid://bmmkkav1rrmqi" path="res://game_pieces/long_press_button.gd" id="9_lpbtn"]
+[ext_resource type="PackedScene" uid="uid://ysleybupd2l4" path="res://game_pieces/icon.tscn" id="10_dxlds"]
+[ext_resource type="StyleBox" uid="uid://cyq8j7bjfh2ow" path="res://assets/styleboxes/opponents.tres" id="10_hl2e3"]
+[ext_resource type="Texture2D" uid="uid://c8i7fgog0gf07" path="res://assets/icons/player/plan_deck.png" id="11_al0mr"]
+[ext_resource type="StyleBox" uid="uid://br2bjoiq4paa8" path="res://assets/styleboxes/player.tres" id="11_dxlds"]
+[ext_resource type="Texture2D" uid="uid://cwaljkbqwa8ty" path="res://assets/icons/player/plan_discard.png" id="12_dxlds"]
+[ext_resource type="Texture2D" uid="uid://dt7dfbyoqfiwt" path="res://assets/icons/player/plan_in_play.png" id="13_dxlds"]
+[ext_resource type="Texture2D" uid="uid://clxfprayfdgtq" path="res://assets/icons/resources/money.png" id="14_qsoa8"]
+[ext_resource type="Texture2D" uid="uid://70ofci82cabv" path="res://assets/icons/resources/blood.png" id="15_a52c8"]
+[ext_resource type="Texture2D" uid="uid://cacam31wyen8q" path="res://assets/icons/resources/secret.png" id="16_8xp3k"]
+[ext_resource type="Resource" path="res://data/spaces/takeover.tres" id="17_takeover"]
+[ext_resource type="Texture2D" uid="uid://b5e2u705jxtgi" path="res://assets/icons/resources/vp.png" id="18_vp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehfyt"]
 bg_color = Color(0.043137256, 0.29411766, 0.23137255, 0.2509804)
@@ -51,12 +61,12 @@ offset_right = -304.0
 offset_bottom = 138.0
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_lock_ = true
 
 [node name="MinionPanel" type="Panel" parent="CanvasLayer/HandHBoxContainer" unique_id=1093394110]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(263, 258)
+custom_minimum_size = Vector2(0, 258)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_ehfyt")
 
@@ -78,18 +88,6 @@ script = ExtResource("1_7tatt")
 
 [node name="MinionHBoxContainer" type="HBoxContainer" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer/MinionScrollContainer" unique_id=945474847]
 unique_name_in_owner = true
-layout_mode = 2
-
-[node name="Minion" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=1920950214 instance=ExtResource("2_amdnb")]
-layout_mode = 2
-
-[node name="Minion2" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=1983174667 instance=ExtResource("2_amdnb")]
-layout_mode = 2
-
-[node name="Minion3" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=989521482 instance=ExtResource("2_amdnb")]
-layout_mode = 2
-
-[node name="Minion4" parent="CanvasLayer/HandHBoxContainer/MinionPanel/MarginContainer/MinionScrollContainer/MinionHBoxContainer" unique_id=308813026 instance=ExtResource("2_amdnb")]
 layout_mode = 2
 
 [node name="SelectedMinionPanel" type="Panel" parent="CanvasLayer/HandHBoxContainer" unique_id=567234891]
@@ -148,8 +146,9 @@ layout_mode = 2
 
 [node name="PlanPanel" type="Panel" parent="CanvasLayer/HandHBoxContainer" unique_id=612938401]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(263, 258)
+custom_minimum_size = Vector2(0, 258)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_lomec")
 
@@ -173,39 +172,36 @@ script = ExtResource("1_7tatt")
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Plan" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1182021171 instance=ExtResource("2_7tatt")]
-layout_mode = 2
+[node name="TrackContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1965269637]
+offset_left = 575.0
+offset_top = 52.0
+offset_right = 705.0
+offset_bottom = 843.0
 
-[node name="Plan2" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1424404299 instance=ExtResource("2_7tatt")]
+[node name="Track" parent="CanvasLayer/TrackContainer" unique_id=374347059 instance=ExtResource("3_a52c8")]
+unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 3
+faction_name = "primori"
 
-[node name="Plan3" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1159098316 instance=ExtResource("2_7tatt")]
+[node name="Track2" parent="CanvasLayer/TrackContainer" unique_id=826329077 instance=ExtResource("3_a52c8")]
+unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 3
+faction_name = "volupta"
 
-[node name="Plan4" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1593824595 instance=ExtResource("2_7tatt")]
+[node name="Track3" parent="CanvasLayer/TrackContainer" unique_id=1763940894 instance=ExtResource("3_a52c8")]
+unique_name_in_owner = true
 layout_mode = 2
-
-[node name="Plan5" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=425750903 instance=ExtResource("2_7tatt")]
-layout_mode = 2
-
-[node name="Plan6" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=1513242304 instance=ExtResource("2_7tatt")]
-layout_mode = 2
-
-[node name="Plan7" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=755904273 instance=ExtResource("2_7tatt")]
-layout_mode = 2
-
-[node name="Plan8" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=504134011 instance=ExtResource("2_7tatt")]
-layout_mode = 2
-
-[node name="Plan9" parent="CanvasLayer/HandHBoxContainer/PlanPanel/MarginContainer/PlanScrollContainer/PlanHBoxContainer" unique_id=513112792 instance=ExtResource("2_7tatt")]
-layout_mode = 2
+size_flags_vertical = 3
+faction_name = "vorace"
 
 [node name="SpaceContainer" type="GridContainer" parent="CanvasLayer" unique_id=811188335]
 offset_left = 948.0
 offset_top = 56.0
 offset_right = 2130.0
 offset_bottom = 589.0
-columns = 2
+columns = 3
 
 [node name="Space" parent="CanvasLayer/SpaceContainer" unique_id=143156867 instance=ExtResource("5_acunv")]
 layout_mode = 2
@@ -215,34 +211,9 @@ space_data = ExtResource("6_ehfyt")
 layout_mode = 2
 space_data = ExtResource("7_lomec")
 
-[node name="InPlayPanel" type="Panel" parent="CanvasLayer" unique_id=1850000001]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(183, 258)
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -480.0
-offset_top = -57.0
-offset_right = -297.0
-offset_bottom = 201.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_lomec")
-
-[node name="InPlayMarginContainer" type="MarginContainer" parent="CanvasLayer/InPlayPanel" unique_id=1850000002]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
+[node name="Space3" parent="CanvasLayer/SpaceContainer" unique_id=1719042850 instance=ExtResource("5_acunv")]
+layout_mode = 2
+space_data = ExtResource("17_takeover")
 
 [node name="TurnButtons" type="VBoxContainer" parent="CanvasLayer" unique_id=1639167394]
 anchors_preset = 3
@@ -273,6 +244,24 @@ theme_override_font_sizes/font_size = 31
 text = "Reveal"
 script = ExtResource("9_lpbtn")
 
+[node name="RecallMinionsButton" type="Button" parent="CanvasLayer/TurnButtons" unique_id=1218644150]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("8_lomec")
+theme_override_font_sizes/font_size = 31
+text = "Recall Minions"
+script = ExtResource("9_lpbtn")
+
+[node name="MinionRevealButton" type="Button" parent="CanvasLayer/TurnButtons" unique_id=332438582]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("8_lomec")
+theme_override_font_sizes/font_size = 31
+text = "Reveal Minion"
+script = ExtResource("9_lpbtn")
+
 [node name="EndTurnButton" type="Button" parent="CanvasLayer/TurnButtons" unique_id=1028760705]
 unique_name_in_owner = true
 layout_mode = 2
@@ -281,6 +270,133 @@ theme_override_fonts/font = ExtResource("8_lomec")
 theme_override_font_sizes/font_size = 31
 text = "End Turn"
 script = ExtResource("9_lpbtn")
+
+[node name="AcceptRecallButton" type="Button" parent="CanvasLayer/TurnButtons" unique_id=1028760706]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("8_lomec")
+theme_override_font_sizes/font_size = 31
+text = "Accept Recall"
+script = ExtResource("9_lpbtn")
+
+[node name="CancelRecallButton" type="Button" parent="CanvasLayer/TurnButtons" unique_id=1028760707]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("8_lomec")
+theme_override_font_sizes/font_size = 31
+text = "Cancel Recall"
+script = ExtResource("9_lpbtn")
+
+[node name="OpponentPanel" type="Panel" parent="CanvasLayer" unique_id=539497941]
+offset_left = 117.0
+offset_right = 457.0
+offset_bottom = 659.0
+theme_override_styles/panel = ExtResource("10_hl2e3")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/OpponentPanel" unique_id=1832501636]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerPanel" type="Panel" parent="CanvasLayer" unique_id=799394256]
+unique_name_in_owner = true
+offset_left = 117.0
+offset_top = 669.0
+offset_right = 557.0
+offset_bottom = 1080.0
+theme_override_styles/panel = ExtResource("11_dxlds")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PlayerPanel" unique_id=255562061]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/PlayerPanel/MarginContainer" unique_id=563807311]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/PlayerPanel/MarginContainer/VBoxContainer" unique_id=1881849928]
+layout_mode = 2
+size_flags_vertical = 4
+columns = 3
+
+[node name="ActionCount" parent="CanvasLayer/PlayerPanel/MarginContainer/VBoxContainer/GridContainer" unique_id=37748917 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 130)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("16_8xp3k")
+tags = "0"
+
+[node name="PlayerVP" parent="CanvasLayer/PlayerPanel/MarginContainer/VBoxContainer/GridContainer" unique_id=933731632 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 130)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("18_vp")
+tags = "0"
+
+[node name="Control" type="Control" parent="CanvasLayer/PlayerPanel/MarginContainer/VBoxContainer/GridContainer" unique_id=863536138]
+layout_mode = 2
+
+[node name="PlanDeck" parent="CanvasLayer/PlayerPanel/MarginContainer/VBoxContainer/GridContainer" unique_id=1136106178 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 130)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("11_al0mr")
+tags = "0"
+
+[node name="PlanInPlay" parent="CanvasLayer/PlayerPanel/MarginContainer/VBoxContainer/GridContainer" unique_id=1292437833 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 130)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("13_dxlds")
+tags = "0"
+
+[node name="PlanDiscard" parent="CanvasLayer/PlayerPanel/MarginContainer/VBoxContainer/GridContainer" unique_id=676207124 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 130)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("12_dxlds")
+tags = "0"
+
+[node name="MoneyResource" parent="CanvasLayer/PlayerPanel/MarginContainer/VBoxContainer/GridContainer" unique_id=1733518571 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 130)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("14_qsoa8")
+tags = "0"
+
+[node name="BloodResource" parent="CanvasLayer/PlayerPanel/MarginContainer/VBoxContainer/GridContainer" unique_id=744814508 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 130)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("15_a52c8")
+tags = "0"
+
+[node name="SecretResource" parent="CanvasLayer/PlayerPanel/MarginContainer/VBoxContainer/GridContainer" unique_id=148511747 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 130)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("16_8xp3k")
+tags = "0"
 
 [node name="Dune" type="Sprite2D" parent="." unique_id=1834547570]
 modulate = Color(1, 1, 1, 0.21568628)

@@ -69,83 +69,140 @@ var card_name: String = "New Card":
 # --- ACQUIRE ACTION ---
 @export_group("Acquire Action")
 @export var acquire_cost: GameEnums.CostType = GameEnums.CostType.NONE:
-	set(v): acquire_cost = v; notify_property_list_changed()
+	set(v):
+		acquire_cost = v
+		if acquire_cost != GameEnums.CostType.NONE: acquire_auto_execute = false
+		notify_property_list_changed()
 @export var acquire_cost_amount: int = 0:
-	set(v): acquire_cost_amount = max(0, v); notify_property_list_changed()
+	set(v):
+		acquire_cost_amount = max(0, v)
+		if acquire_cost != GameEnums.CostType.NONE: acquire_auto_execute = false
+		notify_property_list_changed()
 @export var acquire_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): acquire_requirement = v; notify_property_list_changed()
 @export var acquire_requirement_amount: int = 0:
 	set(v): acquire_requirement_amount = max(0, v); notify_property_list_changed()
+@export var acquire_auto_execute: bool = true:
+	set(v): acquire_auto_execute = v; notify_property_list_changed()
 @export var acquire_effects: Array[Effect] = []:
 	set(v): acquire_effects = v; notify_property_list_changed()
 
 var acquire_action: bool:
 	get: return !acquire_effects.is_empty()
 
+# Costed actions can never truly auto-fire (see [[auto-execute-effect-resolution]] in CLAUDE.md) —
+# a cost always overrides the stored flag to false, regardless of what's configured in the Inspector.
+var acquire_effective_auto_execute: bool:
+	get: return acquire_auto_execute and acquire_cost == GameEnums.CostType.NONE
+
 # --- AGENT ACTION ---
 @export_group("Agent Action")
 @export var agent_cost: GameEnums.CostType = GameEnums.CostType.NONE:
-	set(v): agent_cost = v; notify_property_list_changed()
+	set(v):
+		agent_cost = v
+		if agent_cost != GameEnums.CostType.NONE: agent_auto_execute = false
+		notify_property_list_changed()
 @export var agent_cost_amount: int = 0:
-	set(v): agent_cost_amount = max(0, v); notify_property_list_changed()
+	set(v):
+		agent_cost_amount = max(0, v)
+		if agent_cost != GameEnums.CostType.NONE: agent_auto_execute = false
+		notify_property_list_changed()
 @export var agent_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): agent_requirement = v; notify_property_list_changed()
 @export_group("Agent Action") # Repeating group hint ensures order stays clean
 @export var agent_requirement_amount: int = 0:
 	set(v): agent_requirement_amount = max(0, v); notify_property_list_changed()
+@export var agent_auto_execute: bool = true:
+	set(v): agent_auto_execute = v; notify_property_list_changed()
 @export var agent_effects: Array[Effect] = []:
 	set(v): agent_effects = v; notify_property_list_changed()
 
 var agent_action: bool:
 	get: return !agent_effects.is_empty()
 
+var agent_effective_auto_execute: bool:
+	get: return agent_auto_execute and agent_cost == GameEnums.CostType.NONE
+
 # --- REVEAL ACTION ---
 @export_group("Reveal Action")
 @export var reveal_cost: GameEnums.CostType = GameEnums.CostType.NONE:
-	set(v): reveal_cost = v; notify_property_list_changed()
+	set(v):
+		reveal_cost = v
+		if reveal_cost != GameEnums.CostType.NONE: reveal_auto_execute = false
+		notify_property_list_changed()
 @export var reveal_cost_amount: int = 0:
-	set(v): reveal_cost_amount = max(0, v); notify_property_list_changed()
+	set(v):
+		reveal_cost_amount = max(0, v)
+		if reveal_cost != GameEnums.CostType.NONE: reveal_auto_execute = false
+		notify_property_list_changed()
 @export var reveal_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): reveal_requirement = v; notify_property_list_changed()
 @export var reveal_requirement_amount: int = 0:
 	set(v): reveal_requirement_amount = max(0, v); notify_property_list_changed()
+@export var reveal_auto_execute: bool = true:
+	set(v): reveal_auto_execute = v; notify_property_list_changed()
 @export var reveal_effects: Array[Effect] = []:
 	set(v): reveal_effects = v; notify_property_list_changed()
 
 var reveal_action: bool:
 	get: return !reveal_effects.is_empty()
 
+var reveal_effective_auto_execute: bool:
+	get: return reveal_auto_execute and reveal_cost == GameEnums.CostType.NONE
+
 # --- DISCARD ACTION ---
 @export_group("Discard Action")
 @export var discard_cost: GameEnums.CostType = GameEnums.CostType.NONE:
-	set(v): discard_cost = v; notify_property_list_changed()
+	set(v):
+		discard_cost = v
+		if discard_cost != GameEnums.CostType.NONE: discard_auto_execute = false
+		notify_property_list_changed()
 @export var discard_cost_amount: int = 0:
-	set(v): discard_cost_amount = max(0, v); notify_property_list_changed()
+	set(v):
+		discard_cost_amount = max(0, v)
+		if discard_cost != GameEnums.CostType.NONE: discard_auto_execute = false
+		notify_property_list_changed()
 @export var discard_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): discard_requirement = v; notify_property_list_changed()
 @export var discard_requirement_amount: int = 0:
 	set(v): discard_requirement_amount = max(0, v); notify_property_list_changed()
+@export var discard_auto_execute: bool = true:
+	set(v): discard_auto_execute = v; notify_property_list_changed()
 @export var discard_effects: Array[Effect] = []:
 	set(v): discard_effects = v; notify_property_list_changed()
 
 var discard_action: bool:
 	get: return !discard_effects.is_empty()
 
+var discard_effective_auto_execute: bool:
+	get: return discard_auto_execute and discard_cost == GameEnums.CostType.NONE
+
 # --- TRASH ACTION ---
 @export_group("Trash Action")
 @export var trash_cost: GameEnums.CostType = GameEnums.CostType.NONE:
-	set(v): trash_cost = v; notify_property_list_changed()
+	set(v):
+		trash_cost = v
+		if trash_cost != GameEnums.CostType.NONE: trash_auto_execute = false
+		notify_property_list_changed()
 @export var trash_cost_amount: int = 0:
-	set(v): trash_cost_amount = max(0, v); notify_property_list_changed()
+	set(v):
+		trash_cost_amount = max(0, v)
+		if trash_cost != GameEnums.CostType.NONE: trash_auto_execute = false
+		notify_property_list_changed()
 @export var trash_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): trash_requirement = v; notify_property_list_changed()
 @export var trash_requirement_amount: int = 0:
 	set(v): trash_requirement_amount = max(0, v); notify_property_list_changed()
+@export var trash_auto_execute: bool = true:
+	set(v): trash_auto_execute = v; notify_property_list_changed()
 @export var trash_effects: Array[Effect] = []:
 	set(v): trash_effects = v; notify_property_list_changed()
 
 var trash_action: bool:
 	get: return !trash_effects.is_empty()
+
+var trash_effective_auto_execute: bool:
+	get: return trash_auto_execute and trash_cost == GameEnums.CostType.NONE
 
 
 # ==============================================================================
@@ -158,15 +215,15 @@ func _get_data_warnings() -> PackedStringArray:
 	if card_type == CardType.MINION and not vampire and not supernatural and not human:
 		warnings.append("Minion must have at least one Origin (Vampire, Supernatural, or Human)")
 
-	_check_action_warnings(warnings, "Acquire", acquire_effects, acquire_cost, acquire_cost_amount, acquire_requirement, acquire_requirement_amount)
-	_check_action_warnings(warnings, "Agent", agent_effects, agent_cost, agent_cost_amount, agent_requirement, agent_requirement_amount)
-	_check_action_warnings(warnings, "Reveal", reveal_effects, reveal_cost, reveal_cost_amount, reveal_requirement, reveal_requirement_amount)
-	_check_action_warnings(warnings, "Discard", discard_effects, discard_cost, discard_cost_amount, discard_requirement, discard_requirement_amount)
-	_check_action_warnings(warnings, "Trash", trash_effects, trash_cost, trash_cost_amount, trash_requirement, trash_requirement_amount)
+	_check_action_warnings(warnings, "Acquire", acquire_effects, acquire_cost, acquire_cost_amount, acquire_requirement, acquire_requirement_amount, acquire_auto_execute)
+	_check_action_warnings(warnings, "Agent", agent_effects, agent_cost, agent_cost_amount, agent_requirement, agent_requirement_amount, agent_auto_execute)
+	_check_action_warnings(warnings, "Reveal", reveal_effects, reveal_cost, reveal_cost_amount, reveal_requirement, reveal_requirement_amount, reveal_auto_execute)
+	_check_action_warnings(warnings, "Discard", discard_effects, discard_cost, discard_cost_amount, discard_requirement, discard_requirement_amount, discard_auto_execute)
+	_check_action_warnings(warnings, "Trash", trash_effects, trash_cost, trash_cost_amount, trash_requirement, trash_requirement_amount, trash_auto_execute)
 
 	return warnings
 
-func _check_action_warnings(warnings: PackedStringArray, action_name: String, effects: Array, cost_type: int, cost_amount: int, req_type: int, req_amount: int) -> void:
+func _check_action_warnings(warnings: PackedStringArray, action_name: String, effects: Array, cost_type: int, cost_amount: int, req_type: int, req_amount: int, auto_execute: bool = true) -> void:
 	# Convert enums to strings using the values you defined above.
 	# We assume the last option in your enum definitions is 'NONE'
 	var is_cost_none: bool = (cost_type == GameEnums.CostType.NONE)
@@ -212,3 +269,6 @@ func _check_action_warnings(warnings: PackedStringArray, action_name: String, ef
 		warnings.append("%s Action: A Requirement Type is set, but the Requirement Amount is 0." % action_name)
 	elif !has_req and req_amount > 0:
 		warnings.append("%s Action: Requirement Amount is greater than 0, but the Requirement Type is set to NONE." % action_name)
+
+	if has_cost and auto_execute:
+		warnings.append("%s Action: has a cost, so auto_execute is forced to false at runtime regardless of the checkbox — uncheck it to match actual behavior." % action_name)

@@ -1,0 +1,124 @@
+[gd_scene format=3 uid="uid://b31p07bf8jrvd"]
+
+[ext_resource type="Texture2D" uid="uid://bldijgdjfotyg" path="res://assets/icons/player/track_marker.png" id="1_dg810"]
+[ext_resource type="Script" path="res://game_pieces/track_step.gd" id="2_tstep"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dg810"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11dlo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_28a8v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gbnpa"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w22mp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hyckb"]
+
+[node name="TrackStep" type="Panel" unique_id=1545809895]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -2229.0
+offset_bottom = -965.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_dg810")
+script = ExtResource("2_tstep")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1234668554]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="Reward" type="Panel" parent="HBoxContainer" unique_id=769833622]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_11dlo")
+
+[node name="RewardMarginContainer" type="MarginContainer" parent="HBoxContainer/Reward" unique_id=3891027744]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RewardContainer" type="HBoxContainer" parent="HBoxContainer/Reward/RewardMarginContainer" unique_id=2094719620]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+
+[node name="Player1Marker" type="Panel" parent="HBoxContainer" unique_id=863935857]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_28a8v")
+
+[node name="TextureRect1" type="TextureRect" parent="HBoxContainer/Player1Marker" unique_id=1331377292]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_dg810")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Player2Marker" type="Panel" parent="HBoxContainer" unique_id=524771069]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_gbnpa")
+
+[node name="TextureRect2" type="TextureRect" parent="HBoxContainer/Player2Marker" unique_id=383183462]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_dg810")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Player3Marker" type="Panel" parent="HBoxContainer" unique_id=1032636835]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_w22mp")
+
+[node name="TextureRect3" type="TextureRect" parent="HBoxContainer/Player3Marker" unique_id=1658616987]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_dg810")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Player4Marker" type="Panel" parent="HBoxContainer" unique_id=1963232782]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_hyckb")
+
+[node name="TextureRect4" type="TextureRect" parent="HBoxContainer/Player4Marker" unique_id=913019861]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_dg810")
+expand_mode = 1
+stretch_mode = 5

@@ -13,6 +13,7 @@ metadata/_custom_type_script = "uid://7cey1nbxdsrx"
 
 [sub_resource type="Resource" id="Resource_xi6qf"]
 script = ExtResource("1_xi6qf")
+status_check = "✅ ALL VALID"
 vampire = true
 action = 1
 

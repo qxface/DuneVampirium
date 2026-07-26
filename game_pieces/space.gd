@@ -1,7 +1,11 @@
 class_name Space
 extends Button
 
+signal recall_selection_changed
+
 const LONG_PRESS_DURATION: float = 0.5
+const _RECALL_SELECTED_MODULATE: Color = Color(0.4, 1.0, 0.4)
+const _RECALL_UNSELECTED_MODULATE: Color = Color(1.0, 1.0, 1.0)
 
 @onready var image_panel: Panel = %ImagePanel
 @onready var requirements_panel: Panel = %RequirementsPanel
@@ -43,6 +47,23 @@ var _placed_card_datas: Array[CardData] = []
 var _meeple_long_press_active: bool = false
 var _long_press_active: bool = false
 
+# Set by Board when the Recall action is being composed; while true, clicking
+# the meeple toggles recall_selected instead of doing nothing on a short click.
+var recalling: bool = false:
+	set(value):
+		recalling = value
+		if not value:
+			recall_selected = false
+
+var recall_selected: bool = false:
+	set(value):
+		if recall_selected == value:
+			return
+		recall_selected = value
+		if _meeple_overlay:
+			_meeple_overlay.modulate = _RECALL_SELECTED_MODULATE if value else _RECALL_UNSELECTED_MODULATE
+		recall_selection_changed.emit()
+
 var is_occupied: bool:
 	get: return _meeple_overlay != null
 var _was_selected_on_press: bool = false
@@ -81,7 +102,7 @@ func _load_space() -> void:
 	name_label.text = space_data.space_name
 	_populate_requirements()
 	action_panel.visible = space_data.agent_action
-	ActionDisplay.populate_into(action_container, space_data.agent_effects, space_data.agent_cost, space_data.agent_requirement)
+	ActionDisplay.populate_into(action_container, space_data.agent_effects, space_data.agent_cost, space_data.agent_cost_amount, space_data.agent_requirement, space_data.agent_requirement_amount)
 
 func _load_image() -> void:
 	if image == null or space_data == null:
@@ -120,6 +141,10 @@ func _populate_requirements() -> void:
 			_add_icon(row, _action_icon_path(clause.action))
 		if clause.aspect != SpaceRequirement.AspectRequirement.NONE:
 			_add_icon(row, _aspect_icon_path(clause.aspect))
+		if clause.requirement_type != GameEnums.RequirementType.NONE:
+			ActionDisplay.add_typed_icon(row, GameEnums.requirement_icon_path(clause.requirement_type), clause.requirement_amount, true)
+		if clause.cost_type != GameEnums.CostType.NONE:
+			ActionDisplay.add_typed_icon(row, GameEnums.cost_icon_path(clause.cost_type), clause.cost_amount, false)
 
 		requirements_container.add_child(row)
 
@@ -220,6 +245,10 @@ func clear_meeple() -> void:
 		_meeple_overlay.queue_free()
 		_meeple_overlay = null
 	_placed_card_datas.clear()
+	recall_selected = false
+
+func placed_minions() -> Array[CardData]:
+	return _placed_card_datas.duplicate()
 
 func _on_meeple_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton):
@@ -232,6 +261,8 @@ func _on_meeple_input(event: InputEvent) -> void:
 		_meeple_long_press_active = true
 		get_tree().create_timer(LONG_PRESS_DURATION).timeout.connect(_on_meeple_long_press_timeout)
 	else:
+		if _meeple_long_press_active and recalling:
+			recall_selected = not recall_selected
 		_meeple_long_press_active = false
 
 func _on_meeple_long_press_timeout() -> void:

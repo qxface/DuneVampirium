@@ -6,6 +6,11 @@ enum GainType { MONEY, BLOOD, SECRET }
 @export var type: GainType = GainType.MONEY
 @export var amount: int = 1
 
+func get_tags() -> String:
+	if amount <= 0 or amount > 9:
+		return ""
+	return str(amount)
+
 func get_icon() -> Texture2D:
 	match type:
 		GainType.MONEY:  return preload("res://assets/icons/resources/money.png")

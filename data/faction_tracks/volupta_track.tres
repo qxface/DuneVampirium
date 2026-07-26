@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FactionTrackData" format=3 uid="uid://hllifnqcqs47"]
+
+[ext_resource type="Script" uid="uid://cko183oq17r7" path="res://data/faction_tracks/faction_track_data.gd" id="1_trackdata"]
+[ext_resource type="Script" uid="uid://ds0rt5jl04qv6" path="res://data/faction_tracks/faction_milestone.gd" id="2_milestone"]
+[ext_resource type="Script" uid="uid://bmdj0vckfab1y" path="res://data/effects/effect.gd" id="3_effect"]
+[ext_resource type="Script" uid="uid://c8k7du6dte7rb" path="res://data/effects/gain_vp.gd" id="4_gainvp"]
+
+[sub_resource type="Resource" id="GainVP_pos2"]
+script = ExtResource("4_gainvp")
+
+[sub_resource type="Resource" id="Milestone_pos2"]
+script = ExtResource("2_milestone")
+position = 2
+effects = Array[ExtResource("3_effect")]([SubResource("GainVP_pos2")])
+
+[resource]
+script = ExtResource("1_trackdata")
+faction_name = "volupta"
+milestones = Array[ExtResource("2_milestone")]([SubResource("Milestone_pos2")])

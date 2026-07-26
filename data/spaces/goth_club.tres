@@ -9,19 +9,28 @@
 script = ExtResource("2_shq4j")
 metadata/_custom_type_script = "uid://b8bbea8ml5oiu"
 
-[sub_resource type="Resource" id="Resource_04rh6"]
+[sub_resource type="Resource" id="Resource_xvykx"]
 script = ExtResource("1_04rh6")
+status_check = "✅ ALL VALID"
 vampire = true
 action = 2
 
-[sub_resource type="Resource" id="Resource_xvykx"]
+[sub_resource type="Resource" id="Resource_04rh6"]
 script = ExtResource("1_04rh6")
+status_check = "✅ ALL VALID"
 supernatural = true
 action = 2
+cost_type = 1
+cost_amount = 1
+requirement_type = 2
+requirement_amount = 1
 
 [resource]
 script = ExtResource("2_xvykx")
 status_check = "✅ ALL VALID"
-requirement_clauses = Array[ExtResource("1_04rh6")]([SubResource("Resource_04rh6"), SubResource("Resource_xvykx")])
+requirement_clauses = Array[ExtResource("1_04rh6")]([SubResource("Resource_xvykx"), SubResource("Resource_04rh6")])
+agent_cost = 0
+agent_cost_amount = 1
+agent_auto_execute = false
 agent_effects = Array[ExtResource("1_1ce4b")]([SubResource("Resource_77fek")])
 metadata/_custom_type_script = "uid://dqu08kcpq6id0"

@@ -6,7 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://dfso2fudvgglr" path="res://assets/images/cards/spaces/default_space.png" id="2_q4qkg"]
 [ext_resource type="StyleBox" uid="uid://cdd48o4dcfjie" path="res://assets/styleboxes/space_image.tres" id="4_1ylyo"]
 [ext_resource type="FontFile" uid="uid://0twfd34avp1p" path="res://assets/fonts/GrenzeGotisch-VariableFont_wght.ttf" id="4_oes7t"]
-[ext_resource type="Texture2D" uid="uid://s7yb8w5sek1y" path="res://assets/icons/resources/secret.png" id="7_oes7t"]
+[ext_resource type="Texture2D" uid="uid://cacam31wyen8q" path="res://assets/icons/resources/secret.png" id="7_oes7t"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oes7t"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ds0ys"]
 font = ExtResource("4_oes7t")
@@ -56,6 +58,7 @@ custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_oes7t")
 
 [node name="ReqsMargin" type="MarginContainer" parent="OuterMargin/HBoxContainer/RequirementsPanel" unique_id=816318778]
 layout_mode = 1
