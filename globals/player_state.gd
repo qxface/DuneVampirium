@@ -15,6 +15,7 @@ var vp: int = 0
 var money: int = 0
 var blood: int = 0
 var secrets: int = 0
+var fight: int = 0  # Plumbing only for now — no consumer yet, use TBD (see GainResource.GainType.FIGHT)
 var rapport: Dictionary = {}  # String (faction name) -> int
 
 # Minion zones

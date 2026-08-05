@@ -24,6 +24,7 @@ SpaceZoom="*res://globals/space_zoom.gd"
 GameState="*res://globals/game_state.gd"
 CardArrayPopup="*res://globals/card_array_popup.gd"
 PendingActionPrompt="*res://globals/pending_action_prompt.gd"
+FactionPicker="*res://globals/faction_picker.gd"
 
 [display]
 

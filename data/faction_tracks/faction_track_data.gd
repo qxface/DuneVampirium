@@ -20,6 +20,11 @@ extends Resource
 @export var faction_name: String = ""
 @export var max_position: int = 4
 
+## Border/accent color used to mark this faction's track and any Space that advances it
+## (a Space "belongs" to this faction whenever one of its agent_effects is an
+## AdvanceFactionTrack targeting this faction_name — see Space._derive_faction_color()).
+@export var track_color: Color = Color.WHITE
+
 ## Minimum position a player must hold to compete for the contested leader VP.
 ## 0 = no leader VP on this track.
 @export var leader_vp_position: int = 4

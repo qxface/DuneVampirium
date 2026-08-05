@@ -1,11 +1,11 @@
-VBoxContainer
-Panel
 TextureRect
-ColorRect
 HBoxContainer
-MarginContainer
-Control
+VBoxContainer
 GridContainer
+MarginContainer
+Panel
+ColorRect
+Control
 Button
 Label
 RichTextLabel

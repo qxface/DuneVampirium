@@ -103,6 +103,33 @@ func _load_space() -> void:
 	_populate_requirements()
 	action_panel.visible = space_data.agent_action
 	ActionDisplay.populate_into(action_container, space_data.agent_effects, space_data.agent_cost, space_data.agent_cost_amount, space_data.agent_requirement, space_data.agent_requirement_amount)
+	_apply_faction_border()
+
+# A Space "belongs" to whichever faction one of its agent_effects advances (see
+# FactionTrackData.track_color) — not a separate field, since the effect data is
+# already the single source of truth for which faction a Space brings into the game.
+# Only the resting/unavailable stylebox gets tinted — available (red) and selected
+# (white) keep their original border colors untouched, so a faction Space still
+# highlights exactly like any other Space the moment it becomes available/selected;
+# the faction color is an identity marker visible while the Space is just sitting idle.
+# Duplicates the shared stylebox into a per-instance copy before tinting it, since
+# PackedScene sub-resources (the preloaded _sb_* StyleBoxFlats) are shared across every
+# Space instance by default.
+func _apply_faction_border() -> void:
+	var color: Variant = _derive_faction_color()
+	if color == null:
+		return
+	_sb_unavailable = _sb_unavailable.duplicate()
+	_sb_unavailable.border_color = color
+	_apply_stylebox()
+
+func _derive_faction_color() -> Variant:
+	for effect: Effect in space_data.agent_effects:
+		if effect is AdvanceFactionTrack:
+			var track: FactionTrackData = GameState.faction_tracks.get((effect as AdvanceFactionTrack).faction_name, null)
+			if track != null:
+				return track.track_color
+	return null
 
 func _load_image() -> void:
 	if image == null or space_data == null:

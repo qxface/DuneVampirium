@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://8i5e826ufvj7" path="res://game_pieces/card_scroller.gd" id="1_7tatt"]
 [ext_resource type="Script" uid="uid://cjva52g5np3yr" path="res://game_pieces/board.gd" id="1_sd8gd"]
-[ext_resource type="PackedScene" uid="uid://7cl0bjb7w66f" path="res://game_pieces/track.tscn" id="3_a52c8"]
+[ext_resource type="PackedScene" uid="uid://c6g0fwep55o13" path="res://game_pieces/track_spaces.tscn" id="3_ojub6"]
 [ext_resource type="Texture2D" uid="uid://d2jxjs4xpw5i" path="res://assets/dune.png" id="4_6nve1"]
 [ext_resource type="PackedScene" uid="uid://space000001" path="res://game_pieces/space.tscn" id="5_acunv"]
 [ext_resource type="Resource" uid="uid://bfcsfqtokmse3" path="res://data/spaces/vampire_ministry.tres" id="6_ehfyt"]
@@ -18,8 +18,15 @@
 [ext_resource type="Texture2D" uid="uid://clxfprayfdgtq" path="res://assets/icons/resources/money.png" id="14_qsoa8"]
 [ext_resource type="Texture2D" uid="uid://70ofci82cabv" path="res://assets/icons/resources/blood.png" id="15_a52c8"]
 [ext_resource type="Texture2D" uid="uid://cacam31wyen8q" path="res://assets/icons/resources/secret.png" id="16_8xp3k"]
-[ext_resource type="Resource" path="res://data/spaces/takeover.tres" id="17_takeover"]
+[ext_resource type="Resource" uid="uid://f5d5wjbl68ak" path="res://data/spaces/takeover.tres" id="17_takeover"]
 [ext_resource type="Texture2D" uid="uid://b5e2u705jxtgi" path="res://assets/icons/resources/vp.png" id="18_vp"]
+[ext_resource type="Resource" uid="uid://pmk7g6gtix38" path="res://data/spaces/gilded_parlor.tres" id="19_gilded"]
+[ext_resource type="Resource" uid="uid://c8ps1hhxmm33t" path="res://data/spaces/midnight_senate.tres" id="20_senate"]
+[ext_resource type="Resource" uid="uid://ycgpo650ixom" path="res://data/spaces/velvet_atelier.tres" id="21_velvet"]
+[ext_resource type="Resource" uid="uid://cqxr62g1u1jxm" path="res://data/spaces/crimson_masquerade.tres" id="22_crimson"]
+[ext_resource type="Resource" uid="uid://caregrsfgbew1" path="res://data/spaces/feeding_ground.tres" id="23_feeding"]
+[ext_resource type="Resource" uid="uid://b26d2oi5eh0hm" path="res://data/spaces/slaughter_pit.tres" id="24_slaughter"]
+[ext_resource type="Resource" uid="uid://cphdjwsvwynyn" path="res://data/spaces/crossroads_covenant.tres" id="25_crossroads"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehfyt"]
 bg_color = Color(0.043137256, 0.29411766, 0.23137255, 0.2509804)
@@ -172,32 +179,36 @@ script = ExtResource("1_7tatt")
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TrackContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1965269637]
+[node name="TrackContainer" type="GridContainer" parent="CanvasLayer" unique_id=1046905175]
 offset_left = 575.0
 offset_top = 52.0
-offset_right = 705.0
+offset_right = 1229.0
 offset_bottom = 843.0
+columns = 2
 
-[node name="Track" parent="CanvasLayer/TrackContainer" unique_id=374347059 instance=ExtResource("3_a52c8")]
+[node name="TrackSpaces" parent="CanvasLayer/TrackContainer" unique_id=157430615 instance=ExtResource("3_ojub6")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 faction_name = "primori"
+low_space = ExtResource("19_gilded")
+high_space = ExtResource("20_senate")
 
-[node name="Track2" parent="CanvasLayer/TrackContainer" unique_id=826329077 instance=ExtResource("3_a52c8")]
+[node name="TrackSpaces2" parent="CanvasLayer/TrackContainer" unique_id=1418204530 instance=ExtResource("3_ojub6")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 faction_name = "volupta"
+low_space = ExtResource("21_velvet")
+high_space = ExtResource("22_crimson")
 
-[node name="Track3" parent="CanvasLayer/TrackContainer" unique_id=1763940894 instance=ExtResource("3_a52c8")]
+[node name="TrackSpaces3" parent="CanvasLayer/TrackContainer" unique_id=1418204531 instance=ExtResource("3_ojub6")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 faction_name = "vorace"
+low_space = ExtResource("23_feeding")
+high_space = ExtResource("24_slaughter")
 
 [node name="SpaceContainer" type="GridContainer" parent="CanvasLayer" unique_id=811188335]
-offset_left = 948.0
+offset_left = 1345.0
 offset_top = 56.0
 offset_right = 2130.0
 offset_bottom = 589.0
@@ -214,6 +225,10 @@ space_data = ExtResource("7_lomec")
 [node name="Space3" parent="CanvasLayer/SpaceContainer" unique_id=1719042850 instance=ExtResource("5_acunv")]
 layout_mode = 2
 space_data = ExtResource("17_takeover")
+
+[node name="Space10" parent="CanvasLayer/SpaceContainer" unique_id=1719042857 instance=ExtResource("5_acunv")]
+layout_mode = 2
+space_data = ExtResource("25_crossroads")
 
 [node name="TurnButtons" type="VBoxContainer" parent="CanvasLayer" unique_id=1639167394]
 anchors_preset = 3

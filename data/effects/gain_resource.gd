@@ -1,7 +1,7 @@
 class_name GainResource
 extends Effect
 
-enum GainType { MONEY, BLOOD, SECRET }
+enum GainType { MONEY, BLOOD, SECRET, FIGHT }  # FIGHT appended, not inserted — existing .tres files store ordinals
 
 @export var type: GainType = GainType.MONEY
 @export var amount: int = 1
@@ -16,6 +16,7 @@ func get_icon() -> Texture2D:
 		GainType.MONEY:  return preload("res://assets/icons/resources/money.png")
 		GainType.BLOOD:  return preload("res://assets/icons/resources/blood.png")
 		GainType.SECRET: return preload("res://assets/icons/resources/secret.png")
+		GainType.FIGHT:  return preload("res://assets/icons/resources/fight.png")
 	return null
 
 func trigger(game_context: Node, source: Resource = null) -> void:
@@ -24,6 +25,7 @@ func trigger(game_context: Node, source: Resource = null) -> void:
 		GainType.MONEY:  player.money  += amount
 		GainType.BLOOD:  player.blood  += amount
 		GainType.SECRET: player.secrets += amount
+		GainType.FIGHT:  player.fight  += amount
 	var resource_name: String = GainType.keys()[type].capitalize()
 	var source_name: String = _source_name(source)
 	print_debug("[%s] gains %d %s  ←  %s" % [player.player_name, amount, resource_name, source_name])

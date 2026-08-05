@@ -3,7 +3,13 @@ extends Panel
 
 @onready var _markers: Array[TextureRect] = [%TextureRect1, %TextureRect2, %TextureRect3, %TextureRect4]
 @onready var _reward_container: HBoxContainer = %RewardContainer
-@onready var _hbox: HBoxContainer = $HBoxContainer
+@onready var _reward_panel: Panel = $RewardContainer/Reward
+@onready var _marker_panels: Array[Panel] = [
+	$RewardContainer/MarkerContainer/Player1Marker,
+	$RewardContainer/MarkerContainer/Player2Marker,
+	$RewardContainer/MarkerContainer/Player3Marker,
+	$RewardContainer/MarkerContainer/Player4Marker,
+]
 
 func _ready() -> void:
 	for m: TextureRect in _markers:
@@ -41,9 +47,9 @@ func set_reward_effects(effects: Array) -> void:
 # default.
 func set_background_color(color: Color) -> void:
 	_apply_panel_color(self, color)
-	for child in _hbox.get_children():
-		if child is Panel:
-			_apply_panel_color(child, color)
+	_apply_panel_color(_reward_panel, color)
+	for p: Panel in _marker_panels:
+		_apply_panel_color(p, color)
 
 func _apply_panel_color(panel: Panel, color: Color) -> void:
 	var sb := StyleBoxFlat.new()

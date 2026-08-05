@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="SpaceData" format=3 uid="uid://cqxr62g1u1jxm"]
+
+[ext_resource type="Script" uid="uid://bmdj0vckfab1y" path="res://data/effects/effect.gd" id="1_effect"]
+[ext_resource type="Script" uid="uid://bs4qvqwaspx01" path="res://data/space_data/space_requirement.gd" id="1_req"]
+[ext_resource type="Script" uid="uid://dwx83bsh5uovr" path="res://data/effects/advance_faction_track.gd" id="2_advance"]
+[ext_resource type="Script" uid="uid://7cey1nbxdsrx" path="res://data/effects/gain_resource.gd" id="3_gain"]
+[ext_resource type="Script" uid="uid://b8bbea8ml5oiu" path="res://data/effects/draw_card.gd" id="4_draw"]
+[ext_resource type="Script" uid="uid://dqu08kcpq6id0" path="res://data/space_data/space_data.gd" id="5_spacedata"]
+
+[sub_resource type="Resource" id="Resource_advance"]
+script = ExtResource("2_advance")
+faction_name = "volupta"
+
+[sub_resource type="Resource" id="Resource_gain"]
+script = ExtResource("3_gain")
+type = 2
+amount = 2
+
+[sub_resource type="Resource" id="Resource_draw"]
+script = ExtResource("4_draw")
+
+[sub_resource type="Resource" id="Resource_req"]
+script = ExtResource("1_req")
+status_check = "✅ ALL VALID"
+vampire = true
+action = 2
+cost_type = 2
+cost_amount = 1
+
+[resource]
+script = ExtResource("5_spacedata")
+status_check = "✅ ALL VALID"
+requirement_clauses = Array[ExtResource("1_req")]([SubResource("Resource_req")])
+agent_effects = Array[ExtResource("1_effect")]([SubResource("Resource_advance"), SubResource("Resource_gain"), SubResource("Resource_draw")])

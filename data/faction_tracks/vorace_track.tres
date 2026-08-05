@@ -19,4 +19,5 @@ script = ExtResource("1_trackdata")
 faction_name = "vorace"
 max_position = 4
 leader_vp_position = 4
+track_color = Color(0.16078432, 0.32156864, 0.7019608, 1)
 milestones = Array[ExtResource("2_milestone")]([SubResource("Milestone_pos2")])

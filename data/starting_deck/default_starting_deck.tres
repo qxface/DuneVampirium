@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="StartingDeckConfig" format=3]
+
+[ext_resource type="Script" uid="uid://xc4d4j1c2von" path="res://data/starting_deck/starting_deck_config.gd" id="1_config"]
+[ext_resource type="Script" uid="uid://6bpmgis72lsm" path="res://data/starting_deck/starting_card_count.gd" id="2_count"]
+[ext_resource type="Resource" path="res://data/plans/fangs.tres" id="3_fangs"]
+[ext_resource type="Resource" path="res://data/plans/forced_breeding.tres" id="4_forced"]
+[ext_resource type="Resource" path="res://data/plans/reconnaissance.tres" id="5_recon"]
+[ext_resource type="Resource" path="res://data/plans/blood_totem.tres" id="6_blood"]
+[ext_resource type="Resource" path="res://data/plans/campaign.tres" id="7_campaign"]
+[ext_resource type="Resource" path="res://data/minions/ronin_vampire.tres" id="8_ronin"]
+[ext_resource type="Resource" path="res://data/minions/vampire_scion.tres" id="9_scion"]
+[ext_resource type="Resource" path="res://data/minions/renegade_werewolf.tres" id="10_werewolf"]
+
+[sub_resource type="Resource" id="Count_fangs"]
+script = ExtResource("2_count")
+card = ExtResource("3_fangs")
+copies = 2
+
+[sub_resource type="Resource" id="Count_forced"]
+script = ExtResource("2_count")
+card = ExtResource("4_forced")
+copies = 2
+
+[sub_resource type="Resource" id="Count_recon"]
+script = ExtResource("2_count")
+card = ExtResource("5_recon")
+copies = 2
+
+[sub_resource type="Resource" id="Count_blood"]
+script = ExtResource("2_count")
+card = ExtResource("6_blood")
+copies = 1
+
+[sub_resource type="Resource" id="Count_campaign"]
+script = ExtResource("2_count")
+card = ExtResource("7_campaign")
+copies = 2
+
+[sub_resource type="Resource" id="Count_ronin"]
+script = ExtResource("2_count")
+card = ExtResource("8_ronin")
+copies = 1
+
+[sub_resource type="Resource" id="Count_scion"]
+script = ExtResource("2_count")
+card = ExtResource("9_scion")
+copies = 1
+
+[sub_resource type="Resource" id="Count_werewolf"]
+script = ExtResource("2_count")
+card = ExtResource("10_werewolf")
+copies = 1
+
+[resource]
+script = ExtResource("1_config")
+plans = Array[ExtResource("2_count")]([SubResource("Count_fangs"), SubResource("Count_forced"), SubResource("Count_recon"), SubResource("Count_blood"), SubResource("Count_campaign")])
+minions = Array[ExtResource("2_count")]([SubResource("Count_ronin"), SubResource("Count_scion"), SubResource("Count_werewolf")])

@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://c6g0fwep55o13"]
+
+[ext_resource type="PackedScene" uid="uid://7cl0bjb7w66f" path="res://game_pieces/track.tscn" id="1_3imrq"]
+[ext_resource type="PackedScene" uid="uid://space000001" path="res://game_pieces/space.tscn" id="2_dys14"]
+[ext_resource type="Script" path="res://game_pieces/track_spaces.gd" id="3_tspaces"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3u3o"]
+
+[node name="TrackSpaces" type="Panel" unique_id=157430615]
+custom_minimum_size = Vector2(325, 383)
+offset_right = 325.0
+offset_bottom = 383.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_v3u3o")
+script = ExtResource("3_tspaces")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=286318842]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=169353614]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="Track" parent="MarginContainer/HBoxContainer" unique_id=374347059 instance=ExtResource("1_3imrq")]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=1840809269]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Space" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=751063739 instance=ExtResource("2_dys14")]
+layout_mode = 2
+
+[node name="Space2" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=680490186 instance=ExtResource("2_dys14")]
+layout_mode = 2
+
+[node name="Space3" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=179750271 instance=ExtResource("2_dys14")]
+layout_mode = 2

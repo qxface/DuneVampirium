@@ -18,9 +18,8 @@ func get_icon() -> Texture2D:
 	return null
 
 func get_tags() -> String:
-	# Tag shows how many steps are gained; blank for the common case of 1
-	# (a single-step advance is implied by the faction icon alone).
-	if amount >= 2 and amount <= 9:
+	# Tag always shows how many steps are gained, including the common case of 1.
+	if amount >= 1 and amount <= 9:
 		return str(amount)
 	return ""
 

@@ -16,4 +16,5 @@ effects = Array[ExtResource("3_effect")]([SubResource("GainVP_pos2")])
 [resource]
 script = ExtResource("1_trackdata")
 faction_name = "volupta"
+track_color = Color(0.7921569, 0.15686275, 0.15686275, 1)
 milestones = Array[ExtResource("2_milestone")]([SubResource("Milestone_pos2")])

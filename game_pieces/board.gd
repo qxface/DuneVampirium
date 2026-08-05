@@ -29,7 +29,7 @@ const PANEL_MARGIN: float = 8.0  # 4 px on each side of the inner scroll area
 @onready var blood_icon: Control                   = %BloodResource
 @onready var secret_icon: Control                  = %SecretResource
 @onready var vp_icon: Control                       = %PlayerVP
-@onready var track_widgets: Array[Track]            = [%Track, %Track2, %Track3]
+@onready var track_spaces_widgets: Array[TrackSpaces] = [%TrackSpaces, %TrackSpaces2, %TrackSpaces3]
 
 var _plan_deck_long_press_active: bool = false
 var _plan_discard_long_press_active: bool = false
@@ -314,8 +314,8 @@ func _resource_tag(amount: int) -> String:
 # ── Faction tracks ───────────────────────────────────────────────────────────
 
 func _update_faction_tracks() -> void:
-	for track: Track in track_widgets:
-		track.refresh()
+	for ts: TrackSpaces in track_spaces_widgets:
+		ts.track.refresh()
 
 # ── Plan deck ─────────────────────────────────────────────────────────────────
 

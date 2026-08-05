@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://data/effects/effect.gd" id="1_effect"]
+[ext_resource type="Script" path="res://data/effects/gain_resource.gd" id="2_gain"]
+[ext_resource type="Script" path="res://data/card_data/card_data.gd" id="3_carddata"]
+
+[sub_resource type="Resource" id="Resource_gain"]
+script = ExtResource("2_gain")
+type = 3
+
+[resource]
+script = ExtResource("3_carddata")
+status_check = "✅ ALL ACTIONS VALID"
+fight = true
+reveal_effects = Array[ExtResource("1_effect")]([SubResource("Resource_gain")])

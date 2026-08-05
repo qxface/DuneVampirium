@@ -18,25 +18,17 @@ var _faction_leaders: Dictionary = {}
 
 const _FACTION_TRACKS_DIR := "res://data/faction_tracks/"
 
-const _STARTING_PLANS := [
-	preload("res://data/plans/bodice_ripping_catfight.tres"),
-	preload("res://data/plans/feed.tres"),
-	preload("res://data/plans/campaign.tres"),
-]
-const _STARTING_PLAN_COPIES: int = 3
+# Which starting deck/roster every player begins with — a single hardcoded default
+# config for now (see data/starting_deck/starting_deck_config.gd for the full
+# per-card-copies design). Swapping this preload is the extension point for a real
+# game-setup flow later, without touching the loading logic below.
+const _DEFAULT_STARTING_DECK: StartingDeckConfig = preload("res://data/starting_deck/default_starting_deck.tres")
 
 const _PLAYER_COLORS := [
 	Color.GREEN,
 	Color.YELLOW,
 	Color.ORANGE,
 	Color.RED,
-]
-
-const _STARTING_MINIONS := [
-	preload("res://data/minions/frightened_human.tres"),
-	preload("res://data/minions/primori_newblood.tres"),
-	preload("res://data/minions/volupta_newblood.tres"),
-	preload("res://data/minions/vorace_newblood.tres"),
 ]
 
 var players: Array[PlayerState] = []
@@ -52,19 +44,21 @@ func _ready() -> void:
 		p.player_name = "Player %d" % (i + 1)
 		p.is_ai = i > 0
 		p.player_color = _PLAYER_COLORS[i % _PLAYER_COLORS.size()]
-		for plan: CardData in _STARTING_PLANS:
-			for _j in _STARTING_PLAN_COPIES:
-				p.plan_draw_pile.append(plan)
+		for count in _DEFAULT_STARTING_DECK.plans:
+			for _j in count.copies:
+				p.plan_draw_pile.append(count.card)
 		p.plan_draw_pile.shuffle()
-		for minion: CardData in _STARTING_MINIONS:
-			p.ready_minions.append(minion)
+		for count in _DEFAULT_STARTING_DECK.minions:
+			for _j in count.copies:
+				p.ready_minions.append(count.card)
 		players.append(p)
 	# Deal opening hands.
 	for p: PlayerState in players:
 		draw_plans(p, HAND_SIZE)
 		# TEST: seed discard with 3 random cards so the discard pile UI is exercisable.
 		for _i in 3:
-			p.plan_discard.append(_STARTING_PLANS[randi() % _STARTING_PLANS.size()])
+			var random_count = _DEFAULT_STARTING_DECK.plans[randi() % _DEFAULT_STARTING_DECK.plans.size()]
+			p.plan_discard.append(random_count.card)
 
 func _load_all_faction_tracks() -> void:
 	var dir := DirAccess.open(_FACTION_TRACKS_DIR)
@@ -313,9 +307,27 @@ func execute_recall(minion_datas: Array) -> void:
 	var p := current_player()
 	p.actions_remaining -= 1
 	for d: CardData in minion_datas:
-		p.placed_minions.erase(d)
-		p.ready_minions.append(d)
+		# Only re-add to ready_minions if the card was actually still in placed_minions —
+		# a trashed Minion (see trash_card()) was already erased from every zone, so its
+		# space's meeple may still be selected for recall, but the card must NOT come back.
+		if p.placed_minions.has(d):
+			p.placed_minions.erase(d)
+			p.ready_minions.append(d)
 	_action_taken_this_turn = true
+	state_changed.emit()
+
+# Permanently removes card_data from the game — erased from every zone it could be in
+# (not moved to any pile). Used by TrashSelf and future "Trash a Card"/"Trash a Minion"/
+# "Trash a Plan" effects. A Minion trashed while placed leaves its space's meeple showing
+# (no engine hook un-places it yet) — see execute_recall()'s has() guard above for why
+# that's safe: recalling that space later won't resurrect the card.
+func trash_card(player: PlayerState, card_data: CardData) -> void:
+	player.ready_minions.erase(card_data)
+	player.placed_minions.erase(card_data)
+	player.plan_draw_pile.erase(card_data)
+	player.plan_hand.erase(card_data)
+	player.plan_in_play.erase(card_data)
+	player.plan_discard.erase(card_data)
 	state_changed.emit()
 
 func end_turn() -> void:
