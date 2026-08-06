@@ -6,12 +6,13 @@ uniform bool cut_left = false;
 uniform bool cut_right = false;
 
 void fragment() {
-	vec4 col = texture(TEXTURE, UV);
+	// COLOR already contains texture(TEXTURE, UV) * modulate at this point — mutate it
+	// in place rather than re-sampling TEXTURE and overwriting it, or the node's
+	// modulate (e.g. Space's dim-when-unavailable tint) gets silently discarded.
 	if (cut_left) {
-		col.a *= 1.0 - texture(left_mask, UV).a;
+		COLOR.a *= 1.0 - texture(left_mask, UV).a;
 	}
 	if (cut_right) {
-		col.a *= 1.0 - texture(right_mask, UV).a;
+		COLOR.a *= 1.0 - texture(right_mask, UV).a;
 	}
-	COLOR = col;
 }

@@ -2,10 +2,8 @@
 
 [ext_resource type="Shader" uid="uid://b3b4wa3li3o4e" path="res://assets/shaders/icon_cutout.gdshader" id="1_wduwe"]
 [ext_resource type="Texture2D" uid="uid://cpij7h4qc4i0i" path="res://assets/icons/origins/vampire.png" id="1_ydh33"]
-[ext_resource type="Texture2D" uid="uid://1upwskn84s3n" path="res://assets/icons/tags/tag_left_1.png" id="2_gykwa"]
 [ext_resource type="Script" uid="uid://b5ejw0k6sddxu" path="res://game_pieces/icon.gd" id="2_wduwe"]
 [ext_resource type="Texture2D" uid="uid://c2o0ypc4d8yrg" path="res://assets/icons/tags/tag_left_back.png" id="3_wduwe"]
-[ext_resource type="Texture2D" uid="uid://cul53kpsk1e75" path="res://assets/icons/tags/tag_right_2.png" id="4_56vle"]
 [ext_resource type="Texture2D" uid="uid://cy74gmibn46l1" path="res://assets/icons/tags/tag_right_back.png" id="5_bkehh"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_56vle"]
@@ -18,6 +16,7 @@ shader_parameter/cut_right = false
 [node name="Icon" type="TextureRect" unique_id=37748917]
 material = SubResource("ShaderMaterial_56vle")
 texture = ExtResource("1_ydh33")
+stretch_mode = 5
 script = ExtResource("2_wduwe")
 
 [node name="TagLeft" type="TextureRect" parent="." unique_id=1981715204]

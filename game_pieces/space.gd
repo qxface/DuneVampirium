@@ -38,9 +38,21 @@ var selected: bool = false:
 		_apply_stylebox()
 		Availability.update.call_deferred()
 
-var _sb_unavailable: StyleBoxFlat = preload("res://assets/styleboxes/space_unavailable.tres")
-var _sb_available:   StyleBoxFlat = preload("res://assets/styleboxes/space_available.tres")
-var _sb_selected:    StyleBoxFlat = preload("res://assets/styleboxes/space_selected.tres")
+# _sb_base is the space's resting look — background + border, border tinted to the
+# space's faction/category color if it has one (see _apply_faction_border()). It no
+# longer varies with available/selected state; that's now shown via modulate (dim vs
+# full-bright, see _apply_dim()) and, for selected, a glow (see _sb_selected_glow).
+var _sb_base: StyleBoxFlat = preload("res://assets/styleboxes/space_unavailable.tres")
+# Built once from _sb_base (see _rebuild_selected_glow()) — same bg/border, plus a
+# soft StyleBoxFlat shadow used as a glowing halo. No shader needed: StyleBoxFlat's
+# built-in shadow_color/shadow_size already renders a soft blurred glow that respects
+# the box's corner radius.
+var _sb_selected_glow: StyleBoxFlat = null
+
+const _DIM_MODULATE: Color = Color(0.45, 0.45, 0.45, 0.55)
+const _BRIGHT_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
+const _GLOW_COLOR: Color = Color(1.0, 1.0, 1.0, 0.65)
+const _GLOW_SIZE: int = 14
 
 var _meeple_overlay: Control = null
 var _placed_card_datas: Array[CardData] = []
@@ -78,17 +90,19 @@ func _ready() -> void:
 		_load_space()
 
 func _apply_stylebox() -> void:
-	if _sb_unavailable == null:
+	if _sb_base == null:
 		return
-	var sb: StyleBoxFlat = _sb_unavailable
-	if selected:
-		sb = _sb_selected
-	elif available:
-		sb = _sb_available
+	var sb: StyleBoxFlat = _sb_selected_glow if (selected and _sb_selected_glow != null) else _sb_base
 	add_theme_stylebox_override("normal",  sb)
 	add_theme_stylebox_override("hover",   sb)
 	add_theme_stylebox_override("pressed", sb)
 	add_theme_stylebox_override("focus",   sb)
+	_apply_dim()
+
+# Unavailable spaces are dimmed and slightly transparent; available (including
+# selected, which is always a subset of available) are full-bright, full-alpha.
+func _apply_dim() -> void:
+	modulate = _BRIGHT_MODULATE if (available or selected) else _DIM_MODULATE
 
 func _deselect_other_spaces() -> void:
 	for node in get_tree().get_nodes_in_group("SPACE"):
@@ -108,20 +122,27 @@ func _load_space() -> void:
 # A Space "belongs" to whichever faction one of its agent_effects advances (see
 # FactionTrackData.track_color) — not a separate field, since the effect data is
 # already the single source of truth for which faction a Space brings into the game.
-# Only the resting/unavailable stylebox gets tinted — available (red) and selected
-# (white) keep their original border colors untouched, so a faction Space still
-# highlights exactly like any other Space the moment it becomes available/selected;
-# the faction color is an identity marker visible while the Space is just sitting idle.
+# The border color is now purely identity/category — it no longer changes with
+# available/selected state (see _apply_dim()/_rebuild_selected_glow() for those).
 # Duplicates the shared stylebox into a per-instance copy before tinting it, since
 # PackedScene sub-resources (the preloaded _sb_* StyleBoxFlats) are shared across every
 # Space instance by default.
 func _apply_faction_border() -> void:
+	_sb_base = _sb_base.duplicate()
 	var color: Variant = _derive_faction_color()
-	if color == null:
-		return
-	_sb_unavailable = _sb_unavailable.duplicate()
-	_sb_unavailable.border_color = color
+	if color != null:
+		_sb_base.border_color = color
+	_rebuild_selected_glow()
 	_apply_stylebox()
+
+# Rebuilds the selected-glow stylebox from the current _sb_base (so it always matches
+# the space's identity border color) plus a soft StyleBoxFlat shadow — the "glowing
+# transparent halo" around a selected space.
+func _rebuild_selected_glow() -> void:
+	_sb_selected_glow = _sb_base.duplicate()
+	_sb_selected_glow.shadow_color = _GLOW_COLOR
+	_sb_selected_glow.shadow_size = _GLOW_SIZE
+	_sb_selected_glow.shadow_offset = Vector2.ZERO
 
 func _derive_faction_color() -> Variant:
 	for effect: Effect in space_data.agent_effects:

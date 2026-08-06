@@ -27,6 +27,8 @@
 [ext_resource type="Resource" uid="uid://caregrsfgbew1" path="res://data/spaces/feeding_ground.tres" id="23_feeding"]
 [ext_resource type="Resource" uid="uid://b26d2oi5eh0hm" path="res://data/spaces/slaughter_pit.tres" id="24_slaughter"]
 [ext_resource type="Resource" uid="uid://cphdjwsvwynyn" path="res://data/spaces/crossroads_covenant.tres" id="25_crossroads"]
+[ext_resource type="Texture2D" uid="uid://cosp03gact3bm" path="res://assets/icons/resources/influence.png" id="27_f57g8"]
+[ext_resource type="Texture2D" uid="uid://bpe6co2gsti32" path="res://assets/icons/resources/fight.png" id="28_e48eo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehfyt"]
 bg_color = Color(0.043137256, 0.29411766, 0.23137255, 0.2509804)
@@ -64,7 +66,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 571.0
 offset_top = 830.0
-offset_right = -304.0
+offset_right = -422.0
 offset_bottom = 138.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -412,6 +414,22 @@ layout_mode = 2
 size_flags_vertical = 4
 icon = ExtResource("16_8xp3k")
 tags = "0"
+
+[node name="Revealcontainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1240854447]
+offset_left = 1981.0
+offset_top = 820.0
+offset_right = 2109.0
+offset_bottom = 1080.0
+
+[node name="InfluenceIcon" parent="CanvasLayer/Revealcontainer" unique_id=1342851912 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("27_f57g8")
+
+[node name="FightIcon" parent="CanvasLayer/Revealcontainer" unique_id=1707475095 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("28_e48eo")
 
 [node name="Dune" type="Sprite2D" parent="." unique_id=1834547570]
 modulate = Color(1, 1, 1, 0.21568628)

@@ -1,1 +1,2 @@
-res://globals/game_state.gd
+res://game_pieces/space_zoom.gd
+res://assets/shaders/icon_cutout.gdshader

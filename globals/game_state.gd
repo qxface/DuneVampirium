@@ -358,9 +358,37 @@ func _end_round() -> void:
 		p.plan_in_play.clear()
 		# Draw a new hand (reshuffle discard into draw pile if needed, excluding in-play).
 		draw_plans(p, HAND_SIZE)
+		# Fight/Influence are temporary — banked at Reveal, spent/contributed once
+		# (Combat / buying Plans, neither built yet), then cleared for the new round.
+		p.fight = 0
+		p.influence = 0
 	current_player_index = 0
 	_action_taken_this_turn = false
 	state_changed.emit()
+
+# --- Fight / Influence forecast ---
+#
+# Fight and Influence are temporary resources: real Reveal effects bank them onto
+# PlayerState.fight/influence exactly like Money/Blood/Secret, but the player needs to
+# see what they're ABOUT to have before Reveal happens too. forecast_resource_gain()
+# sums GainResource reveal_effects of the given type across every card currently in
+# hand (ready_minions + plan_hand) — a pure read, no mutation. Callers combine this
+# with the real banked amount (player.fight / player.influence) so the displayed total
+# stays correct through the whole Reveal sequence: pre-Reveal it's pure forecast: once
+# plan_hand empties into plan_in_play the forecast naturally drops to (at most) whatever
+# Minions remain, and the real banked amount carries the rest.
+# Known edge case: a Minion whose Reveal was manually triggered this round (via
+# execute_minion_reveal) stays in ready_minions (Minions never change zones on Reveal),
+# so its contribution can be briefly double-counted (once real, once still-forecast)
+# until round end clears both. Narrow and self-correcting; not worth tracking
+# per-Minion "already revealed this round" state for.
+func forecast_resource_gain(player: PlayerState, gain_type: GainResource.GainType) -> int:
+	var total := 0
+	for d: CardData in player.ready_minions + player.plan_hand:
+		for effect: Effect in d.reveal_effects:
+			if effect is GainResource and (effect as GainResource).type == gain_type:
+				total += (effect as GainResource).amount
+	return total
 
 func draw_plans(p: PlayerState, count: int) -> void:
 	for _i in count:

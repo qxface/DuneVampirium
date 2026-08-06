@@ -29,6 +29,8 @@ const PANEL_MARGIN: float = 8.0  # 4 px on each side of the inner scroll area
 @onready var blood_icon: Control                   = %BloodResource
 @onready var secret_icon: Control                  = %SecretResource
 @onready var vp_icon: Control                       = %PlayerVP
+@onready var influence_icon: Control                = %InfluenceIcon
+@onready var fight_icon: Control                    = %FightIcon
 @onready var track_spaces_widgets: Array[TrackSpaces] = [%TrackSpaces, %TrackSpaces2, %TrackSpaces3]
 
 var _plan_deck_long_press_active: bool = false
@@ -307,6 +309,13 @@ func _update_resource_display() -> void:
 	blood_icon.tags  = _resource_tag(p.blood)
 	secret_icon.tags = _resource_tag(p.secrets)
 	vp_icon.tags     = _resource_tag(p.vp)
+	# Fight/Influence: real banked amount + live forecast from cards still in hand —
+	# see GameState.forecast_resource_gain() for why this stays correct pre- and
+	# post-Reveal without branching on round_phase here.
+	var fight_total: int = p.fight + GameState.forecast_resource_gain(p, GainResource.GainType.FIGHT)
+	var influence_total: int = p.influence + GameState.forecast_resource_gain(p, GainResource.GainType.INFLUENCE)
+	fight_icon.tags     = _resource_tag(fight_total)
+	influence_icon.tags = _resource_tag(influence_total)
 
 func _resource_tag(amount: int) -> String:
 	return "" if amount <= 0 else str(clampi(amount, 0, 99))
