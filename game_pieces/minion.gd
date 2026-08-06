@@ -16,8 +16,11 @@ func _random_stats() -> void:
 	var files: PackedStringArray = DirAccess.get_files_at(DATA_DIR)
 	var options: Array[CardData] = []
 	for file in files:
-		if file.ends_with(".tres"):
-			options.append(load(DATA_DIR + file))
+		# Exported builds list resources as "name.tres.remap", not "name.tres" —
+		# strip that suffix before checking the extension / loading.
+		var real_file: String = file.trim_suffix(".remap")
+		if real_file.get_extension() in ["tres", "res"]:
+			options.append(load(DATA_DIR + real_file))
 	if options.is_empty():
 		push_warning("Minion: no CardData resources found in " + DATA_DIR)
 		return

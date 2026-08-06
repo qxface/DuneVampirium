@@ -68,8 +68,11 @@ func _load_all_faction_tracks() -> void:
 	dir.list_dir_begin()
 	var filename := dir.get_next()
 	while filename != "":
-		if filename.ends_with(".tres"):
-			var path := _FACTION_TRACKS_DIR + filename
+		# Exported builds list resources as "name.tres.remap", not "name.tres" —
+		# strip that suffix before checking the extension / loading.
+		var real_filename := filename.trim_suffix(".remap")
+		if real_filename.get_extension() in ["tres", "res"]:
+			var path := _FACTION_TRACKS_DIR + real_filename
 			var res := ResourceLoader.load(path)
 			if res is FactionTrackData:
 				var track := res as FactionTrackData
