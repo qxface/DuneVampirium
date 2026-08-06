@@ -1,0 +1,5 @@
+res://game_pieces/minion.gd
+res://game_pieces/plan.gd
+res://globals/game_state.gd
+res://game_pieces/space.gd
+res://game_pieces/track_spaces.gd

@@ -5,7 +5,13 @@ extends Panel
 # faction_name/low_space/high_space/third_space are forwarded to the inner Track/Space
 # nodes — set per-instance in the Inspector. A Space slot with no SpaceData assigned is
 # hidden entirely (see _apply_space) rather than shown as an unusable blank placeholder.
-# third_space is an extra, currently-unused slot for future faction-specific content.
+#
+# Spaces fill the column from the BOTTOM up: low_space (the simple, no-cost one) goes
+# in the bottom-most slot, high_space (the costed, more powerful one) sits above it, and
+# third_space — currently unused for all Factions — is the top-most, so a lone low_space
+# ends up bottom-aligned and each added space stacks on top of the previous one. The
+# VBoxContainer's own child order is fixed top-to-bottom as Space/Space2/Space3, so this
+# mapping is inverted from that (Space3 = bottom = low_space, Space = top = third_space).
 
 @export var faction_name: String = "":
 	set(value):
@@ -17,7 +23,7 @@ extends Panel
 	set(value):
 		low_space = value
 		if is_node_ready():
-			_apply_space(_space, value)
+			_apply_space(_space3, value)
 
 @export var high_space: SpaceData = null:
 	set(value):
@@ -29,7 +35,7 @@ extends Panel
 	set(value):
 		third_space = value
 		if is_node_ready():
-			_apply_space(_space3, value)
+			_apply_space(_space, value)
 
 # Public so board.gd can reach it directly for Track.refresh() — the Track nodes are no
 # longer direct unique-name children of board.tscn now that they're nested in here.
@@ -40,9 +46,9 @@ extends Panel
 
 func _ready() -> void:
 	track.faction_name = faction_name
-	_apply_space(_space, low_space)
+	_apply_space(_space3, low_space)
 	_apply_space(_space2, high_space)
-	_apply_space(_space3, third_space)
+	_apply_space(_space, third_space)
 
 # A slot with no SpaceData assigned is hidden entirely rather than shown as a blank
 # placeholder — an empty Space has no space_data for anything (image, requirements,

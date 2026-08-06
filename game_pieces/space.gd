@@ -50,9 +50,22 @@ var _sb_base: StyleBoxFlat = preload("res://assets/styleboxes/space_unavailable.
 var _sb_selected_glow: StyleBoxFlat = null
 
 const _DIM_MODULATE: Color = Color(0.45, 0.45, 0.45, 0.55)
+# A space unavailable because it's occupied (a Minion already sent there) reads
+# differently from one unavailable for lack of matching cards/resources — less dim,
+# less transparent, since "occupied" isn't something the player's current selection
+# could ever fix.
+const _OCCUPIED_MODULATE: Color = Color(0.65, 0.65, 0.65, 0.85)
 const _BRIGHT_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 const _GLOW_COLOR: Color = Color(1.0, 1.0, 1.0, 0.65)
 const _GLOW_SIZE: int = 14
+
+# Border colors for non-Faction Spaces, keyed by their single required action pip —
+# same green/blue as the Primori/Vorace track colors for visual consistency, since a
+# Space is never both track-affiliated and action-colored at once (see
+# _derive_border_color()).
+const _ACTION_COLOR_NEGOTIATE: Color = Color(0.17254902, 0.5882353, 0.22352941, 1)
+const _ACTION_COLOR_HUNT: Color = Color(0.85, 0.7, 0.15, 1)
+const _ACTION_COLOR_FIGHT: Color = Color(0.16078432, 0.32156864, 0.7019608, 1)
 
 var _meeple_overlay: Control = null
 var _placed_card_datas: Array[CardData] = []
@@ -72,8 +85,7 @@ var recall_selected: bool = false:
 		if recall_selected == value:
 			return
 		recall_selected = value
-		if _meeple_overlay:
-			_meeple_overlay.modulate = _RECALL_SELECTED_MODULATE if value else _RECALL_UNSELECTED_MODULATE
+		_apply_meeple_modulate()
 		recall_selection_changed.emit()
 
 var is_occupied: bool:
@@ -101,8 +113,33 @@ func _apply_stylebox() -> void:
 
 # Unavailable spaces are dimmed and slightly transparent; available (including
 # selected, which is always a subset of available) are full-bright, full-alpha.
+# An occupied space is a distinct, milder tier of unavailable (see _OCCUPIED_MODULATE).
 func _apply_dim() -> void:
-	modulate = _BRIGHT_MODULATE if (available or selected) else _DIM_MODULATE
+	if available or selected:
+		modulate = _BRIGHT_MODULATE
+	elif is_occupied:
+		modulate = _OCCUPIED_MODULATE
+	else:
+		modulate = _DIM_MODULATE
+	_apply_meeple_modulate()
+
+# The meeple must stay fully bright/opaque regardless of the Space's own dim state — it
+# represents real placed Minions, not a selectability hint. Since it's a child Control
+# (inherits Space's `modulate` multiplicatively, `top_level` doesn't exempt modulate,
+# only transform), the only way to counteract that is to divide the desired tint by
+# Space's current modulate so the two cancel out to exactly the desired tint. This also
+# replaces the old direct `_meeple_overlay.modulate = ...` recall-tint assignment, since
+# that same division needs to happen whenever recall_selected changes too.
+func _apply_meeple_modulate() -> void:
+	if _meeple_overlay == null:
+		return
+	var desired: Color = _RECALL_SELECTED_MODULATE if recall_selected else _RECALL_UNSELECTED_MODULATE
+	_meeple_overlay.modulate = Color(
+		desired.r / modulate.r,
+		desired.g / modulate.g,
+		desired.b / modulate.b,
+		desired.a / modulate.a
+	)
 
 func _deselect_other_spaces() -> void:
 	for node in get_tree().get_nodes_in_group("SPACE"):
@@ -122,18 +159,39 @@ func _load_space() -> void:
 # A Space "belongs" to whichever faction one of its agent_effects advances (see
 # FactionTrackData.track_color) — not a separate field, since the effect data is
 # already the single source of truth for which faction a Space brings into the game.
-# The border color is now purely identity/category — it no longer changes with
-# available/selected state (see _apply_dim()/_rebuild_selected_glow() for those).
+# Spaces with no faction get colored by their required action pip instead (see
+# _derive_action_color()) — Negotiate/Hunt/Fight each get a color, and a Space needing
+# zero or more than one distinct action across its clauses stays white. Border color is
+# purely identity/category either way — it no longer changes with available/selected
+# state (see _apply_dim()/_rebuild_selected_glow() for those).
 # Duplicates the shared stylebox into a per-instance copy before tinting it, since
 # PackedScene sub-resources (the preloaded _sb_* StyleBoxFlats) are shared across every
 # Space instance by default.
 func _apply_faction_border() -> void:
 	_sb_base = _sb_base.duplicate()
-	var color: Variant = _derive_faction_color()
-	if color != null:
-		_sb_base.border_color = color
+	_sb_base.border_color = _derive_border_color()
 	_rebuild_selected_glow()
 	_apply_stylebox()
+
+func _derive_border_color() -> Color:
+	var faction_color: Variant = _derive_faction_color()
+	if faction_color != null:
+		return faction_color
+	return _derive_action_color()
+
+# One color if every requirement_clause that specifies an action pip agrees on the
+# same one; white if none of the clauses specify an action, or if they disagree.
+func _derive_action_color() -> Color:
+	var actions: Dictionary = {}
+	for clause: SpaceRequirement in space_data.requirement_clauses:
+		if clause != null and clause.action != SpaceRequirement.ActionRequirement.NONE:
+			actions[clause.action] = true
+	if actions.size() == 1:
+		match actions.keys()[0]:
+			SpaceRequirement.ActionRequirement.NEGOTIATE: return _ACTION_COLOR_NEGOTIATE
+			SpaceRequirement.ActionRequirement.HUNT:      return _ACTION_COLOR_HUNT
+			SpaceRequirement.ActionRequirement.FIGHT:     return _ACTION_COLOR_FIGHT
+	return Color.WHITE
 
 # Rebuilds the selected-glow stylebox from the current _sb_base (so it always matches
 # the space's identity border color) plus a soft StyleBoxFlat shadow — the "glowing
@@ -287,6 +345,7 @@ func add_minion_meeple(card_datas: Array) -> void:
 		_meeple_overlay.add_child(count_label)
 
 	_meeple_overlay.gui_input.connect(_on_meeple_input)
+	_apply_dim()
 
 func clear_meeple() -> void:
 	if _meeple_overlay:
@@ -294,6 +353,7 @@ func clear_meeple() -> void:
 		_meeple_overlay = null
 	_placed_card_datas.clear()
 	recall_selected = false
+	_apply_dim()
 
 func placed_minions() -> Array[CardData]:
 	return _placed_card_datas.duplicate()
