@@ -1,6 +1,6 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1785985880
-CLAUDE.md::TextFile::-1::1785985836::0::1::::<><><>0<>0<><>::
+::res://::1786300226
+CLAUDE.md::TextFile::-1::1786042838::0::1::::<><><>0<>0<><>::
 export_presets.cfg::TextFile::-1::1785985133::0::1::::<><><>0<>0<><>::
 icon.svg::CompressedTexture2D::6761812411574753581::1780026687::1780026692::1::::<><><>0<>0<>5ccd96f8f51809625da855cb82219626<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
 ::res://addons/::1780109232
@@ -43,7 +43,7 @@ palette_inspector_script.gd::GDScript::4212278484029853908::1763945317::0::1::::
 palette_tool.gd::GDScript::4297754260147142982::1763945317::0::1::::<>Control<><>0<>1<><>::
 ::res://addons/PaletteTools/Shaders/::1780109233
 rainbow_shader.gdshader::Shader::4632434941284950923::1763945317::0::1::::<><><>0<>0<><>::
-::res://addons/Todo_Manager/::1785985741
+::res://addons/Todo_Manager/::1785985913
 ColourPicker.gd::GDScript::7423189413155139485::1778196974::0::1::::<>HBoxContainer<><>0<>1<><>::
 Current.gd::GDScript::8272394960458563341::1778196974::0::1::::<>Control<><>0<>1<><>::
 Dock.gd::GDScript::6049340484349524101::1778196974::0::1::::<>Control<><>0<>1<><>::
@@ -51,7 +51,7 @@ PatternEdit.gd::GDScript::2706809576279000064::1778196974::0::1::::<>PanelContai
 plugin.cfg::TextFile::-1::1778196974::0::1::::<><><>0<>0<><>::
 plugin.gd::GDScript::5219353738924224943::1778196974::0::1::::<>EditorPlugin<><>0<>1<><>::
 Project.gd::GDScript::3348460405673864794::1778196974::0::1::::<>Control<><>0<>1<><>::
-todo.cfg::TextFile::-1::1785985741::0::1::::<><><>0<>0<><>::
+todo.cfg::TextFile::-1::1785985913::0::1::::<><><>0<>0<><>::
 todoItem_class.gd::GDScript::1685429052206527426::1778196974::0::1::::<>RefCounted<><>0<>1<><>::
 todo_class.gd::GDScript::6294551047687995997::1778196974::0::1::::<>RefCounted<><>0<>1<><>::
 ::res://addons/Todo_Manager/doc/::1780109156
@@ -104,11 +104,12 @@ minion.png::CompressedTexture2D::8350529541903903438::1641783667::1782499819::1:
 human.png::CompressedTexture2D::4959252001818374495::1763945317::1780163013::1::::<><><>0<>0<>d230c93d14028a8b1dcb6caaa30f5452<>res://.godot/imported/human.png-300b23baf991fa0c30b8933dd9fa104a.ctex::
 supernatural.png::CompressedTexture2D::2199557519703025257::1763945317::1780163013::1::::<><><>0<>0<>ba9d9d974052cf866b1c7929134cc98a<>res://.godot/imported/supernatural.png-0caa14010b6f54cd90d071544ea26a8c.ctex::
 vampire.png::CompressedTexture2D::5842793055522589378::1763945317::1780163013::1::::<><><>0<>0<>d1785b515eaad5d703277011ead84dd4<>res://.godot/imported/vampire.png-1f46b5c66b8109369569b31c1a2d65cb.ctex::
-::res://assets/icons/player/::1785030288
+::res://assets/icons/player/::1786300226
 plan_deck.png::CompressedTexture2D::7107540439285426438::1783914826::1783914831::1::::<><><>0<>0<>5fefe5a63d82f94969ad8bc256899afa<>res://.godot/imported/plan_deck.png-accddedfdbeb9396cfe60b4dc4508d2c.ctex::
 plan_discard.png::CompressedTexture2D::6317680414023200578::1783914755::1783914911::1::::<><><>0<>0<>a582e96a1f7732750174c652f4554e17<>res://.godot/imported/plan_discard.png-31fa3343708a5675c410c06a28e7046f.ctex::
 plan_in_play.png::CompressedTexture2D::8559101338535995143::1783914886::1783914898::1::::<><><>0<>0<>4fff1eeb77538cb0102ea4b1593b8d6a<>res://.godot/imported/plan_in_play.png-91cf920015c74bbf07330c8cf3116b30.ctex::
 track_marker.png::CompressedTexture2D::3165193225251600034::1785030277::1785030287::1::::<><><>0<>0<>cb5ad864188f3092f106b63caeb698db<>res://.godot/imported/track_marker.png-cf9d14a8224a7c93c62d898e5add8b53.ctex::
+undo.png::CompressedTexture2D::1780775622316383283::1786300217::1786300226::1::::<><><>0<>0<>8962f1846499042cf339973a4c832c80<>res://.godot/imported/undo.png-765957fced29a3c3161a0e010f70bba2.ctex::
 ::res://assets/icons/resources/::1785973029
 action.png::CompressedTexture2D::2618690896105972453::1641783662::1782598852::1::::<><><>0<>0<>c945e7db1912a771c37191a421d1819d<>res://.godot/imported/action.png-82fbe8884cfa6feebe1e0419cc30ee39.ctex::
 action_0.png::CompressedTexture2D::2794279180454904310::1784411710::1784411721::1::::<><><>0<>0<>6ba17d3fbdc603750e46f8222210d28d<>res://.godot/imported/action_0.png-df2287eda60faa397d5d4efd763647f0.ctex::
@@ -270,7 +271,7 @@ default_starting_deck.tres::Resource/StartingDeckConfig::5689082530806007869::17
 starting_card_count.gd::GDScript::2178851043311630516::1785895832::0::1::::StartingCardCount<>Resource<><>0<>1<><>::
 starting_deck_config.gd::GDScript::1620239847620280117::1785895838::0::1::::StartingDeckConfig<>Resource<><>0<>1<><>::
 ::res://DuneManuals/::1782480135
-::res://game_pieces/::1785985722
+::res://game_pieces/::1786042779
 action_display.gd::GDScript::8194486928592943829::1784394755::0::1::::ActionDisplay<>RefCounted<><>0<>0<><>::
 board.gd::GDScript::5447947895561233977::1785975963::0::1::::Board<>Node2D<><>0<>0<><>::
 board.tscn::PackedScene::7705121830890630915::1785976253::0::1::::<><><>0<>0<><>::uid://8i5e826ufvj7::::res://game_pieces/card_scroller.gd<>uid://cjva52g5np3yr::::res://game_pieces/board.gd<>uid://c6g0fwep55o13::::res://game_pieces/track_spaces.tscn<>uid://d2jxjs4xpw5i::::res://assets/dune.png<>uid://space000001::::res://game_pieces/space.tscn<>uid://bfcsfqtokmse3::::res://data/spaces/vampire_ministry.tres<>uid://d1pseiq07xhnf::::res://data/spaces/goth_club.tres<>uid://0twfd34avp1p::::res://assets/fonts/GrenzeGotisch-VariableFont_wght.ttf<>uid://bmmkkav1rrmqi::::res://game_pieces/long_press_button.gd<>uid://ysleybupd2l4::::res://game_pieces/icon.tscn<>uid://cyq8j7bjfh2ow::::res://assets/styleboxes/opponents.tres<>uid://c8i7fgog0gf07::::res://assets/icons/player/plan_deck.png<>uid://br2bjoiq4paa8::::res://assets/styleboxes/player.tres<>uid://cwaljkbqwa8ty::::res://assets/icons/player/plan_discard.png<>uid://dt7dfbyoqfiwt::::res://assets/icons/player/plan_in_play.png<>uid://clxfprayfdgtq::::res://assets/icons/resources/money.png<>uid://70ofci82cabv::::res://assets/icons/resources/blood.png<>uid://cacam31wyen8q::::res://assets/icons/resources/secret.png<>uid://f5d5wjbl68ak::::res://data/spaces/takeover.tres<>uid://b5e2u705jxtgi::::res://assets/icons/resources/vp.png<>uid://pmk7g6gtix38::::res://data/spaces/gilded_parlor.tres<>uid://c8ps1hhxmm33t::::res://data/spaces/midnight_senate.tres<>uid://ycgpo650ixom::::res://data/spaces/velvet_atelier.tres<>uid://cqxr62g1u1jxm::::res://data/spaces/crimson_masquerade.tres<>uid://caregrsfgbew1::::res://data/spaces/feeding_ground.tres<>uid://b26d2oi5eh0hm::::res://data/spaces/slaughter_pit.tres<>uid://cphdjwsvwynyn::::res://data/spaces/crossroads_covenant.tres<>uid://cosp03gact3bm::::res://assets/icons/resources/influence.png<>uid://bpe6co2gsti32::::res://assets/icons/resources/fight.png
@@ -288,14 +289,14 @@ plan.gd::GDScript::9197193611936354844::1785985722::0::1::::Plan<>Card<><>0<>0<>
 plan.tscn::PackedScene::9003048520934062748::1782320571::0::1::::<><><>0<>0<><>::uid://bkyqfqlxbnhql::::res://game_pieces/card.tscn<>uid://d4bgo16wy2237::::res://game_pieces/plan.gd<>uid://djkh735gqoly2::::res://assets/styleboxes/card_name_label.tres<>uid://cmh8lyje2xugq::::res://assets/styleboxes/plan_bottom.tres
 plan_zoom.gd::GDScript::2625599963330864281::1784084540::0::1::::PlanZoom<>Plan<><>0<>0<><>::
 plan_zoom.tscn::PackedScene::344335231020966932::1782399244::0::1::::<><><>0<>0<><>::uid://d1je5nhbvmmcy::::res://game_pieces/plan.tscn<>uid://staarstgndwj::::res://assets/styleboxes/planzoom_normal.tres<>uid://bdn4iopgf4rmf::::res://game_pieces/plan_zoom.gd<>uid://bv0v6wriddkwx::::res://assets/styleboxes/planzoom_top.tres<>uid://dy4u53swnppo6::::res://assets/styleboxes/planzoom_bottom.tres<>uid://dnekxlpgd5uvt::::res://assets/styleboxes/cardzoom_name_label.tres
-space.gd::GDScript::6634992024680253301::1785978180::0::1::::Space<>Button<><>0<>0<><>::
+space.gd::GDScript::6634992024680253301::1786042779::0::1::::Space<>Button<><>0<>0<><>::
 space.tscn::PackedScene::38069666860797256::1784407435::0::1::::<><><>0<>0<><>::uid://mmjaglo7ry7u::::res://assets/styleboxes/space_selected.tres<>uid://djf0c66c23ehw::::res://assets/styleboxes/plan_normal.tres<>uid://c1sbl40nn3m6x::::res://game_pieces/space.gd<>uid://dfso2fudvgglr::::res://assets/images/cards/spaces/default_space.png<>uid://cdd48o4dcfjie::::res://assets/styleboxes/space_image.tres<>uid://0twfd34avp1p::::res://assets/fonts/GrenzeGotisch-VariableFont_wght.ttf<>uid://cacam31wyen8q::::res://assets/icons/resources/secret.png
 space_zoom.gd::GDScript::4624417133671735476::1785978364::0::1::::<>Space<><>0<>0<><>::
 space_zoom.tscn::PackedScene::1401016494594163916::1782442396::0::1::::<><><>0<>0<><>::uid://space000001::::res://game_pieces/space.tscn<>uid://cj7l25j4vyb2g::::res://assets/styleboxes/spacezoom_selected.tres<>uid://b65dqet673l1u::::res://game_pieces/space_zoom.gd<>uid://0twfd34avp1p::::res://assets/fonts/GrenzeGotisch-VariableFont_wght.ttf
 track.gd::GDScript::7548532546569796646::1785809331::0::1::::Track<>Panel<><>0<>0<><>::
 track.tscn::PackedScene::2250884350208898991::1785807344::0::1::::<><><>0<>0<><>::uid://b31p07bf8jrvd::::res://game_pieces/track_step.tscn<>uid://dfsth01xkh64y::::res://game_pieces/track.gd
-track_spaces.gd::GDScript::3518063021270712902::1785810704::0::1::::TrackSpaces<>Panel<><>0<>0<><>::
-track_spaces.tscn::PackedScene::6962609802893989240::1785809354::0::1::::<><><>0<>0<><>::uid://7cl0bjb7w66f::::res://game_pieces/track.tscn<>uid://space000001::::res://game_pieces/space.tscn
+track_spaces.gd::GDScript::3518063021270712902::1786039846::0::1::::TrackSpaces<>Panel<><>0<>0<><>::
+track_spaces.tscn::PackedScene::6962609802893989240::1786040035::0::1::::<><><>0<>0<><>::uid://7cl0bjb7w66f::::res://game_pieces/track.tscn<>uid://space000001::::res://game_pieces/space.tscn
 track_step.gd::GDScript::8746195010877765459::1785811549::0::1::::TrackStep<>Panel<><>0<>0<><>::
 track_step.tscn::PackedScene::4406339209466340681::1785811784::0::1::::<><><>0<>0<><>::uid://bldijgdjfotyg::::res://assets/icons/player/track_marker.png<>uid://cacam31wyen8q::::res://assets/icons/resources/secret.png<>uid://dwuys3oghvlgd::::res://game_pieces/track_step.gd
 ::res://globals/::1785985726

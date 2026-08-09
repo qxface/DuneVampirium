@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://6bpmgis72lsm" path="res://data/starting_deck/starting_card_count.gd" id="2_count"]
 [ext_resource type="Resource" uid="uid://hrdjc5gtpiq5" path="res://data/plans/fangs.tres" id="3_fangs"]
 [ext_resource type="Resource" path="res://data/plans/forced_breeding.tres" id="4_forced"]
-[ext_resource type="Resource" path="res://data/plans/reconnaissance.tres" id="5_recon"]
+[ext_resource type="Resource" uid="uid://dtf66cqnf48sp" path="res://data/plans/reconnaissance.tres" id="5_recon"]
 [ext_resource type="Resource" path="res://data/plans/blood_totem.tres" id="6_blood"]
 [ext_resource type="Resource" uid="uid://8yb72bqto5yo" path="res://data/plans/campaign.tres" id="7_campaign"]
 [ext_resource type="Resource" uid="uid://bvj6lvkewkpas" path="res://data/minions/ronin_vampire.tres" id="8_ronin"]

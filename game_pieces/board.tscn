@@ -29,6 +29,7 @@
 [ext_resource type="Resource" uid="uid://cphdjwsvwynyn" path="res://data/spaces/crossroads_covenant.tres" id="25_crossroads"]
 [ext_resource type="Texture2D" uid="uid://cosp03gact3bm" path="res://assets/icons/resources/influence.png" id="27_f57g8"]
 [ext_resource type="Texture2D" uid="uid://bpe6co2gsti32" path="res://assets/icons/resources/fight.png" id="28_e48eo"]
+[ext_resource type="Texture2D" uid="uid://0mvd5fot1j12" path="res://assets/icons/player/undo.png" id="29_e48eo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehfyt"]
 bg_color = Color(0.043137256, 0.29411766, 0.23137255, 0.2509804)
@@ -430,6 +431,11 @@ texture = ExtResource("27_f57g8")
 unique_name_in_owner = true
 layout_mode = 2
 texture = ExtResource("28_e48eo")
+
+[node name="UndoIcon" parent="CanvasLayer/Revealcontainer" unique_id=1527985579 instance=ExtResource("10_dxlds")]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("29_e48eo")
 
 [node name="Dune" type="Sprite2D" parent="." unique_id=1834547570]
 modulate = Color(1, 1, 1, 0.21568628)
