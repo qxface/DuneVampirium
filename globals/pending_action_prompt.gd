@@ -5,6 +5,11 @@ extends CanvasLayer
 # trigger them one at a time, in any order — since an earlier trigger might grant a
 # resource a later one needs. Visually in the same family as CardArrayPopup.
 
+# Emitted whenever the prompt closes (Done button or the last item resolving) — lets
+# board.gd finalize a Place action's ActionLogEntry only once every pending trigger the
+# player chose to fire has actually happened, not right after the free ones do.
+signal closed
+
 var _items: Array[PendingAction] = []
 
 var _overlay: ColorRect
@@ -80,6 +85,7 @@ func close() -> void:
 	_items.clear()
 	for child in _row_vbox.get_children():
 		child.queue_free()
+	closed.emit()
 
 func _rebuild_rows() -> void:
 	for child in _row_vbox.get_children():
@@ -108,7 +114,7 @@ func _build_row(item: PendingAction) -> Control:
 	var icon_hbox := HBoxContainer.new()
 	icon_hbox.custom_minimum_size = Vector2(200, 60)
 	hbox.add_child(icon_hbox)
-	ActionDisplay.populate_into(icon_hbox, item.effects, item.cost_type, item.cost_amount, GameEnums.RequirementType.NONE, 0)
+	ActionDisplay.populate_into(icon_hbox, item.effects, item.cost_type, item.cost_amount, GameEnums.RequirementType.NONE, 0, item.source)
 
 	var trigger_button := Button.new()
 	trigger_button.text = "Trigger"

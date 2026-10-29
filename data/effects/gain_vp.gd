@@ -3,10 +3,10 @@ extends Effect
 
 @export var amount: int = 1
 
-func get_icon() -> Texture2D:
+func get_icon(source: Resource = null) -> Texture2D:
 	return preload("res://assets/icons/resources/vp.png")
 
-func get_tags() -> String:
+func get_tags(source: Resource = null) -> String:
 	if amount >= 1 and amount <= 9:
 		return str(amount)
 	return ""

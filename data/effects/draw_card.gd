@@ -3,13 +3,18 @@ extends Effect
 
 @export_range(1, 9) var amount: int = 1
 
-func get_icon() -> Texture2D:
+func get_icon(source: Resource = null) -> Texture2D:
 	return preload("res://assets/icons/effects/card_draw.png")
 
-func get_tags() -> String:
+func get_tags(source: Resource = null) -> String:
 	if amount <= 1 or amount > 9:
 		return ""
 	return str(amount)
+
+# Drawing gives the player new information — undoing it after seeing the card would
+# let them "peek and reroll," so it's binding by default (see Effect.is_binding()).
+func is_binding() -> bool:
+	return true
 
 func trigger(game_context: Node, source: Resource = null) -> void:
 	var player: PlayerState = game_context.get_current_player()

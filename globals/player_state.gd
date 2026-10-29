@@ -34,3 +34,47 @@ var plan_discard: Array[CardData] = []
 var actions_per_round: int = 3
 var actions_remaining: int = 3
 var round_phase: RoundPhase = RoundPhase.ACTIVE
+
+# --- Undo support ---
+#
+# Captures/restores every field that changes during normal play. Arrays/Dictionaries
+# are duplicated (not referenced) on both ends so a snapshot taken before an action
+# stays untouched by whatever that action — or a later restore — does afterward. See
+# GameState.snapshot()/restore() for the per-player callers of these.
+func snapshot() -> Dictionary:
+	return {
+		"vp": vp,
+		"money": money,
+		"blood": blood,
+		"secrets": secrets,
+		"fight": fight,
+		"influence": influence,
+		"rapport": rapport.duplicate(),
+		"ready_minions": ready_minions.duplicate(),
+		"placed_minions": placed_minions.duplicate(),
+		"plan_draw_pile": plan_draw_pile.duplicate(),
+		"plan_hand": plan_hand.duplicate(),
+		"plan_in_play": plan_in_play.duplicate(),
+		"plan_discard": plan_discard.duplicate(),
+		"actions_remaining": actions_remaining,
+		"round_phase": round_phase,
+	}
+
+func restore_from(snap: Dictionary) -> void:
+	vp = snap["vp"]
+	money = snap["money"]
+	blood = snap["blood"]
+	secrets = snap["secrets"]
+	fight = snap["fight"]
+	influence = snap["influence"]
+	rapport = (snap["rapport"] as Dictionary).duplicate()
+	# .assign() (not a reassign + cast) so each typed Array field keeps its own identity
+	# and CardData element type while copying the snapshot's contents in.
+	ready_minions.assign(snap["ready_minions"])
+	placed_minions.assign(snap["placed_minions"])
+	plan_draw_pile.assign(snap["plan_draw_pile"])
+	plan_hand.assign(snap["plan_hand"])
+	plan_in_play.assign(snap["plan_in_play"])
+	plan_discard.assign(snap["plan_discard"])
+	actions_remaining = snap["actions_remaining"]
+	round_phase = snap["round_phase"]

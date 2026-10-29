@@ -31,11 +31,13 @@ const PANEL_MARGIN: float = 8.0  # 4 px on each side of the inner scroll area
 @onready var vp_icon: Control                       = %PlayerVP
 @onready var influence_icon: Control                = %InfluenceIcon
 @onready var fight_icon: Control                    = %FightIcon
+@onready var undo_icon: Control                     = %UndoIcon
 @onready var track_spaces_widgets: Array[TrackSpaces] = [%TrackSpaces, %TrackSpaces2, %TrackSpaces3]
 
 var _plan_deck_long_press_active: bool = false
 var _plan_discard_long_press_active: bool = false
 var _plan_in_play_long_press_active: bool = false
+var _undo_long_press_active: bool = false
 
 const PLAN_SCENE   := preload("res://game_pieces/plan.tscn")
 const MINION_SCENE := preload("res://game_pieces/minion.tscn")
@@ -63,6 +65,7 @@ func _ready() -> void:
 	plan_deck.gui_input.connect(_on_plan_deck_input)
 	plan_in_play_icon.gui_input.connect(_on_plan_in_play_input)
 	plan_discard_icon.gui_input.connect(_on_plan_discard_input)
+	undo_icon.gui_input.connect(_on_undo_input)
 
 	send_minions_button.long_pressed.connect(_do_place)
 	reveal_button.long_pressed.connect(_do_reveal)
@@ -109,6 +112,8 @@ func _update_button_states() -> void:
 	_update_plan_discard_display()
 	_update_card_selectability()
 	_update_faction_tracks()
+	_update_space_occupancy_display()
+	_update_undo_display()
 
 	if GameState.round_number != _cached_round:
 		_cached_round = GameState.round_number
@@ -166,11 +171,18 @@ func _do_place() -> void:
 	var minion_datas: Array = sel_minions.map(func(n): return n.card_data)
 	var plan_datas:   Array = sel_plans.map(func(n): return n.card_data)
 	var space_data: SpaceData = space.space_data
+	var description := _describe_place(minion_datas, plan_datas, space_data)
+	var params := {"type": "place", "minions": minion_datas, "plans": plan_datas, "space": space_data}
 
+	# Snapshot BEFORE any mutation — the whole Place, including whatever the player
+	# chooses to trigger from the PendingActionPrompt below, is one undo-able Action.
+	var pre := GameState.begin_undo_span()
+	# Trace written BEFORE execute_place() runs, so even a crash inside it still leaves
+	# "what was about to happen" on disk (see globals/error_tracker.gd).
+	ErrorTracker.start_trace(pre, "place", description, params)
 	GameState.execute_place(minion_datas, plan_datas, space_data)
-
-	# Show meeple on the space.
-	space.add_minion_meeple(minion_datas)
+	# The meeple appears automatically — execute_place()'s state_changed already ran
+	# _update_space_occupancy_display() synchronously by the time this line runs.
 	space.selected = false
 
 	# Remove placed minion cards from the scene (they now live on the board as a meeple).
@@ -194,7 +206,16 @@ func _do_place() -> void:
 	# trigger in whatever order they choose (an earlier choice may fund a later one).
 	var pending := GameState.build_agent_pending_actions(minion_datas, plan_datas, space_data)
 	pending = GameState.resolve_auto_actions(pending)
-	PendingActionPrompt.show_pending(pending)
+	if pending.is_empty():
+		GameState.commit_action_log(pre, "place", description, params)
+	else:
+		# Nothing left to trigger stays pending until the player closes the prompt —
+		# only then is the whole Place actually "done" for logging/undo purposes.
+		PendingActionPrompt.closed.connect(
+			func(): GameState.commit_action_log(pre, "place", description, params),
+			CONNECT_ONE_SHOT
+		)
+		PendingActionPrompt.show_pending(pending)
 
 func _do_reveal() -> void:
 	# Minions mid-selection for an unsent Place action return to the ready hand —
@@ -211,7 +232,12 @@ func _do_reveal() -> void:
 		node.queue_free()
 	_set_selected_panel(selected_plan_panel, 0)
 
+	var reveal_description := "%s revealed" % GameState.current_player().player_name
+	var reveal_params := {"type": "reveal"}
+	var pre := GameState.begin_undo_span()
+	ErrorTracker.start_trace(pre, "reveal", reveal_description, reveal_params)
 	GameState.execute_reveal()
+	GameState.commit_action_log(pre, "reveal", reveal_description, reveal_params)
 
 func _do_minion_reveal() -> void:
 	var sel := get_tree().get_nodes_in_group("MINION").filter(func(n): return n.selected)
@@ -219,7 +245,13 @@ func _do_minion_reveal() -> void:
 		return
 	var minion_node = sel[0]
 	minion_node.selected = false
-	GameState.execute_minion_reveal(minion_node.card_data)
+	var card_data: CardData = minion_node.card_data
+	var description := "%s activated %s's Reveal power" % [GameState.current_player().player_name, card_data.card_name]
+	var params := {"type": "minion_reveal", "minion": card_data}
+	var pre := GameState.begin_undo_span()
+	ErrorTracker.start_trace(pre, "minion_reveal", description, params)
+	GameState.execute_minion_reveal(card_data)
+	GameState.commit_action_log(pre, "minion_reveal", description, params)
 
 func _do_end_turn() -> void:
 	GameState.end_turn()
@@ -237,11 +269,19 @@ func _do_accept_recall() -> void:
 	if selected_spaces.is_empty():
 		return
 	var minion_datas: Array = []
+	var space_datas: Array = []
 	for space: Space in selected_spaces:
 		minion_datas.append_array(space.placed_minions())
-	GameState.execute_recall(minion_datas)
-	for space: Space in selected_spaces:
-		space.clear_meeple()
+		space_datas.append(space.space_data)
+
+	var recall_description := _describe_recall(minion_datas)
+	var recall_params := {"type": "recall", "minions": minion_datas, "spaces": space_datas}
+	var pre := GameState.begin_undo_span()
+	ErrorTracker.start_trace(pre, "recall", recall_description, recall_params)
+	GameState.execute_recall(minion_datas, space_datas)
+	# The meeples clear automatically — execute_recall()'s state_changed already ran
+	# _update_space_occupancy_display() synchronously by the time this line runs.
+	GameState.commit_action_log(pre, "recall", recall_description, recall_params)
 	for d: CardData in minion_datas:
 		var node := MINION_SCENE.instantiate()
 		minion_hbox.add_child(node)
@@ -325,6 +365,68 @@ func _resource_tag(amount: int) -> String:
 func _update_faction_tracks() -> void:
 	for ts: TrackSpaces in track_spaces_widgets:
 		ts.track.refresh()
+
+# ── Board occupancy ──────────────────────────────────────────────────────────
+# Space is a pure view over GameState.space_occupancy — same hub every other
+# GameState-driven widget on this screen refreshes from.
+
+func _update_space_occupancy_display() -> void:
+	for space in get_tree().get_nodes_in_group("SPACE"):
+		space.refresh_occupancy()
+
+# ── Undo ──────────────────────────────────────────────────────────────────────
+
+func _update_undo_display() -> void:
+	var can_undo: bool = GameState.can_undo() and not _recall_mode
+	undo_icon.modulate = Color(1, 1, 1, 1) if can_undo else Color(1, 1, 1, 0.3)
+
+func _on_undo_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.button_index == MOUSE_BUTTON_LEFT:
+			if mb.pressed:
+				_undo_long_press_active = true
+				get_tree().create_timer(0.5).timeout.connect(_on_undo_long_press_timeout)
+			else:
+				_undo_long_press_active = false
+
+func _on_undo_long_press_timeout() -> void:
+	if not _undo_long_press_active:
+		return
+	_undo_long_press_active = false
+	if _recall_mode or not GameState.can_undo():
+		return
+	# Selection is UI-only and doesn't touch GameState data, but it may reference cards
+	# whose zone is about to change wholesale — clear any in-progress Place composition
+	# before the restore, same as _do_reveal() does.
+	for node in selected_minion_hbox.get_children():
+		node.queue_free()
+	for node in selected_plan_hbox.get_children():
+		node.queue_free()
+	_set_selected_panel(selected_minion_panel, 0)
+	_set_selected_panel(selected_plan_panel, 0)
+	GameState.undo_last_action()
+	_sync_hand_display()
+	Availability.update()
+
+# ── Action Log descriptions ─────────────────────────────────────────────────
+# Human-readable strings frozen into each ActionLogEntry at commit time (see
+# GameState.commit_action_log()) — not regenerated later, so they stay accurate even
+# if the underlying cards/spaces later change (e.g. get trashed).
+
+func _describe_place(minion_datas: Array, plan_datas: Array, space_data: SpaceData) -> String:
+	var names: Array = []
+	for d: CardData in minion_datas + plan_datas:
+		names.append(d.card_name)
+	return "%s placed %s at %s" % [GameState.current_player().player_name, ", ".join(names), space_data.space_name]
+
+func _describe_recall(minion_datas: Array) -> String:
+	if minion_datas.is_empty():
+		return "%s recalled nothing" % GameState.current_player().player_name
+	var names: Array = []
+	for d: CardData in minion_datas:
+		names.append(d.card_name)
+	return "%s recalled %s" % [GameState.current_player().player_name, ", ".join(names)]
 
 # ── Plan deck ─────────────────────────────────────────────────────────────────
 

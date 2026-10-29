@@ -6,12 +6,12 @@ enum GainType { MONEY, BLOOD, SECRET, FIGHT, INFLUENCE }  # appended, not insert
 @export var type: GainType = GainType.MONEY
 @export var amount: int = 1
 
-func get_tags() -> String:
+func get_tags(source: Resource = null) -> String:
 	if amount <= 0 or amount > 9:
 		return ""
 	return str(amount)
 
-func get_icon() -> Texture2D:
+func get_icon(source: Resource = null) -> Texture2D:
 	match type:
 		GainType.MONEY:  return preload("res://assets/icons/resources/money.png")
 		GainType.BLOOD:  return preload("res://assets/icons/resources/blood.png")

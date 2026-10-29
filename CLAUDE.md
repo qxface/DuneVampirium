@@ -39,15 +39,18 @@ reference only — none of its theme, names, or IP carry over.
    - **Place** — select **at least one Minion and at least one Plan** (multiples of either are
      optional) and send them as a set to an open board Space. The **union of pips** across every
      selected card must satisfy the Space's requirement clause. Gain Space + card effects.
-   - **Hold** — reserve the Action to activate one Minion's Reveal power later, during the Reveal
-     phase. The chosen Minion must still be in hand (not placed on a Space) when activated.
    - **Recall** — return any number (0 to all) of your Minions currently on the board back to your
      ready Minion hand. (Recalling 0 is legal but pointless.)
-   A player who has spent/held all Actions must Reveal on their next turn; a player may also choose
-   to Reveal early with unused Actions remaining (those are simply forfeited, unless held).
-3. **Reveal** — every Plan still in hand automatically triggers its Reveal power for free; each
-   *held* Action additionally activates the Reveal power of one chosen Minion still in hand; gain
-   Reveal effects; spend pooled Money/Blood/Secret/Rapport to acquire new cards; set Combat strength.
+   There is **no Hold Action** (superseded 2026-07-13, see Key Decisions Log) — a player may Reveal
+   at any time, and any Action not spent on Place/Recall simply becomes a leftover Minion-Reveal
+   token, spent during the Reveal phase below instead of being forfeited.
+3. **Reveal** — every Plan still in hand, plus every Minion Reveal power the player can afford in
+   leftover Action tokens, is presented as **one list of pending Reveal actions the player chooses
+   the order of, and may decline to trigger at all** — Plan powers are free (no Action-token cost)
+   but still sit in this list rather than force-firing automatically; a Minion's own Action-token
+   cost (most commonly 1, could be 0 or 2+) gates whether it's currently affordable. **Not
+   implemented yet** — see Systems In Progress; spend pooled Money/Blood/Secret/Rapport to acquire
+   new cards; set Combat strength.
 4. **Combat** — players may play Combat Intrigue-equivalent cards, then rewards go out by strength
    (1st/2nd/3rd place).
 5. **Makers** — bonus resource accumulates on unattended resource Spaces.
@@ -60,8 +63,8 @@ reference only — none of its theme, names, or IP carry over.
 |---|---|
 | Single card sent an Agent | **Minion/Plan set** sent per Action: ≥1 Minion + ≥1 Plan, multiples of either optional, union of all selected cards' pips must satisfy the Space |
 | Agent meeples (fixed count, recalled automatically each round) | **Minions are a standing roster** — acquired once, never reshuffled/discarded by normal play, stay placed on a Space indefinitely until the player spends an Action on **Recall** |
-| 2 (later 3) Agents per round | **2 Actions per round** baseline; each Action is Place / Hold / Recall (expandability TBD — open question) |
-| Reveal turn reveals all remaining hand for free | **Plans** auto-reveal for free; **Minions** require spending 1 held Action each to activate their Reveal power |
+| 2 (later 3) Agents per round | **2 Actions per round** baseline; each Action is Place / Recall — no Hold Action (superseded 2026-07-13); unused Actions become Minion-Reveal tokens at Reveal (expandability TBD — open question) |
+| Reveal turn reveals all remaining hand for free | **Plans** and **Minions** both surface as a player-ordered, player-skippable list of Reveal actions — Plans cost nothing, Minions cost their own Action-token amount (usually 1, 0 or 2+ possible) — not yet implemented, see Systems In Progress |
 | 8 pips: 3 action icons + 4 Faction icons + 1 Spy eye | **Action** pips (verbs: Negotiate, Fight, Hunt) · **Origin** pips (Vampire, Supernatural, Human) · **Aspect** pips (adjectives: Hideous, Insane, Arcane) · **Faction** pips (a large, swappable pool — see below) |
 | Solari / Spice / Water / Persuasion | Money / Blood / Secret / Rapport (see `GameEnums.CostType`) |
 | Four fixed Factions (Emperor, Spacing Guild, Bene Gesserit, Fremen) | **Many possible Factions** — Primori/Volupta/Vorace (the existing `GameEnums.RequirementType` Clans) are three of these Factions, not a separate system; which Factions are in play in a given game is determined by which Spaces are included on the board (a game could feature 0, 3, 7, or more Factions) |
@@ -96,6 +99,7 @@ res://
 │   ├── spaces/          # Board Space .tres instances (moved here from project root)
 │   ├── starting_deck/   # StartingDeckConfig + StartingCardCount resource scripts + default_starting_deck.tres
 │   ├── pending_action.gd # PendingAction (RefCounted) — one unresolved lifecycle action (source, cost, effects); see [[auto-execute-effect-resolution]]
+│   ├── action_log_entry.gd # ActionLogEntry (RefCounted) — one committed top-level Action (player, description, replay params, binding, pre-action snapshot); see [[move-tracking-undo]]
 │   └── game_enums.gd    # CostType, RequirementType enums + icon path lookups (static helpers cost_icon_path / requirement_icon_path)
 ├── game_pieces/         # Scenes/scripts for board, card, minion, plan, space (incl. zoom variants), card_scroller, action_display
 │   ├── long_press_button.gd  # LongPressButton extends Button — 0.5s hold triggers long_pressed signal with fill-progress animation
@@ -105,7 +109,8 @@ res://
     ├── player_state.gd  # PlayerState (RefCounted) — per-player resources, VP, rapport, player_color, all card zones, action economy
     ├── game_state.gd    # GameState autoload — 4 players, round/turn state machine, Place/Reveal/EndTurn methods, agent-effect resolution engine
     ├── pending_action_prompt.gd # PendingActionPrompt autoload — modal list letting the player trigger pending costed/manual actions in any order
-    └── faction_picker.gd # FactionPicker autoload — modal letting a player choose N distinct Factions to advance (see AdvanceWildFaction); requests queue rather than clobber if two fire in the same batch
+    ├── faction_picker.gd # FactionPicker autoload — modal letting a player choose N distinct Factions to advance (see AdvanceWildFaction); requests queue rather than clobber if two fire in the same batch
+    └── error_tracker.gd  # ErrorTracker autoload — debugging aid; see [[error-tracking]]. Writes user://last_action_trace.json (rolling, before/during every top-level Action) and user://last_error_report.json (on report_error()); replay_trace() reconstructs + re-runs a failed Action from a dump
 ```
 
 ---
@@ -197,6 +202,125 @@ res://
   superseded by the generic multi-item `PendingActionPrompt`, since a Space's optional `agent_cost` is just
   one more `PendingAction` in the same list now.
 
+### Move Tracking / Undo / Action Log (`data/action_log_entry.gd`, `globals/game_state.gd`, `globals/player_state.gd`, `game_pieces/board.gd`)
+Two purposes drove this system: **Undo** (a player can rewind mistakes) and laying groundwork for
+**async multiplayer** (a log of committed Actions, in a shape that could eventually be pushed to a
+central server and replayed by another client).
+- **Undo unit = one full top-level Action** (Place / Recall / Reveal / MinionReveal) — not a single
+  effect, not a single state change. Undoing reverses everything that Action did (cost, cards moved,
+  effects fired, board occupancy changed) as one atomic step.
+- **Mechanism: snapshot/restore, not per-Effect inverse logic.** `PlayerState.snapshot()`/`restore_from()`
+  and `GameState.snapshot()`/`restore()` deep-copy every mutable field (all 4 players' resources/VP/rapport/
+  card zones/action economy, `current_player_index`, `round_number`, `_faction_leaders`, `space_occupancy`)
+  before an Action executes; undo restores that snapshot wholesale. Chosen over writing an `undo()` per
+  Effect subclass because several effects have cross-player side effects that are easy to get wrong in
+  isolation (the faction-leader VP steal, milestone re-firing on retreat) — restoring a full prior state is
+  correct by construction instead of by careful bookkeeping.
+- **`Effect.is_binding()`** (virtual on the `Effect` base, default `false`) marks effects that reveal
+  information or otherwise shouldn't be undoable under normal rules — e.g. `DrawCard.is_binding() = true`,
+  since undoing a draw after seeing the card would let a player "peek and reroll." Defaults live on the
+  Effect class (not a per-card export), so behavior is consistent everywhere that effect is reused.
+  `GameState._trigger_effects()` (the single chokepoint every effect actually fires through — Place's
+  free/pending effects, Reveal, MinionReveal, and faction-track milestones all route through it) ORs
+  `effect.is_binding()` into `_current_action_binding` as effects fire.
+- **`GameState.gentlemans_undo: bool`** (TEMP: hardcoded, default `false`, until real Game Setup exists) —
+  when true, even a binding Action can be undone. `GameState.can_undo()` gates on
+  `gentlemans_undo or not last_entry.binding`.
+- **Undo window = current turn only.** `GameState._turn_log_start_index` is reset to `action_log.size()` at
+  the end of `end_turn()`, so `can_undo()` also requires `action_log.size() > _turn_log_start_index` — a
+  player can undo any number of steps back to the start of their own turn, never into a prior turn.
+- **Orchestration lives in `board.gd`**, not `GameState`, since `board.gd` already owns "what counts as one
+  player Action" (it's the thing that calls `execute_place()`/`execute_recall()`/`execute_reveal()`/
+  `execute_minion_reveal()`). Each `_do_*()` handler calls `GameState.begin_undo_span()` (snapshots +
+  resets the binding flag) *before* mutating, then `GameState.commit_action_log(pre_snapshot, action_type,
+  description, params)` once the whole Action is actually finished. For Reveal/MinionReveal/Recall that's
+  immediately after the one `execute_*()` call; for **Place** it's delayed until
+  `PendingActionPrompt` closes (a new `closed` signal, emitted from `close()`), since a Place isn't really
+  "done" until the player has finished triggering (or skipping) whatever pending Agent effects were left
+  over — committing early would miss their binding-ness and leave the snapshot span too short to undo them.
+- **`ActionLogEntry`** (`data/action_log_entry.gd`, RefCounted) is the record: `player_index`,
+  `round_number`, `description` (human-readable, frozen at commit time — not regenerated later, so it stays
+  accurate even if the referenced cards are later trashed), `action_type` (`"place"`/`"recall"`/`"reveal"`/
+  `"minion_reveal"`), `params` (the CardData/SpaceData references needed to redo the Action's effects in game
+  terms — reusing `execute_*()` rather than a separate replay/serialization format, per the multiplayer
+  architecture note below), `binding`, and `snapshot`.
+- **On undo, the entry is discarded entirely** (`GameState.undo_last_action()` pops it, then
+  `restore()`s its snapshot) — not kept as a visible "undone" record. Since undo never reaches past the
+  current turn, an undone Action never left the local client, so per design it's exactly as if it never
+  happened.
+- **`GameState.action_log` is engine/data only this session** — there is no visible in-game log panel yet;
+  building one is a separate follow-up. Log entries are also only meant to become visible to other players
+  once a turn actually ends (End Turn), not live mid-turn — consistent with the eventual async-multiplayer
+  model where a turn is pushed as one finished unit, not a stream of in-progress moves.
+- **Board occupancy moved from Space-node-local state into `GameState.space_occupancy`**
+  (`Dictionary[String space_id, {"player": int, "minions": Array[CardData]}]`, keyed by the occupying Space's
+  `SpaceData.resource_path`) — this was a prerequisite, not optional polish: undoing a Send Minions action
+  needs to know which Space to clear, and that association previously lived only on the `Space` scene node
+  (`_placed_card_datas`), which a GameState snapshot can't see. `Space` is now a pure view: `is_occupied`/
+  `placed_minions()` read `GameState.is_space_occupied()`/`minions_at_space()` directly, and a new
+  `Space.refresh_occupancy()` (called from `board.gd`'s existing `_update_button_states()` hub, same pattern
+  as `Track.refresh()`) syncs the visual meeple to match. This is also the extension point for the
+  future Maker-style Blood-on-a-Space accumulator mentioned in Open Questions below — any such per-Space
+  runtime state must live in `GameState`, not on the `Space` node, precisely so it's automatically covered
+  by the same snapshot/restore.
+- **`AdvanceWildFaction`'s async pick is its own independent Action Log entry.** `AdvanceWildFaction.trigger()`
+  still opens `FactionPicker` and returns immediately (see the 2026-07-26 decision on it) — it doesn't fold
+  into whichever Place (or other Action) queued it. Instead, the picker's completion callback itself calls
+  `begin_undo_span()`/`commit_action_log()` around the actual `advance_faction_track()` calls, producing a
+  separate `"advance_wild_faction"`-type `ActionLogEntry` at the exact moment the pick resolves — undoable
+  on its own, independently of the Action that triggered it. This works cleanly because `FactionPicker`'s
+  modal blocks all other input until resolved, so there's no ordering ambiguity: the log always ends up
+  with the triggering Action's entry first, then the wild-faction pick's entry once the player answers it.
+- **Deferred by explicit scope decision, not forgotten:** redo; a visible Action Log UI panel; actual
+  async-multiplayer transport/replay (the log's shape is meant to make that easier later, but no networking
+  exists yet); resolving the `AdvanceWildFaction` gap above.
+
+### Error Tracking (`globals/error_tracker.gd`)
+A third purpose for the same move-tracking foundation: when something goes wrong, leave behind a file a
+developer can open to see exactly what the game was doing right before, and reload to re-attempt the same
+Action for debugging.
+- **Two files, both continuously overwritten — no history retained**, matching the explicit "we only need
+  to know the state right before the action that caused the error, and the action + subsequent player
+  choices that led to it" scope decision (not a growing log of every past incident):
+  - `user://last_action_trace.json` — a **rolling** record of whichever top-level Action is currently (or
+    was most recently) in flight: the `GameState.snapshot()` from right before it started
+    (`pre_action_snapshot`), what the Action is (`action`: type/description/params), and every subsequent
+    **player choice** made while resolving it (`sub_steps` — currently just `PendingAction` triggers, kind
+    `"pending_trigger"`). Also includes the full `action_log` (every move committed so far) for context.
+  - `user://last_error_report.json` — written only by `ErrorTracker.report_error(message)`. Since a soft
+    error (unlike a true engine crash) doesn't halt execution, this can capture the FULL **live**
+    `GameState.snapshot()` at the moment of the error, plus the same trace fields above, plus `action_log`.
+- **Why a rolling trace at all, not just error-triggered dumps:** GDScript has no way to catch a true
+  engine-level crash (null dereference, array-out-of-bounds, etc.) — execution just halts, no GDScript code
+  runs afterward, so a crash itself can never write anything. `ErrorTracker.start_trace()` (called from
+  `board.gd` right alongside `GameState.begin_undo_span()`, reusing the same pre-action snapshot) and
+  `trace_step()` (called from `GameState.try_trigger_pending()` after each successful trigger, and from
+  `AdvanceWildFaction`'s picker callback as its own independent trace — mirroring its independent Action Log
+  entry, see above) write to disk on every call, so the file on disk is always current. A hard crash simply
+  leaves the last-written version behind.
+- **Resource references aren't JSON-serializable** — `_jsonify()`/`_unjsonify()` recursively walk
+  snapshots/params and replace any `Resource` (CardData, SpaceData, ...) with `{"__res__": resource_path}`
+  on the way out, `load()`-ing it back on the way in. This is the same trick a future multiplayer
+  serialization format would need, though nothing here is wired to networking.
+- **`ErrorTracker.report_error(message)`** is a drop-in replacement for `push_error()`/`push_warning()` at
+  call sites that represent a genuine "something is wrong" condition **during play** (tied to an in-progress
+  action) — wired into `AdvanceWildFaction`/`AdvanceThisFaction`/`AdvanceFactionTrack`'s missing-faction
+  warnings, `TrashSelf`'s bad-source warning, and `GameState.can_afford()`'s unsupported-cost-type and
+  `advance_faction_track()`'s missing-track warnings. **Deliberately NOT** wired into startup/asset-loading
+  warnings (`GameState._load_all_faction_tracks()`, `Card`/`Minion`/`Plan`'s missing-artwork/no-CardData-found
+  warnings, `ActionDisplay`/`CardZoom`'s missing-node warnings) — those aren't tied to a specific player
+  Action, and some fire during `_ready()` before `ErrorTracker` (later in the `[autoload]` order than
+  `GameState`) even exists yet, which would be a null-reference hazard.
+- **`ErrorTracker.replay_trace(path)`** is a callable debug function (no in-game UI) for developers: loads a
+  dump, `GameState.restore()`s it to `pre_action_snapshot`, re-runs the Action itself
+  (`execute_place`/`execute_recall`/`execute_reveal`/`execute_minion_reveal`), then replays every
+  `"pending_trigger"` sub-step in order by rebuilding the pending list and matching each step back to a
+  `PendingAction` by its `source` reference. An `"advance_wild_faction"` trace prints the faction(s) picked
+  instead of auto-replaying, since re-driving `FactionPicker`'s async modal isn't worth scripting for a debug
+  tool — reproduce that step by hand.
+- **Not built:** any UI for browsing/loading a dump in-game (explicit scope decision — "callable debug
+  function only"); any attempt to catch or recover from a hard crash (impossible from GDScript).
+
 ### Availability (`globals/availability.gd`)
 - Implements the selection rule: a Space is available only when at least one Minion AND at least one
   Plan are selected, and the **union of pips across all selected Minions and Plans** satisfies at
@@ -248,7 +372,6 @@ res://
 ## Systems In Progress
 *(Move items here when you start working on them; move to "Completed" when done)*
 
-- [ ] Action economy (2 Actions/round; Place / Hold / Recall per Action) — Place, Reveal, and Recall wired; Hold not yet implemented
 - [ ] Minion standing-roster lifecycle (acquired once, placed/recalled, never auto-discarded/reshuffled)
 - [ ] Plan deck-building lifecycle (drawn, played, discarded, reshuffled, refilled to hand size at round end)
 - [ ] Faction pip category on `CardData` + swappable per-game Faction pool tied to which Spaces are on the board
@@ -277,10 +400,122 @@ res://
 - [ ] Multiplayer rollout (staged): **single-player → local hot-seat → async multiplayer** (each
       player "ends turn," the next player picks up and sees prior moves, moves are posted to a central
       server). Architecture recommendation: build the turn/action-resolution logic as a `GameState`
-      data layer + serializable `Action` objects (Place/Hold/Recall/Reveal/Acquire) that don't depend on
+      data layer + serializable `Action` objects (Place/Recall/Reveal/MinionReveal/Acquire) that don't depend on
       Godot nodes — UI (Card/Space, `Availability`) should call into this layer rather than being the
       source of truth. This makes hot-seat (swap active player index) and later async play (replay a
-      logged sequence of Actions) straightforward instead of a rewrite.
+      logged sequence of Actions) straightforward instead of a rewrite. **Foundation now exists** — see
+      [[move-tracking-undo]]: `GameState.action_log`/`ActionLogEntry` records one entry per committed
+      top-level Action with the params needed to replay it — but no networking/transport/replay-on-another-
+      client code exists yet.
+- [ ] Move Tracking / Undo — **engine complete at the whole-Action granularity** (see
+      [[move-tracking-undo]] and Completed Systems): full-state snapshot/restore, per-turn undo
+      window, `Effect.is_binding()`, `gentlemans_undo` override, the `UndoIcon` button, and
+      `AdvanceWildFaction`'s async pick logging itself independently all work. **Remaining:** a
+      visible Action Log UI panel (players scrolling past moves), redo, and the real Game Setup
+      toggle for `gentlemans_undo` (currently a TEMP hardcoded `false`).
+- [ ] **Undo, second granularity: step back one choice at a time *during* an action's resolution**
+      (not just revert the whole thing once committed). Confirmed use case: this is async
+      hot-seat play with friends — a player can take as long as they like resolving their turn, so
+      "undo my last pick, try something else, undo that too, keep going, then finish" needs to
+      work smoothly while they're still mid-decision, not just as an all-or-nothing abort.
+      - **Mechanism:** `begin_undo_span()` currently takes exactly ONE `snapshot()` before an
+        Action starts; `commit_action_log()` is the only thing that consumes it. This needs a
+        **stack** of snapshots instead — one pushed before each `PendingAction` choice resolves
+        (each `try_trigger_pending()` call, each Reveal-list item triggered or declined, etc.) —
+        so "undo" while still mid-resolution pops and restores the most recent one, walking back
+        one choice at a time, rather than jumping straight to the pre-Action state.
+      - **Scope stays bounded by the existing rules:** once the Action actually commits (via
+        `commit_action_log()`), the per-choice stack is discarded — from that point on, only the
+        existing whole-Action undo (popping `action_log`) applies, same as today. The per-turn
+        window (`_turn_log_start_index`) and `gentlemans_undo`/`Effect.is_binding()` gating are
+        unchanged and apply the same way to each stacked step as they do to a whole Action.
+      - **Not yet implemented** — today's `try_trigger_pending()`/Reveal-list flow has no
+        per-choice snapshot stack at all; a mistake mid-resolution can currently only be abandoned
+        by not committing the Action (if the UI allows backing out entirely) or undone wholesale
+        after the fact, not stepped back choice-by-choice.
+- [ ] Action Log readout spec (`[[action-log-readout]]`) — the visible log panel (above) should show
+      each `ActionLogEntry` as a structured, multi-line block, not the current one-line
+      `description`:
+      ```
+      =------------------------
+      -[PLAYER] sent [MINION(S)] to [SPACE] with [PLAN(S)]
+      -[PLAYER] received [LIST OF RESOURCES]
+      -[PLAYER] spent [X RESOURCES] to [EFFECT]
+      -[PLAYER] declined to [EFFECT]
+      =------------------------
+      ```
+      - **Card references include the card's type/template ID** (its resource filename, e.g.
+        `campaign`, alongside the human `card_name`) — this identifies WHICH CARD, not which
+        physical copy: duplicates of the same card share one `CardData` Resource object today (see
+        `GameState._ready()`'s deck-build loop, `p.plan_draw_pile.append(count.card)` run `copies`
+        times) — there's no per-copy identity to show even if wanted, and nothing here requires
+        adding one.
+      - **Scope: every action type**, not just Place — Recall, Reveal, MinionReveal, and the
+        independent `AdvanceWildFaction` pick entry all get this format, adapted (Recall has no
+        received/spent lines; Reveal/MinionReveal list whichever effects the player triggered).
+      - **Declined pending actions get their own line** (e.g. a Reveal-list item the player chose
+        not to trigger, or a costed Agent effect skipped during Place) — not just a record of what
+        happened, a record of what was offered. (A `try_trigger_pending()` call that fails for lack
+        of resources is NOT a decline — nothing happened, there's nothing to log.)
+      - **Frozen at commit time**, consistent with the existing `description` field's own reasoning
+        (stays accurate even if a referenced card is later trashed/renamed) — likely a new field
+        (e.g. `ActionLogEntry.log_text`) rather than overloading `description`, since `description`
+        is also passed as the short string into `ErrorTracker.start_trace()`/`commit_action_log()`
+        and a multi-line block doesn't belong in those call sites.
+      - **Attribution is per-line, by whichever player's state actually changed** — not always the
+        acting player. A Space's own `agent_effects` get their own line (distinct from a
+        card-triggered line) since the Space, not a card, is the source; a cascading/secondary
+        effect (a Faction Track milestone firing a further `AdvanceFactionTrack`, or the
+        contested-leader mechanic stealing VP from a different player) is logged against
+        **that other player**, e.g. `-[OPPONENT] lost 1 VP (faction leadership contested by
+        [PLAYER])`. The `ActionLogEntry` itself still belongs to the acting player's turn
+        (`player_index` unchanged) — only the readout's per-line attribution varies.
+      - **A multi-Minion/multi-Plan Place stays ONE bundled `ActionLogEntry`/undo unit, with one
+        readout line per card's individual effect** — e.g. two Minions + two Plans sent together
+        produce one header line (all four cards named) followed by one received-resources line per
+        card that actually granted something, not one line per card total.
+      - **Undo now has two granularities, not one** — see the expanded [[move-tracking-undo]] entry
+        below for the in-resolution step-by-step stack this readout's "declined"/"spent" lines need
+        to stay in sync with.
+- [ ] Reveal-phase action list — Plan reveal powers and affordable Minion Reveal powers should
+      both surface as one list of pending Reveal actions (reusing the `PendingAction`/
+      `PendingActionPrompt` pattern already built for Place's Agent effects — see the comment
+      atop `GameState.build_agent_pending_actions()` noting the trio is written generically for
+      exactly this reuse), letting the player choose the order to trigger them in, or decline
+      any of them — **including free Plan powers**, which currently force-fire with no choice.
+      Not yet implemented: `execute_reveal()` currently loops `plan_hand` and calls
+      `_trigger_effects()` on every Plan immediately, in hand order, with no player input;
+      `execute_minion_reveal()` fires on a single immediate call with no pending-list UI either
+      (today's board.gd flow — pick one Minion, press the button, repeat — only incidentally
+      gives order/skip control, and only for Minions, not Plans). Needs a `build_reveal_pending_
+      actions()`-style function that, unlike `resolve_auto_actions()`, does NOT auto-fire
+      free/`effective_auto_execute` items — every Reveal item (Plan or Minion, free or costed)
+      goes into the pending list for the player to trigger or skip.
+- [ ] Per-Minion Reveal Action-token cost **and** per-use repeat limit — two separate per-card
+      knobs, not yet implemented:
+      - **Cost per activation** — `reveal_action_cost: int = 1` (new `CardData` field, separate
+        from the existing resource-based `reveal_cost`/`reveal_cost_amount`). Usually 1; could be 0
+        (free) or 2+.
+      - **Uses per Reveal phase** — a Minion's Reveal power can normally fire **only once per
+        Reveal, even if the player later gains more Action tokens** (default/by-far-most-common:
+        cost 1, max 1 use). A card can override this to a specific higher count (e.g. 2), or to
+        "as many times as affordable" (uncapped — gated purely by having enough Action tokens each
+        time, e.g. a power costing 2 that a player can keep repaying). Needs a new `CardData` field,
+        e.g. `reveal_max_uses: int = 1` with a sentinel (TBD — see Open Questions) for "unlimited."
+      - Not yet implemented: `GameState.execute_minion_reveal()` hardcodes `actions_remaining -= 1`
+        with no cost or use-count check at all; `can_minion_reveal()` only checks
+        `actions_remaining > 0`. Needs per-use-count tracking for the current Reveal phase (reset
+        each time `round_phase` enters `REVEALING`), plus `board.gd`'s MinionRevealButton
+        enable/selection logic. Feeds into the Reveal-phase action list above — "affordable" there
+        means `actions_remaining >= reveal_action_cost` AND uses-this-Reveal < `reveal_max_uses`
+        (or unlimited). Any Action tokens gained mid-Reveal (see the Action tokens as a resource
+        item below) are immediately spendable on other Minions in that same list.
+- [ ] Action tokens as a generic resource — an Action token is just one more resource type (like
+      Money/Blood/Secret/VP), grantable by **any** effect (Agent, Reveal, Acquire, etc.), not a
+      special Reveal-only mechanic. Needs a new `GainResource.GainType.ACTION` case (**appended**,
+      not inserted — the existing enum comment notes ordinals are stored in `.tres` files) wired to
+      `player.actions_remaining += amount`, plus an icon (`assets/icons/resources/action.png`
+      already exists — see `PlayerPanel`'s action-token display).
 - [ ] Spies (core mechanic, not deferred) — design not yet started
 - [ ] Game state & turn management (Action economy / Reveal / Combat / Makers / Round End structure)
 - [ ] Player actions / card play logic
@@ -291,10 +526,29 @@ res://
 - [ ] CHOAM-style contracts module
 - [ ] Dreadnoughts / Tech tiles (Rise of Ix-style)
 - [ ] Sardaukar Commanders-style recruitable unit + skills (Bloodlines-style)
+- [ ] **Permanent upgrades vs. spendable resources — two genuinely different reward categories.**
+      An ordinary "+X Battle Power" (Fight) gain is a common, one-time **spendable resource** —
+      already works today via `GainResource.GainType.FIGHT`, nothing new needed. What's rare is a
+      **permanent upgrade**: a standing modifier that keeps applying every round for the rest of the
+      game, rather than a point-in-time amount the player banks and spends once. Two concrete
+      examples noted 2026-10-20, both meant to live on a rare board Space (Swordmaster-style —
+      uncommon by design): a permanent `actions_per_round` increase (see the resolved
+      Action-count-upgrade Open Question above) and a permanent "+X Battle Power at the end of every
+      Round, forever" bonus (distinct from, and rarer than, the common one-time Fight gain). Both
+      permanent upgrades are mechanically distinct from every existing Effect (`GainResource`,
+      `GainVP`, `DrawCard`, the `AdvanceFactionTrack` family, `TrashSelf`) — those all fire once and
+      change a value at that moment; a permanent upgrade instead needs to be **remembered and
+      re-applied every round** (or just read continuously) for the rest of the game. Will need a new
+      Effect archetype (not just another `GainResource.GainType` case) plus new persistent
+      `PlayerState` fields to hold it. The permanent Battle Power upgrade also has no home yet —
+      there is no Combat/Battle Power system at all today (see "Combat/troop system" in Systems In
+      Progress) — so it can't be built before Combat itself exists. Not yet implemented; no code
+      written.
 
 ---
 
 ## Completed Systems
+- [x] Action economy (2 Actions/round; Place / Recall per Action, no Hold — superseded 2026-07-13) — Place, Recall, Reveal, and the leftover-Action-token-spends-as-Minion-Reveal flow are all wired and working
 - [x] Card data (Resources) — `CardData`, `SpaceData`, `SpaceRequirement`, `GameEnums`
 - [x] Effect system scaffold (`Effect` base + `draw_card`, `gain_resource`)
 - [x] Card visual scenes (card/minion/plan/space + zoom variants)
@@ -339,6 +593,25 @@ res://
 - [x] **Fight/Influence temporary resources + live forecast display** — `GainResource.GainType` gained `INFLUENCE` (alongside the earlier `FIGHT`), banked onto `PlayerState.fight`/`influence` by real Reveal effects exactly like Money/Blood/Secret. New `GameState.forecast_resource_gain(player, gain_type)` sums matching `GainResource` `reveal_effects` across cards currently in hand (a pure read); `board.gd._update_resource_display()` shows `real + forecast` on the new `InfluenceIcon`/`FightIcon` (`board.tscn`'s `Revealcontainer`), which stays correct through the whole Reveal sequence without branching on `round_phase`. Both fields reset to 0 in `_end_round()` since — unlike Money/Blood/Secret — they're temporary: spent once (buying Plans / Combat contribution, neither built yet) then gone.
 - [x] **Space availability/selection now shown via dim vs. bright, not border color** — `Space` border color is exclusively identity/category (faction-tinted or neutral) and never changes with state. `available`/`selected` now drive `modulate` (`_apply_dim()`: dim+transparent when unavailable, full-bright/opaque otherwise — selected is always a subset of available, so it needs no separate bright/dim treatment). Selected additionally gets a glowing halo via `_sb_selected_glow`, a `_sb_base` duplicate with `StyleBoxFlat.shadow_color`/`shadow_size` set (a soft blurred glow respecting the box's corner radius — no shader needed). The old 3-state `space_available.tres`/`space_selected.tres`/`space_unavailable.tres` stylebox-swap system is gone from `space.gd` (files left on disk, unreferenced); `_sb_unavailable` was renamed `_sb_base` to match its new "always-the-border, state-independent" role. `game_pieces/space_zoom.gd` (`SpaceZoom extends Space`) needed matching fixes: it referenced the old `_sb_unavailable`/`_sb_available`/`_sb_selected` field names directly (now `_sb_base`/`_sb_selected_glow`), and it overrides `_apply_dim()` to always force full-bright modulate — the zoom popup (`globals/space_zoom.gd`'s `show_zoom_of()`) only ever copies `space_data` onto the zoomed instance, never `available`/`selected`, so under the new dim-by-default-false system it would otherwise always render dimmed. `_apply_dim()` distinguishes a third tier for occupied Spaces (`_OCCUPIED_MODULATE`, milder than the generic unavailable dim), and `_apply_meeple_modulate()` keeps the meeple itself always fully bright/opaque by dividing its desired tint by the Space's own current `modulate` (child Controls inherit parent `modulate` multiplicatively; `top_level` doesn't exempt that, only transform) — see the 2026-08-05 decision row.
 - [x] **Non-Faction Space border coloring by action pip** — `Space._derive_border_color()` falls back to `_derive_action_color()` whenever `_derive_faction_color()` finds no track (i.e. the Space isn't affiliated with any Faction): collects the distinct `action` values across all of `space_data.requirement_clauses`, and colors the border Green (Negotiate) / Yellow (Hunt) / Blue (Fight) only if every clause that specifies an action agrees on the same one — 0 or conflicting action requirements leave the border white. Negotiate/Fight reuse the same green/blue as the Primori/Vorace track colors (a Space is never both track-affiliated and action-colored, so no ambiguity); Hunt gets a new gold/yellow since no track uses that hue. Applies to `vampire_ministry` (green, single Negotiate clause), `goth_club` (yellow, two clauses both requiring Hunt), and `crossroads_covenant` (white, no action requirement) — the only three Spaces with no Faction affiliation today.
+- [x] **Move Tracking engine: snapshot/restore Undo + Action Log** (see [[move-tracking-undo]] for full design) —
+  `PlayerState.snapshot()`/`restore_from()` + `GameState.snapshot()`/`restore()` deep-copy the entire game
+  state; `GameState.begin_undo_span()`/`commit_action_log()` (called from `board.gd`'s `_do_place()`/
+  `_do_reveal()`/`_do_minion_reveal()`/`_do_accept_recall()`) bracket each top-level Action into one
+  `ActionLogEntry` on `GameState.action_log`. `Effect.is_binding()` (default `false`, `true` on `DrawCard`)
+  plus `GameState.gentlemans_undo` (TEMP hardcoded `false`) gate `can_undo()`; `_turn_log_start_index` scopes
+  undo to the current turn only. `board.gd`'s `UndoIcon` (long-press, dimmed via `modulate` when
+  `can_undo()` is false) calls `undo_last_action()`. Prerequisite refactor: board occupancy moved from
+  `Space`-node-local state into `GameState.space_occupancy`, with `Space` now a pure view
+  (`refresh_occupancy()`, driven from the same `_update_button_states()` hub as every other widget).
+- [x] **Error Tracking** (see [[error-tracking]]) — `globals/error_tracker.gd` (`ErrorTracker` autoload,
+  registered after `GameState`). `start_trace()`/`trace_step()` continuously overwrite
+  `user://last_action_trace.json` (pre-action snapshot + the Action + every subsequent `PendingAction`
+  trigger) so a hard crash (which GDScript can't catch) still leaves behind "what was happening right
+  before." `report_error()` (drop-in for `push_error`/`push_warning` at genuine in-play-error call sites)
+  additionally writes `user://last_error_report.json` with the full live state + the same trace +
+  `action_log`. `_jsonify()`/`_unjsonify()` round-trip `Resource` references via `resource_path`.
+  `replay_trace()` restores the dump and re-runs the failed Action + its logged choices — a callable debug
+  function, no in-game UI.
 
 ---
 
@@ -479,6 +752,38 @@ res://
 | 2026-08-05 | `TrackSpaces`'s 3 Space slots fill bottom-up: `low_space`→bottom (`Space3`), `high_space`→middle (`Space2`), `third_space`→top (`Space`) — inverted from the VBoxContainer's fixed top-to-bottom child order | Direct request: a single Space should bottom-align, and each added Space should stack on top of the previous one; simplest fix was remapping which physical slot each export writes to in `_apply_space()`, no scene restructuring needed |
 | 2026-08-05 | `track_spaces.tscn`'s inner `VBoxContainer` (holding `Space`/`Space2`/`Space3`) got `alignment = 2` (`ALIGNMENT_END`) | The bottom-up slot remapping alone wasn't enough — a `VBoxContainer` packs its *visible* children from the top by default, so hiding the top slot (`third_space`, unused today) left the two visible Spaces stuck at the top with the leftover gap pushed to the bottom, the opposite of "fill from the bottom up." Bottom-aligning the container fixes it: the gap now sits at the top (where the hidden slot is) instead |
 | 2026-08-05 | Occupied Spaces get a third, distinct dim tier — `_OCCUPIED_MODULATE = Color(0.65, 0.65, 0.65, 0.85)`, milder (less dim, less transparent) than the generic `_DIM_MODULATE` used when unavailable for lack of matching cards/resources. The meeple itself (`_meeple_overlay`) always renders fully bright/opaque regardless of the Space's own modulate, via `_apply_meeple_modulate()`: since a child Control inherits its parent's `modulate` multiplicatively (and `top_level` only exempts *transform* inheritance, not modulate), the fix is dividing the desired tint (white, or green when `recall_selected`) by the Space's current `modulate` so the two cancel out exactly. This replaces the old direct `_meeple_overlay.modulate = _RECALL_SELECTED_MODULATE/...` assignment in the `recall_selected` setter, since that same cancellation now has to happen there too | Direct request: an occupied space is unavailable for a fundamentally different reason than a card/resource mismatch (nothing the player's current selection could fix), so it reads as a lighter dim; the meeple represents real placed Minions and must never look faded just because its Space is in an unavailable-for-other-reasons visual state |
+| 2026-08-09 | Undo operates on **one full top-level Action** (Place/Recall/Reveal/MinionReveal), not a single effect or single state change | Matches the 2-Actions-per-round economy — one Action is one undo-able unit, restoring everything it did (cost, cards moved, effects fired, occupancy) atomically |
+| 2026-08-09 | Undo implemented as **full-state snapshot/restore** (`PlayerState.snapshot()`/`restore_from()`, `GameState.snapshot()`/`restore()`), not a hand-written `undo()` per `Effect` subclass | A correct per-effect inverse is easy to get wrong for effects with cross-player side effects (faction-leader VP steal, milestone re-firing on retreat); restoring a full prior snapshot is correct by construction instead of by careful bookkeeping |
+| 2026-08-09 | Undo window is **the current turn only** — `GameState._turn_log_start_index` resets at the end of `end_turn()`, so `can_undo()` never reaches into a prior turn | Fits the eventual async-multiplayer model, where a finished turn is pushed as one committed unit — nothing before that point should still be reversible locally |
+| 2026-08-09 | `Effect.is_binding()` (virtual, default `false`) marks effects that shouldn't be undoable under normal rules; default lives on the Effect **class**, not a per-card export. `DrawCard.is_binding() = true` | Drawing gives the player new information — undoing after seeing the card would let them "peek and reroll." A class-level default keeps behavior consistent everywhere that effect is reused, rather than needing every card author to remember to set a flag |
+| 2026-08-09 | `GameState.gentlemans_undo: bool` (TEMP hardcoded, default `false`) lets a binding Action be undone anyway when true | Real Game Setup/Configuration doesn't exist yet (see Open Questions) — same TEMP-flag pattern used previously for `actions_per_round`/`goth_club.agent_cost` |
+| 2026-08-09 | When a player undoes an Action, its `ActionLogEntry` is removed entirely — not kept as a visible "undone" record | Undo never reaches past the current turn, so an undone Action never left the local client; per design it's exactly as if it never happened |
+| 2026-08-09 | The Action Log is engine/data only this session — no visible UI panel; entries are also meant to become visible to other players only after End Turn, not live mid-turn | Scope discipline: build the foundation now, defer the UI and the "who sees what, when" multiplayer-visibility question until it's actually needed |
+| 2026-08-09 | Board occupancy (which Minions sit on which Space) moved from `Space`-node-local state (`_placed_card_datas`) into `GameState.space_occupancy` (`Dictionary[String space_id, {"player": int, "minions": Array[CardData]}]`, keyed by the Space's `SpaceData.resource_path`); `Space` is now a pure view (`refresh_occupancy()`) | Required for Undo to correctly restore "which Space has a Minion on it" (a GameState snapshot can't see node-local state) — also closes a gap already flagged for the async-multiplayer goal, and is the extension point the future Maker-style Blood-on-a-Space accumulator should use |
+| 2026-08-09 | Redo, a visible Action Log UI panel, and actual multiplayer transport/replay are explicitly deferred, not forgotten | Wasn't requested; building them now would be speculative ahead of the real Game Setup and multiplayer work these depend on |
+| 2026-08-09 | `AdvanceWildFaction`'s `FactionPicker` pick logs and undoes itself as its own independent `ActionLogEntry`, created inside the picker's completion callback (`begin_undo_span()`/`commit_action_log()` wrap the actual `advance_faction_track()` calls there), rather than trying to fold it into whichever Action originally queued the effect | Initially flagged as an unsolved gap, then fixed same-session on direct question: the pick doesn't need to share its triggering Action's span at all — it's a state mutation that happens at a specific moment (when the player answers the picker) and can just be logged/undone at that moment, independently. `FactionPicker`'s modal blocking all other input during the pick means there's no ordering ambiguity to worry about |
+| 2026-08-09 | Error Tracking is a third purpose for the move-tracking foundation (alongside Undo and the async-multiplayer groundwork): `ErrorTracker.start_trace()`/`trace_step()` continuously write a rolling `user://last_action_trace.json` (pre-action snapshot + the Action + subsequent player choices), not just an error-triggered dump | GDScript cannot catch a true engine crash — execution halts with no chance for any code to run afterward, so only a continuously-updated file (written *before* the risky work, not *because* it failed) can still capture "what was happening right before" a hard crash. An error-only dump would only ever cover soft `push_error`/`push_warning` cases |
+| 2026-08-09 | Only two files exist, both continuously overwritten (`last_action_trace.json`, `last_error_report.json`) — no rolling history of past incidents is kept | Direct scope decision: "we only need to know the state right before the action that caused the error, and the action + subsequent player choices that resulted in it" — not a growing incident log |
+| 2026-08-09 | `ErrorTracker.report_error()` is wired into gameplay-logic warnings tied to an in-progress player Action (`AdvanceWildFaction`/`AdvanceThisFaction`/`AdvanceFactionTrack`'s missing-faction checks, `TrashSelf`'s bad-source check, `can_afford()`'s unsupported-cost-type check, `advance_faction_track()`'s missing-track check) but deliberately NOT into startup/asset-loading warnings (`_load_all_faction_tracks()`, missing-artwork/no-CardData-found checks in `Card`/`Minion`/`Plan`, missing-node checks in `ActionDisplay`/`CardZoom`) | Those aren't tied to a specific reproducible player Action the way the wired-in ones are, and some fire during `_ready()` — before `ErrorTracker` (later in `project.godot`'s `[autoload]` order than `GameState`) has been created yet, which would be a null-reference crash in the error-reporting path itself |
+| 2026-08-09 | Chose "callable debug function only" for replay (`ErrorTracker.replay_trace()`) over building an in-game UI to browse/load dumps | Matches the stated scope — this is a developer debugging tool invoked from the editor/debugger console while developing, not a player-facing feature |
+| 2026-08-09 | `_jsonify()`/`_unjsonify()` replace any `Resource` (CardData, SpaceData, ...) found anywhere in a snapshot/params Dictionary/Array with `{"__res__": resource_path}` on write, `load()`-ing it back on read, rather than attempting to serialize Resource contents directly | `JSON.stringify()` can't serialize a `Resource` object; since every CardData/SpaceData in this project is a stable `res://`-backed `.tres` file, its `resource_path` is a complete, reloadable reference — no need to serialize the Resource's own fields |
+| 2026-10-20 | Minion Reveal powers have a per-Minion Action-token cost, not a flat 1 — most commonly 1, but a Minion's Reveal power could cost 0 (free) or 2+ Action tokens | Direct clarification: Plans execute Reveal powers by default (free); Minions spend Action tokens to either Place to a Space or activate a Reveal power, and that spend amount is a per-card design knob, not a fixed constant. **Not yet implemented** — see Systems In Progress |
+| 2026-10-20 | Reveal-phase actions (Plan reveal powers + any affordable Minion Reveal powers) are presented together as one list the player orders and may decline items from, rather than Plans force-firing automatically | Direct clarification, resolving the open question above: a 0-cost Minion shouldn't silently auto-fire like a Plan currently does — instead, nothing in Reveal auto-fires; everything (free or costed) is a player-triggered choice, reusing the existing `PendingAction` pattern. **Not yet implemented** — see Systems In Progress |
+| 2026-10-20 | A Minion Reveal power can normally fire only **once per Reveal phase**, even if the player gains more Action tokens later that same Reveal (default: cost 1, max 1 use) — but a card may override this to a specific higher use-count, or to unlimited-while-affordable (e.g. cost 2, repeatable as long as tokens hold out) | Direct clarification: the per-Minion Action-token cost (2026-10-20, above) and a per-Minion repeat limit are two independent knobs, not one. By far the most common case is cost 1 / 1 use, matching the original flat design, but both are per-card overrides now. **Not yet implemented** — see Systems In Progress |
+| 2026-10-20 | An Action token is just another resource type — like Money/Blood/Secret/VP — grantable by any effect, not a special Reveal-only or Minion-only mechanic. A granted token is immediately spendable, e.g. a 0-cost Minion Reveal power granting a token that funds another Minion's Reveal in the same phase | Direct clarification/correction: initially framed this as a Reveal-specific "token-granting Reveal effect" — corrected to the general case, since nothing about gaining an Action token is tied to the Reveal phase specifically. Needs a new `GainResource.GainType` case (appended, not inserted, since existing `.tres` files store ordinals). **Not yet implemented** — see Systems In Progress |
+| 2026-10-20 | The visible Action Log panel (see [[action-log-readout]]) shows each card by its **type/template ID** (resource filename) alongside its display name, not a per-physical-copy ID | Confirmed: the engine has no per-copy identity to show even if wanted — duplicate copies of a card share one `CardData` Resource object in `plan_draw_pile`/`ready_minions` today. A type-level ID is sufficient for reading the log; it doesn't need to (and currently can't) distinguish "which of the 3 Campaigns" |
+| 2026-10-20 | The structured multi-line Action Log readout (header + received/spent/declined lines) applies to **every** `ActionLogEntry` type — Place, Recall, Reveal, MinionReveal, and the independent `AdvanceWildFaction` pick — not just Place | Direct clarification: a single consistent format reads better than Place getting special treatment while other entries stay as plain one-liners |
+| 2026-10-20 | A declined pending action (a Reveal-list item, or a costed Agent effect, the player chose not to trigger) gets its own log line, not just triggered/auto-fired effects | Direct clarification: the log should show the full picture of a turn's choices, not only its state changes — seeing what a player *skipped* matters for review/debugging as much as what they did |
+| 2026-10-20 | The new multi-line Action Log readout text is frozen into the `ActionLogEntry` at commit time (new field, not reusing `description`), same reasoning as the existing `description` field | Direct clarification, matching existing precedent: stays accurate if a referenced card is later trashed/renamed. Kept separate from `description` because that field is also passed as a short string to `ErrorTracker.start_trace()`/`commit_action_log()`, which shouldn't carry a multi-line block |
+| 2026-10-20 | "Spaces" is the confirmed term for board locations (not "Locations") — matches existing `SpaceData`/`Space`/`SpaceContainer`/`TrackSpaces` naming throughout | Direct question/confirmation; no rename needed, naming was already consistent |
+| 2026-10-20 | Action Log readout attribution is per-line, by whichever player's state actually changed, not always the acting player — a Space's own `agent_effects` get their own line separate from card-triggered lines, and a cascading/cross-player effect (e.g. contested-leader VP steal) is logged against the affected player, not the acting one | Direct clarification: the log should accurately reflect WHO was affected by each sub-effect, since multiple sources (cards, the Space itself) and multiple players (acting player, a contested opponent) can all be touched by one Action |
+| 2026-10-20 | A multi-Minion/multi-Plan Place remains ONE bundled `ActionLogEntry` and ONE undo unit, but its readout shows one line per card's individual effect, not one lumped line for the whole set | Direct clarification: bundling (for Undo) and readability (for the log) are separate concerns — bundle for rollback, break out for reading |
+| 2026-10-20 | Undo gets a second granularity: during an action's resolution (still mid-Place/mid-Reveal, not yet committed), the player can step back one choice at a time via a stack of snapshots — not just revert the whole action once committed | Direct clarification driven by actual play pattern: this is async hot-seat with friends, so a player resolving their turn needs to try a few choices, undo one, try others, undo again, and finish — not just an all-or-nothing abort. Bounded by the same rules as whole-Action undo: the stack is discarded once the Action commits, and `gentlemans_undo`/`Effect.is_binding()` gate each stacked step the same way they gate a whole Action. **Not yet implemented** — see Systems In Progress |
+| 2026-10-20 | `reveal_max_uses`'s "unlimited" sentinel is `-1` | Direct decision; matches existing precedent elsewhere in `GameState` (faction-leader tracking already uses `-1` for "none" on an unrelated field) |
+| 2026-10-20 | The Action-count upgrade (2nd/3rd Action per round) comes from a rare board Space (Swordmaster-style) and is a **permanent** `actions_per_round` increase for the rest of the game, not a one-time Action-token grant | Direct clarification: this is a different effect shape from the already-decided generic Action-token-as-resource case — a standing stat increase, not a point-in-time resource gain — needing its own Effect archetype. **Not yet implemented** — see Future Considerations |
+| 2026-10-20 | Corrected: an ordinary "+X Battle Power" gain is common and already works today (the existing `GainResource.GainType.FIGHT` spendable resource) — what's actually rare is a **permanent** version of it, i.e. a standing "+X Battle Power every Round, forever" upgrade, same category as the permanent Action increase above | Direct correction: initially lumped the ordinary Fight gain in with the rare permanent-upgrade category by mistake. The real distinction is permanent upgrade (rare, standing modifier) vs. spendable resource (common, one-time) — not "Battle Power vs. everything else." **Not yet implemented** — see Future Considerations |
+| 2026-10-20 | Cards and Spaces will eventually get visual "juice" (unspecified — animation and/or polish); static/plain art is fine for now | Direct note, explicitly deferred — not blocking current work |
+| 2026-10-20 | Game Setup's configurable-settings list grew by two confirmed entries: specific cards in the pool, and a new "allow duplicate leaders" toggle (ties for Faction Track leadership) | Direct note; the full Game Setup flow (UI, exact bounds) remains undecided — see Open Questions |
 
 ---
 
@@ -506,6 +811,7 @@ res://
 - **A canvas_item shader that re-samples `texture(TEXTURE, UV)` and assigns the result to `COLOR` silently discards the node's `modulate`/`self_modulate` tint.** Godot pre-populates `COLOR` with `texture(TEXTURE, UV) * modulate` before your `fragment()` body runs; overwriting it with a fresh raw texture sample throws that away, so the node stops responding to modulate-based dimming/tinting entirely (while sibling non-shaded nodes, e.g. plain `TextureRect`s, keep dimming normally — a visible split that's the tell). Fix: mutate the pre-populated `COLOR` in place (e.g. `COLOR.a *= mask.a`) instead of reassigning it from a fresh `texture()` call. First hit in `icon_cutout.gdshader`, where `Space`'s dim-when-unavailable `modulate` wasn't reaching the `Icon` scene's shaded base texture (though its unshaded tag children dimmed correctly).
 - **A hand-authored `.tres` file's `Array[ExtResource("id")](...)` literal (a typed array of a custom `class_name` Resource) can carry a Script-identity that doesn't match `Array[MyClass]`/`var x: MyClass` elsewhere in `.gd` code, even after adding the correct `uid=` to the `ext_resource` line and fully restarting the editor.** Symptom: `"Unable to iterate on value of type 'Array[res://path/to/script.gd]' with variable of type 'MyClass'"`, persisting across reloads. First hit with `StartingCardCount`/`default_starting_deck.tres`. Root cause not fully pinned down (adding `uid=` didn't resolve it here, unlike the general pattern); **the fix that actually worked was removing the explicit element type from the consuming side** — change `for x: MyClass in some_array:` to plain `for x in some_array:`, and `var x: MyClass = some_array[i]` to `var x = some_array[i]`, relying on duck-typing (`x.field`) instead of a static type check. The array/property can keep its `Array[MyClass]` declaration for Inspector purposes; it's specifically a *typed loop variable or typed assignment* consuming a `.tres`-literal typed array that trips this. If you hit this again, don't burn time on uid/cache fixes — just drop the type annotation on the consuming side first.
 - **`DirAccess` scans of a `res://` resource folder (`get_files_at()`, `list_dir_begin()`/`get_next()`) return `name.tres.remap` instead of `name.tres` in an exported build**, but the plain unremapped filename in the editor/Play. A naive `filename.ends_with(".tres")` filter silently matches nothing once exported — no error, no warning, just an empty result — so this only reproduces in an actual exported `.exe`/APK, never from the editor. Fix: `filename.trim_suffix(".remap")` before checking the extension, then `load()`/`ResourceLoader.load()` the trimmed (original) path — Godot resolves the remap transparently when loading by the real path. Applies to any future code that lists a `res://` folder at runtime instead of `preload()`ing known paths.
+- **Use `ErrorTracker.report_error(message)` instead of a bare `push_warning()`/`push_error()` for any new check that represents a genuine "something is wrong" condition tied to a specific in-progress player Action** (a malformed effect config, an unresolvable reference, etc. — see [[error-tracking]]). It still calls `push_error()` internally, so console/log output is unchanged; it additionally writes `user://last_error_report.json` with the full live state, the current Action trace, and the Action Log. Don't wire it into startup/asset-loading warnings (anything that can fire during an autoload's own `_ready()`, before `ErrorTracker` — listed after `GameState` in `project.godot`'s `[autoload]` order — exists yet).
 - *(Add: signal naming conventions, node naming, etc.)*
 
 ---
@@ -532,6 +838,18 @@ res://
 - Don't assume Agent effects fire in card-selection order or hand order — the design explicitly requires
   they be resolvable in *any* order the player picks, precisely so a later effect can be funded by an
   earlier one's reward.
+- Don't treat a `Space` scene node as the source of truth for which Minions are on it — that's
+  `GameState.space_occupancy` now (see [[move-tracking-undo]]); `Space` only renders it. Any future
+  per-Space runtime state (e.g. a Maker-style Blood accumulator) must live in `GameState` too, or it
+  won't be covered by Undo's snapshot/restore.
+- Don't assume Undo can reach past the current turn, or that a new `Effect` subclass is binding by
+  default — both are opt-in (`_turn_log_start_index` scopes the window; `Effect.is_binding()` defaults
+  `false`). Only mark an effect binding if it reveals hidden information or otherwise shouldn't be
+  "peeked and rerolled."
+- Don't fire an `Effect` via anything other than `GameState._trigger_effects()` — it's the one chokepoint
+  that also tracks `is_binding()` for the current Action's undo eligibility. A raw
+  `effect.trigger(self, source)` loop (as `execute_reveal()`/`execute_minion_reveal()` used to do) silently
+  breaks Undo's binding detection for whatever fired that way.
 
 ---
 
@@ -539,14 +857,39 @@ res://
 *(Things not yet decided — Claude should ask before assuming)*
 
 - ~~How will the Plan deck / discard / "In Play" area be represented at runtime?~~ → Decided: `plan_in_play` is an `Array[CardData]` on `PlayerState`; the top card is displayed as a live Plan scene instance inside `InPlayPanel`; long-press opens `CardArrayPopup` to show all in-play plans.
-- What's the exact mechanism for the Action-count upgrade (specific card? board effect? permanent
-  once granted, or per-round?)
+- ~~What should the visible Action Log UI panel look like...~~ → Decided 2026-10-20: a
+  structured, multi-line, per-entry readout — see [[action-log-readout]] in Systems In Progress
+  for the full spec, now fully resolved: Space effects get their own attributed line, a
+  cascading/cross-player effect (e.g. an opponent's contested-leader VP loss) is logged against
+  **whichever player's state actually changed**, not the acting player, and a multi-card Place
+  stays ONE bundled log entry/undo unit with one line per card's individual effect.
+- How should `gentlemans_undo` move from a TEMP hardcoded `GameState` bool into the real Game Setup flow?
+- ~~What's the exact mechanism for the Action-count upgrade...~~ → Decided 2026-10-20: a rare
+  board Space (Dune Imperium's Swordmaster is the reference point) grants a **permanent**
+  `actions_per_round` increase for the rest of the game — not a one-time Action-token top-up (that's
+  the separate, already-decided generic-resource case, see the 2026-10-20 "Action tokens as a
+  resource" entries). This is a genuinely different effect shape: a standing modifier to a baseline
+  stat, not a point-in-time resource grant — see the new Systems In Progress note on "permanent/
+  ongoing modifiers" below; not yet implemented, and no code exists for it yet.
 - What do Minion Reveal powers that add Combat strength look like mechanically — a flat bonus, tied
   to the Space they're placed on, tied to their Faction, etc.?
-- Will cards have animations, or static for now?
+- Will cards have animations, or static for now? Noted 2026-10-20: cards and Spaces will
+  eventually need visual "juice" (not specified further — could mean animation, could mean
+  polish short of animation) — static/plain is fine for now, this is a later pass, not blocking
+  current work.
+- ~~Minion Reveal Action-token cost field: should 0-cost Minions auto-reveal like Plans...~~
+  → Decided 2026-10-20: neither auto-fires. Plans and affordable Minion Reveals both go into
+  one player-ordered, player-skippable pending-action list — see Systems In Progress.
+- ~~What sentinel value marks `reveal_max_uses` as "unlimited"...~~ → Decided 2026-10-20: `-1`.
+  (Precedent: `GameState`'s faction-leader tracking already uses `-1` as a sentinel for "none" on
+  an unrelated field — same convention, no collision, since the two fields never interact.)
 - Beyond Tenebris, which other Factions exist and what are their thematic/mechanical hooks?
 - Exact shape of Faction Tracks: how many milestones, what do non-Tenebris Factions grant at each step?
 - Exact shape of the Game Setup/Configuration flow: what's configurable (VP target, Factions, Spaces,
-  card pool, optional mechanics) vs. fixed, and what's the UI for it?
+  card pool, optional mechanics) vs. fixed, and what's the UI for it? Partial list confirmed
+  2026-10-20 (not final, not implemented): Victory Point target, which Factions are active, specific
+  cards in the pool, the `gentlemans_undo` toggle, and **"allow duplicate leaders"** (a new setting —
+  whether ties for Faction Track leadership are permitted, presumably relevant to the existing
+  contested-leader VP-steal mechanic; exact rule TBD).
 - Victory Point target and end-game trigger (10 VP / empty Conflict-equivalent deck, per Uprising) is
   the default, but both are meant to be configurable per game — what are reasonable min/max bounds?

@@ -416,23 +416,23 @@ size_flags_vertical = 4
 icon = ExtResource("16_8xp3k")
 tags = "0"
 
-[node name="Revealcontainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1240854447]
+[node name="RevealContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1240854447]
 offset_left = 1981.0
 offset_top = 820.0
 offset_right = 2109.0
 offset_bottom = 1080.0
 
-[node name="InfluenceIcon" parent="CanvasLayer/Revealcontainer" unique_id=1342851912 instance=ExtResource("10_dxlds")]
+[node name="InfluenceIcon" parent="CanvasLayer/RevealContainer" unique_id=1342851912 instance=ExtResource("10_dxlds")]
 unique_name_in_owner = true
 layout_mode = 2
 texture = ExtResource("27_f57g8")
 
-[node name="FightIcon" parent="CanvasLayer/Revealcontainer" unique_id=1707475095 instance=ExtResource("10_dxlds")]
+[node name="FightIcon" parent="CanvasLayer/RevealContainer" unique_id=1707475095 instance=ExtResource("10_dxlds")]
 unique_name_in_owner = true
 layout_mode = 2
 texture = ExtResource("28_e48eo")
 
-[node name="UndoIcon" parent="CanvasLayer/Revealcontainer" unique_id=1527985579 instance=ExtResource("10_dxlds")]
+[node name="UndoIcon" parent="CanvasLayer/RevealContainer" unique_id=1527985579 instance=ExtResource("10_dxlds")]
 unique_name_in_owner = true
 layout_mode = 2
 texture = ExtResource("29_e48eo")

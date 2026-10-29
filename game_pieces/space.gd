@@ -68,7 +68,7 @@ const _ACTION_COLOR_HUNT: Color = Color(0.85, 0.7, 0.15, 1)
 const _ACTION_COLOR_FIGHT: Color = Color(0.16078432, 0.32156864, 0.7019608, 1)
 
 var _meeple_overlay: Control = null
-var _placed_card_datas: Array[CardData] = []
+var _last_occupancy_count: int = -1  # cheap change-detection for refresh_occupancy()
 var _meeple_long_press_active: bool = false
 var _long_press_active: bool = false
 
@@ -89,7 +89,7 @@ var recall_selected: bool = false:
 		recall_selection_changed.emit()
 
 var is_occupied: bool:
-	get: return _meeple_overlay != null
+	get: return space_data != null and GameState.is_space_occupied(space_data)
 var _was_selected_on_press: bool = false
 var _last_button_up_ms: int = -1
 const DOUBLE_CLICK_MS: int = 400
@@ -153,13 +153,13 @@ func _load_space() -> void:
 	name_label.text = space_data.space_name
 	_populate_requirements()
 	action_panel.visible = space_data.agent_action
-	ActionDisplay.populate_into(action_container, space_data.agent_effects, space_data.agent_cost, space_data.agent_cost_amount, space_data.agent_requirement, space_data.agent_requirement_amount)
+	ActionDisplay.populate_into(action_container, space_data.agent_effects, space_data.agent_cost, space_data.agent_cost_amount, space_data.agent_requirement, space_data.agent_requirement_amount, space_data)
 	_apply_faction_border()
 
-# A Space "belongs" to whichever faction one of its agent_effects advances (see
-# FactionTrackData.track_color) — not a separate field, since the effect data is
-# already the single source of truth for which faction a Space brings into the game.
-# Spaces with no faction get colored by their required action pip instead (see
+# A Space "belongs" to whichever faction its own SpaceData.faction_name names (read by
+# FactionTrackData.track_color for the actual color) — the single source of truth for a
+# Space's faction identity, also used by AdvanceThisFaction to know which track to
+# advance. Spaces with no faction get colored by their required action pip instead (see
 # _derive_action_color()) — Negotiate/Hunt/Fight each get a color, and a Space needing
 # zero or more than one distinct action across its clauses stays white. Border color is
 # purely identity/category either way — it no longer changes with available/selected
@@ -203,11 +203,11 @@ func _rebuild_selected_glow() -> void:
 	_sb_selected_glow.shadow_offset = Vector2.ZERO
 
 func _derive_faction_color() -> Variant:
-	for effect: Effect in space_data.agent_effects:
-		if effect is AdvanceFactionTrack:
-			var track: FactionTrackData = GameState.faction_tracks.get((effect as AdvanceFactionTrack).faction_name, null)
-			if track != null:
-				return track.track_color
+	if space_data.faction_name.is_empty():
+		return null
+	var track: FactionTrackData = GameState.faction_tracks.get(space_data.faction_name, null)
+	if track != null:
+		return track.track_color
 	return null
 
 func _load_image() -> void:
@@ -316,10 +316,6 @@ func add_minion_meeple(card_datas: Array) -> void:
 	if _meeple_overlay:
 		_meeple_overlay.queue_free()
 
-	_placed_card_datas.clear()
-	for d in card_datas:
-		_placed_card_datas.append(d)
-
 	_meeple_overlay = Control.new()
 	_meeple_overlay.size = Vector2(75.0, 50.0)
 	_meeple_overlay.position = Vector2(-18.0, -25.0)
@@ -351,12 +347,28 @@ func clear_meeple() -> void:
 	if _meeple_overlay:
 		_meeple_overlay.queue_free()
 		_meeple_overlay = null
-	_placed_card_datas.clear()
+	_last_occupancy_count = -1
 	recall_selected = false
 	_apply_dim()
 
 func placed_minions() -> Array[CardData]:
-	return _placed_card_datas.duplicate()
+	return GameState.minions_at_space(space_data)
+
+# Syncs the visual meeple to GameState.space_occupancy (the canonical data) — called
+# externally from board.gd's central state_changed-driven refresh hub, same pattern as
+# Track.refresh(). _last_occupancy_count is a cheap change-detector so a state_changed
+# tick unrelated to this Space (e.g. another player's Reveal) doesn't needlessly
+# rebuild an unchanged meeple.
+func refresh_occupancy() -> void:
+	if space_data == null:
+		return
+	if GameState.is_space_occupied(space_data):
+		var current: Array[CardData] = GameState.minions_at_space(space_data)
+		if _meeple_overlay == null or current.size() != _last_occupancy_count:
+			add_minion_meeple(current)
+			_last_occupancy_count = current.size()
+	elif _meeple_overlay != null:
+		clear_meeple()
 
 func _on_meeple_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton):
@@ -377,4 +389,4 @@ func _on_meeple_long_press_timeout() -> void:
 	if _meeple_long_press_active:
 		_meeple_long_press_active = false
 		var title: String = "Minions at %s" % (space_data.space_name if space_data else "Space")
-		CardArrayPopup.show_cards(_placed_card_datas, title)
+		CardArrayPopup.show_cards(GameState.minions_at_space(space_data), title)

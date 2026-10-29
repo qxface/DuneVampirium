@@ -22,6 +22,19 @@ var space_name: String = "New Space":
 		return with_spaces.capitalize()
 
 # ==============================================================================
+# IDENTITY
+# ------------------------------------------------------------------------------
+# Which faction (if any) this Space belongs to — must match a key in
+# GameState.faction_tracks (e.g. "primori", "volupta", "vorace"). Empty = not
+# affiliated with any faction. This is the single source of truth for a Space's
+# faction identity: read by Space._derive_faction_color() for border coloring, and by
+# AdvanceThisFaction to know which track to advance without repeating the name in the
+# effect itself.
+# ==============================================================================
+@export_group("Identity")
+@export var faction_name: String = ""
+
+# ==============================================================================
 # REQUIREMENTS
 # ------------------------------------------------------------------------------
 # A Space has zero or more SpaceRequirement clauses. Each clause is an AND of

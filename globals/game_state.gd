@@ -37,6 +37,14 @@ var round_number: int = 1
 
 var _action_taken_this_turn: bool = false
 
+# --- Board occupancy (canonical — Space scene nodes are a pure view of this) ---
+# Keyed by the occupying Space's SpaceData resource_path (a stable, unique id since
+# each Space instance references exactly one .tres). Centralizing this here — instead
+# of the node-local state Space.gd used to own — is what lets a GameState snapshot
+# capture "which Space has a Minion on it" for Undo, and is the extension point any
+# future per-Space accumulator (e.g. a Maker-style Blood pool) should hang off of.
+var space_occupancy: Dictionary = {}  # String space_id -> {"player": int, "minions": Array[CardData]}
+
 func _ready() -> void:
 	_load_all_faction_tracks()
 	for i in PLAYER_COUNT:
@@ -92,6 +100,20 @@ func current_player() -> PlayerState:
 func get_current_player() -> PlayerState:
 	return players[current_player_index]
 
+# --- Board occupancy queries ---
+
+func space_id(space_data: SpaceData) -> String:
+	return space_data.resource_path if space_data != null else ""
+
+func is_space_occupied(space_data: SpaceData) -> bool:
+	return space_occupancy.has(space_id(space_data))
+
+func minions_at_space(space_data: SpaceData) -> Array[CardData]:
+	var entry: Dictionary = space_occupancy.get(space_id(space_data), {})
+	var minions: Array[CardData] = []
+	minions.assign(entry.get("minions", []))
+	return minions
+
 # --- Query ---
 
 func can_place() -> bool:
@@ -130,6 +152,9 @@ func execute_place(minion_datas: Array, plan_datas: Array, space_data: SpaceData
 		p.plan_hand.erase(d)
 		p.plan_in_play.append(d)
 	_spend(p, total_agent_cost(minion_datas, plan_datas, space_data))
+	var placed: Array[CardData] = []
+	placed.assign(minion_datas)
+	space_occupancy[space_id(space_data)] = {"player": current_player_index, "minions": placed}
 	_action_taken_this_turn = true
 	state_changed.emit()
 	# Agent-effect resolution (auto-fire free effects, queue costed/manual ones for the
@@ -197,7 +222,11 @@ func can_afford(player: PlayerState, costs: Dictionary) -> bool:
 				if player.secrets < amount:
 					return false
 			_:
-				push_warning("Unsupported cost type in can_afford: %s" % GameEnums.CostType.keys()[cost_type])
+				# NOTE: can_afford() is called from Availability's per-frame-ish selectability
+				# checks, so this can fire very frequently if it ever does — report_error()
+				# just overwrites the single error file each time (see globals/error_tracker.gd),
+				# so repeated firing isn't a growing-file problem, just some wasted I/O.
+				ErrorTracker.report_error("Unsupported cost type in can_afford: %s" % GameEnums.CostType.keys()[cost_type])
 				return false
 	return true
 
@@ -278,12 +307,17 @@ func try_trigger_pending(item: PendingAction) -> bool:
 			return false
 		_spend(p, {item.cost_type: item.cost_amount})
 	_trigger_effects(item.effects, item.source)
+	# Record this as a subsequent player choice on the current Action's error trace —
+	# see globals/error_tracker.gd. Not part of Undo/Action Log; purely for crash forensics.
+	ErrorTracker.trace_step("pending_trigger", "%s — %s" % [item.source_name(), item.action_name], {"source": item.source})
 	state_changed.emit()
 	return true
 
 func _trigger_effects(effects: Array, source: Resource) -> void:
 	for effect: Effect in effects:
 		effect.trigger(self, source)
+		if effect.is_binding():
+			_current_action_binding = true
 
 func execute_reveal() -> void:
 	var p := current_player()
@@ -293,20 +327,18 @@ func execute_reveal() -> void:
 	p.plan_hand.clear()
 	# Now trigger reveal effects in hand order.
 	for d: CardData in hand_plans:
-		for effect: Effect in d.reveal_effects:
-			effect.trigger(self, d)
+		_trigger_effects(d.reveal_effects, d)
 	p.round_phase = PlayerState.RoundPhase.REVEALING
 	_action_taken_this_turn = true
 	state_changed.emit()
 
 func execute_minion_reveal(minion_data: CardData) -> void:
 	var p := current_player()
-	for effect: Effect in minion_data.reveal_effects:
-		effect.trigger(self, minion_data)
+	_trigger_effects(minion_data.reveal_effects, minion_data)
 	p.actions_remaining -= 1
 	state_changed.emit()
 
-func execute_recall(minion_datas: Array) -> void:
+func execute_recall(minion_datas: Array, space_datas: Array = []) -> void:
 	var p := current_player()
 	p.actions_remaining -= 1
 	for d: CardData in minion_datas:
@@ -316,6 +348,8 @@ func execute_recall(minion_datas: Array) -> void:
 		if p.placed_minions.has(d):
 			p.placed_minions.erase(d)
 			p.ready_minions.append(d)
+	for sd: SpaceData in space_datas:
+		space_occupancy.erase(space_id(sd))
 	_action_taken_this_turn = true
 	state_changed.emit()
 
@@ -333,11 +367,106 @@ func trash_card(player: PlayerState, card_data: CardData) -> void:
 	player.plan_discard.erase(card_data)
 	state_changed.emit()
 
+# --- Undo / Action Log ---
+#
+# Every top-level player Action (Place/Recall/Reveal/MinionReveal) is bracketed by the
+# orchestrator (board.gd) with begin_undo_span()/commit_action_log(), producing one
+# ActionLogEntry carrying both a full pre-action GameState snapshot (for Undo) and a
+# human-readable description + replay params (params reuse the same CardData/SpaceData
+# references a future multiplayer sync would ship, rather than a separate serialization
+# format). Undo is snapshot/restore, not per-Effect inverse logic — see
+# Effect.is_binding() for why a handful of effects (e.g. drawing a card) still refuse
+# to be undone unless gentlemans_undo is on.
+#
+# Known gap: AdvanceWildFaction's effect opens FactionPicker and returns immediately
+# (see advance_wild_faction.gd) — the player's eventual pick(s) apply outside the
+# begin_undo_span()/commit_action_log() bracket of whichever action queued them, so a
+# Wild-faction pick made from a Place action is not currently covered by that action's
+# Undo/Action Log entry. Not solved here — flagging for whoever wires the picker into
+# this system properly.
+var action_log: Array[ActionLogEntry] = []
+var gentlemans_undo: bool = false  # TEMP: hardcoded game-setup toggle until real Game Setup exists.
+
+var _current_action_binding: bool = false
+var _turn_log_start_index: int = 0
+
+# Full-state snapshot: every player's mutable fields (PlayerState.snapshot()) plus the
+# GameState-level globals a single Action can touch — including faction leaders (an
+# Agent effect can steal another player's leader VP) and board occupancy. Arrays/
+# Dictionaries are duplicated so later mutation never leaks back into a stored snapshot.
+func snapshot() -> Dictionary:
+	var player_snaps: Array = []
+	for p: PlayerState in players:
+		player_snaps.append(p.snapshot())
+	var occupancy: Dictionary = {}
+	for key in space_occupancy:
+		var entry: Dictionary = space_occupancy[key]
+		var minions: Array[CardData] = []
+		minions.assign(entry.get("minions", []))
+		occupancy[key] = {"player": entry.get("player", -1), "minions": minions}
+	return {
+		"players": player_snaps,
+		"current_player_index": current_player_index,
+		"round_number": round_number,
+		"action_taken_this_turn": _action_taken_this_turn,
+		"faction_leaders": _faction_leaders.duplicate(),
+		"space_occupancy": occupancy,
+	}
+
+func restore(snap: Dictionary) -> void:
+	var player_snaps: Array = snap["players"]
+	for i in players.size():
+		players[i].restore_from(player_snaps[i])
+	current_player_index = snap["current_player_index"]
+	round_number = snap["round_number"]
+	_action_taken_this_turn = snap["action_taken_this_turn"]
+	_faction_leaders = (snap["faction_leaders"] as Dictionary).duplicate()
+	space_occupancy = (snap["space_occupancy"] as Dictionary).duplicate(true)
+	state_changed.emit()
+
+# Call immediately before executing any top-level player Action; pass the returned
+# snapshot to commit_action_log() once the whole Action — including any player-ordered
+# PendingAction triggers that follow it — has finished.
+func begin_undo_span() -> Dictionary:
+	_current_action_binding = false
+	return snapshot()
+
+func commit_action_log(pre_snapshot: Dictionary, action_type: String, description: String, params: Dictionary) -> void:
+	var entry := ActionLogEntry.new()
+	entry.player_index = current_player_index
+	entry.round_number = round_number
+	entry.description = description
+	entry.action_type = action_type
+	entry.params = params
+	entry.binding = _current_action_binding
+	entry.snapshot = pre_snapshot
+	action_log.append(entry)
+	_current_action_binding = false
+
+# Undo is scoped to the current player's current turn (see _turn_log_start_index,
+# reset in end_turn()) and blocked on a binding action unless gentlemans_undo is on.
+func can_undo() -> bool:
+	if action_log.size() <= _turn_log_start_index:
+		return false
+	var last: ActionLogEntry = action_log[action_log.size() - 1]
+	return gentlemans_undo or not last.binding
+
+# Pops and reverses the most recent action, restoring the exact pre-action snapshot.
+# The entry is discarded entirely (not kept as an "undone" record) — per design, an
+# undone action never left this local client, so it's as if it never happened.
+func undo_last_action() -> bool:
+	if not can_undo():
+		return false
+	var entry: ActionLogEntry = action_log.pop_back()
+	restore(entry.snapshot)
+	return true
+
 func end_turn() -> void:
 	if current_player().round_phase == PlayerState.RoundPhase.REVEALING:
 		current_player().round_phase = PlayerState.RoundPhase.DONE
 	_action_taken_this_turn = false
 	_advance_player()
+	_turn_log_start_index = action_log.size()
 
 # --- Internal ---
 
@@ -419,7 +548,7 @@ func draw_plans(p: PlayerState, count: int) -> void:
 func advance_faction_track(player: PlayerState, faction_name: String, amount: int = 1) -> void:
 	var track: FactionTrackData = faction_tracks.get(faction_name, null)
 	if track == null:
-		push_warning("advance_faction_track: no track registered for '%s'" % faction_name)
+		ErrorTracker.report_error("advance_faction_track: no track registered for '%s'" % faction_name)
 		return
 	var old_pos: int = player.rapport.get(faction_name, 0)
 	var new_pos: int = clampi(old_pos + amount, 0, track.max_position)

@@ -2,14 +2,17 @@ class_name ActionDisplay
 
 # Populates the IconContainer (inside IconMargin) of `panel` with action icons.
 # Order: [req type icon] [requirement.png]  [cost type icon] [cost.png]  [effect icon] ...
-static func populate(panel: Panel, effects: Array, cost_type: int, cost_amount: int, req_type: int, req_amount: int) -> void:
+# source is the owning CardData/SpaceData, forwarded to each effect's get_icon()/
+# get_tags() — most effects ignore it, but some (e.g. AdvanceThisFaction) need to know
+# their owner to render correctly before they've ever triggered.
+static func populate(panel: Panel, effects: Array, cost_type: int, cost_amount: int, req_type: int, req_amount: int, source: Resource = null) -> void:
 	var hbox := panel.get_node_or_null("IconMargin/IconContainer") as HBoxContainer
 	if hbox == null:
 		push_warning("ActionDisplay: no IconMargin/IconContainer found in %s" % panel.name)
 		return
-	populate_into(hbox, effects, cost_type, cost_amount, req_type, req_amount)
+	populate_into(hbox, effects, cost_type, cost_amount, req_type, req_amount, source)
 
-static func populate_into(hbox: HBoxContainer, effects: Array, cost_type: int, cost_amount: int, req_type: int, req_amount: int) -> void:
+static func populate_into(hbox: HBoxContainer, effects: Array, cost_type: int, cost_amount: int, req_type: int, req_amount: int, source: Resource = null) -> void:
 	for child in hbox.get_children():
 		child.free()
 
@@ -26,9 +29,9 @@ static func populate_into(hbox: HBoxContainer, effects: Array, cost_type: int, c
 
 	for effect in effects:
 		if effect != null:
-			var tex: Texture2D = effect.get_icon()
+			var tex: Texture2D = effect.get_icon(source)
 			if tex != null:
-				add_effect_icon(hbox, tex, effect.get_tags())
+				add_effect_icon(hbox, tex, effect.get_tags(source))
 
 static func amount_tag(amount: int) -> String:
 	return "" if amount <= 0 else str(clampi(amount, 0, 99))
