@@ -18,10 +18,44 @@ and cards. This file gives Claude persistent context across sessions. Update it 
 
 ---
 
+## Core Design Constraint: No Non-Active-Player Actions
+
+**Confirmed 2026-10-29, load-bearing for every future mechanic.** This game is played **async,
+hot-seat, over days** (a human table of 2-3 players, usually 2, filled out to 4 total with
+deterministic bot players — see "Players: Humans & Bots" below). That means:
+
+- **No action may ever require a response, choice, or input from a non-active player** (human or
+  bot) at the moment it happens. A turn — human or bot — must run start-to-finish, fully
+  self-contained, with zero outside input, then End Turn. "Wait for an opponent to respond" is
+  banned categorically: there is no one there to respond to in an async game spanning days.
+- **This does NOT ban one-sided negative player interaction.** A card/effect that unilaterally
+  trashes, steals from, or otherwise hurts another player's state is fine — it requires no choice
+  or action from that player, only from the active player triggering it. The rule bans the
+  *interrupt-and-wait* pattern specifically, not opponent-targeting in general.
+- Every mechanic built so far already complies (the Reveal-phase pending-action list, the Undo
+  resolution stack, `FactionPicker`'s async pick — all resolved entirely by the active player, never
+  waiting on anyone else) — this section makes that constraint explicit so it's never violated by
+  accident in future design (Spies, Combat, Heroes, etc. all need to be checked against it).
+
+---
+
 ## Tech Stack
 - **Engine:** Godot 4.x
 - **Language:** GDScript
 - **Platform target:** [e.g., PC / Windows / Mac — fill in]
+
+---
+
+## Players: Humans & Bots
+
+**Confirmed 2026-10-29.** The real target table is **2-3 human players, usually 2**, filled out to
+a total of **4 players with deterministic bot players**. Bots are **Automa-style**: no real AI, no
+judgment calls — a fixed procedure/flowchart (e.g. flip a card, follow its instruction literally)
+that resolves completely on its own. A bot's turn has the **same self-contained-turn property** as
+the Core Design Constraint above: it runs and fully resolves the instant it's up, with zero human
+input needed to trigger, watch, or step through it. Not yet designed or implemented — no bot logic,
+bot deck/procedure, or UI exists yet. This is a significant net-new system, not a variant of
+anything already built.
 
 ---
 
@@ -51,8 +85,14 @@ reference only — none of its theme, names, or IP carry over.
    cost (most commonly 1, could be 0 or 2+) gates whether it's currently affordable. **Not
    implemented yet** — see Systems In Progress; spend pooled Money/Blood/Secret/Rapport to acquire
    new cards; set Combat strength.
-4. **Combat** — players may play Combat Intrigue-equivalent cards, then rewards go out by strength
-   (1st/2nd/3rd place).
+4. **Combat** — players may play Combat Intrigue-equivalent cards, then rewards go out by strength.
+   **Resolution type varies round to round**, decided by the revealed Conflict-equivalent card
+   (Round Start, above) — some rounds are a ranked race (1st/2nd/3rd place, Dune Imperium-style),
+   others are territory control (an ongoing contest for a Space/Faction rather than a single
+   round-end comparison). **A single rank's reward can bundle multiple reward types at once**
+   (e.g. Money + VP + a card draw together), especially 1st place — not limited to one resource per
+   rank. Confirmed 2026-10-29; no Combat/Battle Power system exists yet (see Systems In Progress —
+   this is still direction, not implementation).
 5. **Makers** — bonus resource accumulates on unattended resource Spaces.
 6. **Round End** — players draw Plans back up to hand size (Minions are **not** redrawn — see
    below), first-player marker passes, next round begins (or Endgame triggers at target Victory
@@ -69,7 +109,7 @@ reference only — none of its theme, names, or IP carry over.
 | Solari / Spice / Water / Persuasion | Money / Blood / Secret / Rapport (see `GameEnums.CostType`) |
 | Four fixed Factions (Emperor, Spacing Guild, Bene Gesserit, Fremen) | **Many possible Factions** — Primori/Volupta/Vorace (the existing `GameEnums.RequirementType` Clans) are three of these Factions, not a separate system; which Factions are in play in a given game is determined by which Spaces are included on the board (a game could feature 0, 3, 7, or more Factions) |
 | Board Space Agent-icon requirement | Space `requirement_clauses`: OR of AND-clauses over Origin + Action + Aspect (+ future Faction) pips, satisfied by the **union** of pips across an entire selected Minion/Plan set |
-| Spies / observation posts / Infiltrate / Gather Intelligence | **Core mechanic from day one** (not deferred like an expansion) — design TBD |
+| Spies / observation posts / Infiltrate / Gather Intelligence | **Core mechanic from day one** (not deferred like an expansion) — primary direction confirmed 2026-10-29: **infiltration-for-position** (Dune Imperium Uprising's spy-on-an-opponent's-Space model is the reference point), "and maybe other things too" — not locked to one mechanism. Still design TBD; must comply with the Core Design Constraint above (no mechanic requiring the infiltrated player to respond) |
 | Sandworms, Shield Wall | Not yet planned — future consideration |
 | CHOAM contracts module | Not yet planned — future consideration |
 | Dreadnoughts, Tech tiles (Rise of Ix) | Not yet planned — future consideration |
@@ -127,7 +167,29 @@ res://
   carry Faction pips. There will eventually be many possible Factions, and **Primori/Volupta/Vorace
   (the existing Clans in `GameEnums.RequirementType`) are three of them** — Clans are not a separate
   system from Factions. Only a subset of all Factions is in play in any given game, determined by
-  which Spaces are on the board.
+  which Spaces are on the board. **Confirmed 2026-10-29:** the active Factions also gate part of the
+  available Minion pool for that game (and maybe Plans too) — Faction selection isn't just a
+  Space/track filter, it's a card-pool filter as well. **Confirmed 2026-10-29: future Factions should
+  be mechanically distinct from each other** (own hooks/milestone shapes), not just the same
+  track-shape with different flavor — matches Dune Imperium's own asymmetric Faction design.
+- **Minions split into two tiers (confirmed 2026-10-29, not yet authored/implemented):**
+  - **Mooks** — repeatable, generic, nameless-feeling (existing pattern: `primori_newblood`,
+    `volupta_newblood`, `vorace_newblood`, `frightened_human`) — multiple identical copies can exist
+    per the normal per-player roster rules already in place.
+  - **Heroes/Legends** — unique, named, more powerful, more expensive. Often gated by a Faction-track
+    position requirement ("at least X spots up a specific Faction's track") — this reuses the
+    *existing* `acquire_requirement`/`acquire_requirement_amount` (`GameEnums.RequirementType`)
+    fields already on `CardData`, so the gating mechanism itself needs no new engine work, only card
+    authoring.
+  - **Heroes are a shared, single-copy, contested pool across all players** (confirmed 2026-10-29) —
+    not a per-player deck entry. First player to meet the requirement and acquire a given Hero denies
+    it to everyone else, same as Dune Imperium's unique Leader/Intrigue-style scarcity. **This is a
+    real engine gap, not just content**: nothing in the current Acquire system models a shared
+    pool/market that multiple players draw from and compete over — `StartingDeckConfig`'s per-player
+    `copies` model and the existing Acquire action are both built around each player having their own
+    independent cards. Needs a new shared-pool data structure (where do available Heroes live? how is
+    "already taken" tracked/synced across players in an async game?) before any Hero content can work.
+    Not yet designed beyond the scarcity rule itself.
 - Five possible lifecycle actions per card, each independently configurable with cost / requirement / effects:
   **Acquire, Agent, Reveal, Discard, Trash** — mirrors Dune Imperium's Agent-box/Reveal-box split, extended
   with Discard and Trash actions (cf. Uprising's Discard icon and Immortality's Unload concept).
@@ -522,6 +584,11 @@ Action for debugging.
 - [ ] Win/loss conditions (target Victory Points / empty Conflict deck)
 
 ### Future considerations (not yet started, noted for roadmap)
+- [ ] **Card pool scope** (confirmed 2026-10-29): the long-term vision is a huge card library, with
+      a *subset* chosen at Game Setup for any given game (ties into the Game Setup/Configuration
+      Open Question's "card pool" entry). For right now, the goal is a small but *complete* set —
+      enough Mooks/Heroes/Plans across however many Factions are built to reach a genuinely playable
+      state, not a large unfinished pool.
 - [ ] Sandworms / Shield Wall equivalent
 - [ ] CHOAM-style contracts module
 - [ ] Dreadnoughts / Tech tiles (Rise of Ix-style)
@@ -784,6 +851,15 @@ Action for debugging.
 | 2026-10-20 | Corrected: an ordinary "+X Battle Power" gain is common and already works today (the existing `GainResource.GainType.FIGHT` spendable resource) — what's actually rare is a **permanent** version of it, i.e. a standing "+X Battle Power every Round, forever" upgrade, same category as the permanent Action increase above | Direct correction: initially lumped the ordinary Fight gain in with the rare permanent-upgrade category by mistake. The real distinction is permanent upgrade (rare, standing modifier) vs. spendable resource (common, one-time) — not "Battle Power vs. everything else." **Not yet implemented** — see Future Considerations |
 | 2026-10-20 | Cards and Spaces will eventually get visual "juice" (unspecified — animation and/or polish); static/plain art is fine for now | Direct note, explicitly deferred — not blocking current work |
 | 2026-10-20 | Game Setup's configurable-settings list grew by two confirmed entries: specific cards in the pool, and a new "allow duplicate leaders" toggle (ties for Faction Track leadership) | Direct note; the full Game Setup flow (UI, exact bounds) remains undecided — see Open Questions |
+| 2026-10-29 | **Core design constraint, load-bearing**: no action may ever require a response from a non-active player (human or bot) — a turn must run fully self-contained, start to finish, then End Turn. One-sided negative interaction (unilateral sabotage, no response required) is NOT banned by this | Confirmed: this is async hot-seat play over days with friends — there's no one to "wait for a response" from. See the new "Core Design Constraint" section near the top of this file |
+| 2026-10-29 | Real target table: 2-3 human players (usually 2), filled out to 4 total with deterministic, Automa-style bot players — no real AI, fixed procedure, fully automatic, same self-contained-turn property as the constraint above | Confirmed; see the new "Players: Humans & Bots" section. Not yet designed or implemented — a significant net-new system |
+| 2026-10-29 | Combat resolution type varies round to round, decided by the revealed Conflict-equivalent card (ranked race vs. territory control); a single rank's reward can bundle multiple reward types at once, especially 1st place | Confirmed; still direction, not implementation — no Combat/Battle Power system exists yet |
+| 2026-10-29 | Spies' primary direction: infiltration-for-position (Dune Imperium Uprising's spy-on-a-Space model), "maybe other things too" — not locked to one mechanism | Confirmed; must comply with the 2026-10-29 Core Design Constraint (no mechanic requiring the infiltrated player to respond) |
+| 2026-10-29 | Active Factions also gate part of the available Minion pool (and maybe Plans) for a given game, on top of gating Spaces/tracks; future Factions should be mechanically distinct from each other, not same-shape/different-flavor | Confirmed; matches Dune Imperium's own asymmetric Faction design philosophy |
+| 2026-10-29 | Minions split into Mooks (repeatable, generic) vs. Heroes/Legends (unique, named, pricier, often Faction-track-position-gated via the existing `acquire_requirement` fields). Heroes are a shared, single-copy, contested pool across all players, not a per-player deck entry | Confirmed. The Faction-requirement gating needs no new engine work (reuses existing `CardData` fields); the shared-pool scarcity model is a real engine gap — nothing today models a cross-player contested market. Not yet designed beyond the scarcity rule |
+| 2026-10-29 | `takeover.tres` stays a regular Space for now — no special decisive/majority-control weight | Direct confirmation; no change from current implementation |
+| 2026-10-29 | Card pool scope: eventually a huge library with subsets chosen at Game Setup, but the near-term goal is a small, *complete* set across whatever Factions exist, not a large unfinished one | Confirmed; ties into the Game Setup "card pool" Open Question |
+| 2026-10-29 | The long-uncommitted working tree (Move Tracking/Undo, Error Tracking, and every CLAUDE.md update since) was finally committed — `b36513b "Check in after a long hiatus."`, on top of the Aug 9 `0a1f483` commit | Resolves the git-state discrepancy found this session: everything had been `git add`-ed but never actually committed, despite an earlier belief that it had been pushed |
 
 ---
 
