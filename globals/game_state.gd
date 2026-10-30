@@ -282,23 +282,28 @@ func _make_pending_action(source: Resource, action_name: String, cost_type: Game
 	item.effective_auto_execute = effective_auto_execute
 	return item
 
-# Reveal-phase pending list (CLAUDE.md 2026-10-20 decisions): every Plan revealed this
-# phase (_current_reveal_plans, set by execute_reveal()) plus every ready Minion with a
-# Reveal power becomes one PendingAction, player-ordered and player-declinable — UNLIKE
-# build_agent_pending_actions()/resolve_auto_actions(), nothing here ever auto-fires, even
-# a free Plan power. The caller (board.gd) must pass this straight to
-# PendingActionPrompt.show_pending() rather than through resolve_auto_actions() first.
-# Minion items additionally carry an Action-token cost/repeat-limit (reveal_action_cost/
-# reveal_max_uses) on top of the ordinary resource cost every pending item can have —
-# Plans never set these (cost stays 0, max_uses stays 1: fire for free, at most once).
+# Reveal-phase pending list (CLAUDE.md 2026-10-20 decisions, auto-execute corrected
+# 2026-10-30): every Plan revealed this phase (_current_reveal_plans, set by
+# execute_reveal()) plus every ready Minion with a Reveal power becomes one
+# PendingAction, player-ordered and player-declinable. UNLIKE the 2026-10-20 original,
+# this now mirrors build_agent_pending_actions() — the caller (board.gd) is expected to
+# run the result through resolve_auto_actions() before showing whatever's left in
+# PendingActionPrompt: an item with no resource cost, no Requirement, and (for a
+# Minion) no Action-token cost auto-fires immediately with no player input, same as a
+# free Agent effect; anything costed in any of those three ways stays a manual,
+# player-ordered, player-declinable choice. Minion items additionally carry an
+# Action-token cost/repeat-limit (reveal_action_cost/reveal_max_uses) on top of the
+# ordinary resource cost every pending item can have — Plans never set these (cost
+# stays 0, max_uses stays 1: at most one fire, for free, instantly if also uncosted).
 func build_reveal_pending_actions() -> Array[PendingAction]:
 	var items: Array[PendingAction] = []
 	for d: CardData in _current_reveal_plans:
 		if not d.reveal_effects.is_empty():
-			items.append(_make_pending_action(d, "Reveal", d.reveal_cost, d.reveal_cost_amount, d.reveal_effects, false))
+			items.append(_make_pending_action(d, "Reveal", d.reveal_cost, d.reveal_cost_amount, d.reveal_effects, d.reveal_effective_auto_execute))
 	for d: CardData in current_player().ready_minions:
 		if not d.reveal_effects.is_empty():
-			var item := _make_pending_action(d, "Reveal", d.reveal_cost, d.reveal_cost_amount, d.reveal_effects, false)
+			var auto_execute := d.reveal_effective_auto_execute and d.reveal_action_cost == 0
+			var item := _make_pending_action(d, "Reveal", d.reveal_cost, d.reveal_cost_amount, d.reveal_effects, auto_execute)
 			item.action_token_cost = d.reveal_action_cost
 			item.max_uses = d.reveal_max_uses
 			items.append(item)
@@ -473,6 +478,11 @@ func commit_action_log(pre_snapshot: Dictionary, action_type: String, descriptio
 	entry.snapshot = pre_snapshot
 	action_log.append(entry)
 	_current_action_binding = false
+	# Without this, can_undo() flips true the instant this entry is appended, but the
+	# Undo icon (board.gd._update_undo_display(), driven off this signal) wouldn't know
+	# until some unrelated later action happened to emit state_changed — it would sit
+	# dimmed/stale even though Undo was already live. Fixed 2026-10-30; see CLAUDE.md.
+	state_changed.emit()
 
 # Undo is scoped to the current player's current turn (see _turn_log_start_index,
 # reset in end_turn()) and blocked on a binding action unless gentlemans_undo is on.
@@ -545,11 +555,14 @@ func _end_round() -> void:
 # (Minions never change zones on Reveal), so its contribution can be briefly
 # double-counted (once real, once still-forecast) until round end clears both. Narrow
 # and self-correcting; not worth tracking per-Minion "already revealed this round" state
-# for. Related, same-shape edge case: a Plan sitting in plan_in_play that the player
-# hasn't triggered yet from the same pending list briefly UNDER-counts (it already left
-# plan_hand, so the forecast stops counting it, but its effect hasn't fired yet either) —
-# same "narrow and self-correcting" tradeoff, resolves the moment the player triggers it
-# or the round ends.
+# for. Related, same-shape edge case: a COSTED Plan sitting in plan_in_play that the
+# player hasn't triggered yet from the same pending list briefly UNDER-counts (it
+# already left plan_hand, so the forecast stops counting it, but its effect hasn't
+# fired yet either) — same "narrow and self-correcting" tradeoff, resolves the moment
+# the player triggers it or the round ends. A free/uncosted Plan no longer hits this at
+# all as of 2026-10-30: board.gd runs build_reveal_pending_actions() through
+# resolve_auto_actions() before the prompt even opens, so an uncosted Plan's effect has
+# already fired by the time plan_hand empties.
 func forecast_resource_gain(player: PlayerState, gain_type: GainResource.GainType) -> int:
 	var total := 0
 	for d: CardData in player.ready_minions + player.plan_hand:

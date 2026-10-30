@@ -1,9 +1,13 @@
 extends GutTest
 
-# Coverage for the Reveal-phase pending-action list (CLAUDE.md 2026-10-20 decisions):
-# nothing auto-fires during Reveal (not even free Plan powers), Minion Reveal powers
-# gate on a per-card Action-token cost + repeat limit (reveal_max_uses, -1 = unlimited),
-# and an Action token is just another generic resource (GainResource.GainType.ACTION).
+# Coverage for the Reveal-phase pending-action list (CLAUDE.md 2026-10-20 decisions,
+# auto-execute corrected 2026-10-30): an uncosted Plan power, or an uncosted-AND-
+# zero-Action-token-cost Minion power, auto-fires via resolve_auto_actions() with no
+# player input — everything else (any resource cost, Requirement, or Action-token
+# cost) stays a manual, player-ordered, player-declinable pending item. Minion Reveal
+# powers additionally gate on a per-card Action-token cost + repeat limit
+# (reveal_max_uses, -1 = unlimited), and an Action token is just another generic
+# resource (GainResource.GainType.ACTION).
 #
 # These tests drive the real GameState/PendingActionPrompt autoloads directly (not a
 # fresh instance per test) — before_each()/after_each() snapshot and restore player 0's
@@ -64,19 +68,70 @@ func _make_money_minion(amount: int, action_cost: int, max_uses: int) -> CardDat
 
 # --- tests ---------------------------------------------------------------------
 
-func test_plan_reveal_effect_is_pending_not_auto_fired():
+func test_building_the_pending_list_alone_never_fires_effects():
+	# build_reveal_pending_actions() itself is a pure read — effects only fire once the
+	# caller runs the result through resolve_auto_actions() (free items) or
+	# try_trigger_pending() (manual items). This holds even for an uncosted Plan, whose
+	# power WOULD auto-fire once resolve_auto_actions() actually runs — see
+	# test_uncosted_plan_reveal_auto_fires_via_resolve_auto_actions() below.
 	var plan := _make_money_plan(3)
 	_p.plan_hand = [plan]
 
 	GameState.execute_reveal()
-	assert_eq(_p.money, 0, "Plan reveal effects must not fire until triggered")
+	assert_eq(_p.money, 0, "Reveal alone must not fire any Plan's reveal effect")
 	assert_true(_p.plan_in_play.has(plan), "Reveal should still move the Plan to in-play")
 
 	var pending := GameState.build_reveal_pending_actions()
 	assert_eq(pending.size(), 1, "One pending item for the one revealed Plan")
+	assert_eq(_p.money, 0, "Building the list alone must not fire anything either")
 
 	assert_true(GameState.try_trigger_pending(pending[0]))
-	assert_eq(_p.money, 3, "Triggering the pending item should fire its effect")
+	assert_eq(_p.money, 3, "Manually triggering the pending item should fire its effect")
+
+func test_uncosted_plan_reveal_auto_fires_via_resolve_auto_actions():
+	# A Plan with no reveal_cost and no reveal_requirement (the default, see
+	# _make_money_plan()) is effective_auto_execute — board.gd runs the pending list
+	# through resolve_auto_actions() before ever showing a prompt, so it fires with no
+	# player input (corrected 2026-10-30; see CLAUDE.md Key Decisions Log).
+	var plan := _make_money_plan(3)
+	_p.plan_hand = [plan]
+
+	GameState.execute_reveal()
+	var pending := GameState.build_reveal_pending_actions()
+	pending = GameState.resolve_auto_actions(pending)
+
+	assert_eq(_p.money, 3, "Uncosted Plan power should have fired automatically")
+	assert_true(pending.is_empty(), "Nothing manual left for the player to trigger")
+
+func test_zero_action_cost_minion_reveal_auto_fires_via_resolve_auto_actions():
+	# A Minion whose reveal power costs 0 Action tokens and has no resource cost or
+	# Requirement also auto-fires — e.g. a Minion that just hands out a free Action
+	# token for another Minion to spend (see CLAUDE.md 2026-10-20 decisions).
+	var minion := _make_money_minion(2, 0, 1)  # 0 Action-token cost, usable once
+	_p.ready_minions = [minion]
+
+	GameState.execute_reveal()
+	var pending := GameState.build_reveal_pending_actions()
+	pending = GameState.resolve_auto_actions(pending)
+
+	assert_eq(_p.money, 2, "Zero-Action-cost Minion power should have fired automatically")
+	assert_true(pending.is_empty(), "Nothing manual left for the player to trigger")
+
+func test_costed_minion_reveal_power_stays_manual_through_resolve_auto_actions():
+	# A positive Action-token cost always keeps the item manual/pending, even though
+	# resolve_auto_actions() runs on the whole list — spending a token is a real choice.
+	var minion := _make_money_minion(5, 1, 1)  # costs 1 Action token
+	_p.ready_minions = [minion]
+	_p.actions_remaining = 5
+
+	GameState.execute_reveal()
+	var pending := GameState.build_reveal_pending_actions()
+	pending = GameState.resolve_auto_actions(pending)
+
+	assert_eq(_p.money, 0, "Costed Minion power must not auto-fire")
+	assert_eq(pending.size(), 1, "It should stay in the manual pending list")
+	assert_true(GameState.try_trigger_pending(pending[0]))
+	assert_eq(_p.money, 5)
 
 func test_minion_reveal_gated_by_action_token_affordability():
 	var minion := _make_money_minion(5, 2, 1)  # costs 2 Action tokens, usable once

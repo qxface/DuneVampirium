@@ -607,7 +607,20 @@ Action for debugging.
       superseded entirely by this list. `ErrorTracker.replay_trace()` updated to match: a
       `"minion_reveal"` trace type no longer exists, Minion Reveal activations replay as
       `pending_trigger` sub-steps under `"reveal"`, same as Place's Agent triggers. Covered by
-      `test/unit/test_reveal_pending_actions.gd` (7 tests, GUT).
+      `test/unit/test_reveal_pending_actions.gd` (10 tests, GUT).
+      **Corrected 2026-10-30** (see Key Decisions Log): the "nothing here ever auto-fires" rule
+      above was wrong in practice — playtesting showed free Reveal powers visibly resetting the
+      Fight/Battle-Power forecast until manually triggered, which felt clunky for no reason, since
+      there was nothing to decide. `build_reveal_pending_actions()` now passes
+      `CardData.reveal_effective_auto_execute` (not a hardcoded `false`) for every item, and for
+      Minions additionally requires `reveal_action_cost == 0`; `board.gd._do_reveal()` and
+      `ErrorTracker.replay_trace()`'s `"reveal"` case both now run the list through
+      `resolve_auto_actions()` before showing/replaying whatever's left — exactly mirroring Place's
+      Agent-effect pattern. `CardData.reveal_effective_auto_execute` itself was widened to also
+      require `reveal_requirement == GameEnums.RequirementType.NONE` (previously cost-only), per
+      the explicit rule "no cost or requirement, just gives resources → auto-fires." A costed
+      resource, a Requirement, or (for Minions) a positive Action-token cost all still force a
+      manual, player-ordered, player-declinable choice, same as before.
 - [x] **Per-Minion Reveal Action-token cost + repeat limit** — `CardData.reveal_action_cost`
       (default 1) and `reveal_max_uses` (default 1, `-1` = unlimited) — a second cost dimension
       from the existing resource-based `reveal_cost`/`reveal_cost_amount`, feeding the pending list
@@ -863,6 +876,9 @@ Action for debugging.
 | 2026-10-29 | The long-uncommitted working tree (Move Tracking/Undo, Error Tracking, and every CLAUDE.md update since) was finally committed — `b36513b "Check in after a long hiatus."`, on top of the Aug 9 `0a1f483` commit | Resolves the git-state discrepancy found this session: everything had been `git add`-ed but never actually committed, despite an earlier belief that it had been pushed |
 | 2026-10-29 | GUT (Godot Unit Testing, v9.6.1) added as the project's test framework, committed to `master` (`69fffd6`) separately from feature work; `test/unit/` is the configured test directory | Installed via the Godot AssetLib (no network access for this from the agent side — organization egress blocks GitHub, Godot's own asset store, and even npm/pip from this session). Verified with a 2-assertion smoke test before any real tests were written |
 | 2026-10-29 | Implemented the Reveal-phase pending-action list, per-Minion Action-token cost/repeat-limit, and Action-tokens-as-a-resource — see Completed Systems for the full description — on a dedicated `reveal-pending-actions` branch off `master`, not directly on `master` | Keeps this sizable, multi-file change isolated until playtested; `master` stays at the GUT-setup commit until this branch is reviewed/merged. Verified with `test/unit/test_reveal_pending_actions.gd` (7 tests, 35 assertions, all passing) plus a clean parse (no errors, only 3 pre-existing unrelated warnings in `effect.gd`) |
+| 2026-10-30 | **Corrected**: Reveal-phase pending items DO auto-fire when free — an uncosted Plan power, or a Minion power with no resource cost/Requirement and `reveal_action_cost == 0`, fires immediately via `resolve_auto_actions()` with no player input. Supersedes the 2026-10-20 "nothing in Reveal ever auto-fires" decision; a costed resource, a Requirement, or any positive Action-token cost still requires a manual, player-ordered, player-declinable trigger, unchanged | Playtesting found the all-manual rule "clunky": a free Reveal power visibly held the Fight/Battle-Power forecast at a lower value until triggered, for a choice that wasn't actually a choice. Reported directly: "If an effect has no cost or requirement and just gives resources, it should default to setting 'Auto Executes' to true" |
+| 2026-10-30 | `CardData.reveal_effective_auto_execute` widened to also require `reveal_requirement == GameEnums.RequirementType.NONE` (previously checked only `reveal_cost`) | Direct consequence of the correction above — "no cost OR requirement" was explicit in the request; `agent_effective_auto_execute`'s equivalent cost-only check was deliberately left as-is for now (not raised by this playtest), flagged below as a follow-up question |
+| 2026-10-30 | Fixed: `GameState.commit_action_log()` wasn't emitting `state_changed`, so the Undo icon's enabled/highlighted display (`board.gd._update_undo_display()`) could sit stale — dimmed even when Undo was actually available — until some unrelated later action happened to refresh it. Root cause of the reported "undo button is never highlighted/enabled... seems to work with a double click" (the long-press-to-undo gesture itself was always functional; only the *visual* enabled state was stale) | Direct bug report from playtesting; fixed by adding the missing `state_changed.emit()` at the end of `commit_action_log()`, same place every other state-mutating function in `GameState` already emits it |
 
 ---
 
@@ -957,11 +973,17 @@ Action for debugging.
   polish short of animation) — static/plain is fine for now, this is a later pass, not blocking
   current work.
 - ~~Minion Reveal Action-token cost field: should 0-cost Minions auto-reveal like Plans...~~
-  → Decided 2026-10-20: neither auto-fires. Plans and affordable Minion Reveals both go into
-  one player-ordered, player-skippable pending-action list — see Systems In Progress.
+  → Decided 2026-10-20: neither auto-fires. **Corrected 2026-10-30**: both DO auto-fire when
+  they're otherwise free — an uncosted Plan, or an uncosted-AND-zero-Action-token-cost Minion,
+  fires with no player input via `resolve_auto_actions()`; anything costed (resource,
+  Requirement, or Action token) still goes into the player-ordered, player-skippable
+  pending-action list — see Completed Systems.
 - ~~What sentinel value marks `reveal_max_uses` as "unlimited"...~~ → Decided 2026-10-20: `-1`.
   (Precedent: `GameState`'s faction-leader tracking already uses `-1` as a sentinel for "none" on
   an unrelated field — same convention, no collision, since the two fields never interact.)
+- Should `CardData.agent_effective_auto_execute` get the same `agent_requirement == NONE` check
+  that `reveal_effective_auto_execute` gained on 2026-10-30 (currently cost-only)? Not raised by
+  this playtest — flagged for consistency, not yet decided either way.
 - Beyond Tenebris, which other Factions exist and what are their thematic/mechanical hooks?
 - Exact shape of Faction Tracks: how many milestones, what do non-Tenebris Factions grant at each step?
 - Exact shape of the Game Setup/Configuration flow: what's configurable (VP target, Factions, Spaces,

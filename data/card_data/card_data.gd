@@ -158,8 +158,10 @@ var agent_effective_auto_execute: bool:
 var reveal_action: bool:
 	get: return !reveal_effects.is_empty()
 
+# Corrected 2026-10-30 (was cost-only, see CLAUDE.md Key Decisions Log): also requires
+# no Requirement, matching "no cost or requirement, just gives resources" -> auto-fires.
 var reveal_effective_auto_execute: bool:
-	get: return reveal_auto_execute and reveal_cost == GameEnums.CostType.NONE
+	get: return reveal_auto_execute and reveal_cost == GameEnums.CostType.NONE and reveal_requirement == GameEnums.RequirementType.NONE
 
 # --- DISCARD ACTION ---
 @export_group("Discard Action")

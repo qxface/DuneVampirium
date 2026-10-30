@@ -238,13 +238,15 @@ func _do_reveal() -> void:
 	ErrorTracker.start_trace(pre, "reveal", reveal_description, reveal_params)
 	GameState.execute_reveal()
 
-	# Unlike Place's Agent effects, NOTHING here auto-fires — per CLAUDE.md's 2026-10-20
-	# decision, even a free Plan Reveal power is a player-triggered, declinable choice,
-	# same as a Minion's (Action-token-costed) Reveal power. So this always goes to the
-	# prompt — never through GameState.resolve_auto_actions() — and the whole Reveal,
-	# including every pending trigger the player makes from it, stays one undo-able
-	# Action until the prompt closes (same bundling pattern _do_place() uses above).
+	# Corrected 2026-10-30 (was: nothing here ever auto-fires, per CLAUDE.md's 2026-10-20
+	# decision) — now mirrors _do_place(): an uncosted Plan power, or an uncosted-AND-
+	# zero-Action-token-cost Minion power, fires immediately with no player input;
+	# anything costed in resources and/or Action tokens stays a player-triggered,
+	# declinable choice in the prompt, same as before. The whole Reveal, including
+	# every pending trigger the player makes from it, still stays one undo-able Action
+	# until the prompt closes (same bundling pattern _do_place() uses above).
 	var pending := GameState.build_reveal_pending_actions()
+	pending = GameState.resolve_auto_actions(pending)
 	if pending.is_empty():
 		GameState.commit_action_log(pre, "reveal", reveal_description, reveal_params)
 	else:
