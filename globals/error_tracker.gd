@@ -165,8 +165,13 @@ func replay_trace(path: String = _TRACE_PATH) -> void:
 			GameState.execute_recall(params.get("minions", []), params.get("spaces", []))
 		"reveal":
 			GameState.execute_reveal()
-		"minion_reveal":
-			GameState.execute_minion_reveal(params.get("minion"))
+			# Reveal's pending list (Plan + Minion choices) never auto-fires — see
+			# build_reveal_pending_actions() — so every trigger the player made is a
+			# recorded "pending_trigger" sub-step below, same mechanism as Place's Agent
+			# effects. "minion_reveal" as a standalone trace action type no longer exists
+			# (superseded 2026-10-20 — Minion Reveal activations are pending-list triggers
+			# within a "reveal" trace now, not their own top-level Action).
+			pending = GameState.build_reveal_pending_actions()
 		"advance_wild_faction":
 			print_debug("ErrorTracker: 'advance_wild_faction' trace — re-trigger FactionPicker manually and pick %s for player %d" % [str(params.get("factions", [])), params.get("player_index", -1)])
 		_:

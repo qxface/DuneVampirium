@@ -539,45 +539,18 @@ Action for debugging.
       - **Undo now has two granularities, not one** — see the expanded [[move-tracking-undo]] entry
         below for the in-resolution step-by-step stack this readout's "declined"/"spent" lines need
         to stay in sync with.
-- [ ] Reveal-phase action list — Plan reveal powers and affordable Minion Reveal powers should
-      both surface as one list of pending Reveal actions (reusing the `PendingAction`/
-      `PendingActionPrompt` pattern already built for Place's Agent effects — see the comment
-      atop `GameState.build_agent_pending_actions()` noting the trio is written generically for
-      exactly this reuse), letting the player choose the order to trigger them in, or decline
-      any of them — **including free Plan powers**, which currently force-fire with no choice.
-      Not yet implemented: `execute_reveal()` currently loops `plan_hand` and calls
-      `_trigger_effects()` on every Plan immediately, in hand order, with no player input;
-      `execute_minion_reveal()` fires on a single immediate call with no pending-list UI either
-      (today's board.gd flow — pick one Minion, press the button, repeat — only incidentally
-      gives order/skip control, and only for Minions, not Plans). Needs a `build_reveal_pending_
-      actions()`-style function that, unlike `resolve_auto_actions()`, does NOT auto-fire
-      free/`effective_auto_execute` items — every Reveal item (Plan or Minion, free or costed)
-      goes into the pending list for the player to trigger or skip.
-- [ ] Per-Minion Reveal Action-token cost **and** per-use repeat limit — two separate per-card
-      knobs, not yet implemented:
-      - **Cost per activation** — `reveal_action_cost: int = 1` (new `CardData` field, separate
-        from the existing resource-based `reveal_cost`/`reveal_cost_amount`). Usually 1; could be 0
-        (free) or 2+.
-      - **Uses per Reveal phase** — a Minion's Reveal power can normally fire **only once per
-        Reveal, even if the player later gains more Action tokens** (default/by-far-most-common:
-        cost 1, max 1 use). A card can override this to a specific higher count (e.g. 2), or to
-        "as many times as affordable" (uncapped — gated purely by having enough Action tokens each
-        time, e.g. a power costing 2 that a player can keep repaying). Needs a new `CardData` field,
-        e.g. `reveal_max_uses: int = 1` with a sentinel (TBD — see Open Questions) for "unlimited."
-      - Not yet implemented: `GameState.execute_minion_reveal()` hardcodes `actions_remaining -= 1`
-        with no cost or use-count check at all; `can_minion_reveal()` only checks
-        `actions_remaining > 0`. Needs per-use-count tracking for the current Reveal phase (reset
-        each time `round_phase` enters `REVEALING`), plus `board.gd`'s MinionRevealButton
-        enable/selection logic. Feeds into the Reveal-phase action list above — "affordable" there
-        means `actions_remaining >= reveal_action_cost` AND uses-this-Reveal < `reveal_max_uses`
-        (or unlimited). Any Action tokens gained mid-Reveal (see the Action tokens as a resource
-        item below) are immediately spendable on other Minions in that same list.
-- [ ] Action tokens as a generic resource — an Action token is just one more resource type (like
-      Money/Blood/Secret/VP), grantable by **any** effect (Agent, Reveal, Acquire, etc.), not a
-      special Reveal-only mechanic. Needs a new `GainResource.GainType.ACTION` case (**appended**,
-      not inserted — the existing enum comment notes ordinals are stored in `.tres` files) wired to
-      `player.actions_remaining += amount`, plus an icon (`assets/icons/resources/action.png`
-      already exists — see `PlayerPanel`'s action-token display).
+- [ ] Action Log readout spec (`[[action-log-readout]]`) display layer — the Reveal-phase pending
+      list (now implemented, see Completed Systems) still shows plain one-line
+      `PendingActionPrompt` rows (card name + icons + a small "· N Actions · used X/Y" text
+      suffix), not the fuller structured multi-line readout spec'd earlier in this file. That
+      spec (per-line attribution, declined-item formatting, etc.) remains unimplemented display
+      polish on top of working mechanics.
+- [ ] Undo, second granularity (step back one choice at a time *during* an action's resolution) —
+      still not implemented; explicitly deferred as its own follow-up when the Reveal-phase work
+      was scoped (2026-10-29). `begin_undo_span()` still takes exactly one snapshot per top-level
+      Action; declining/triggering choices from the new Reveal pending list is NOT yet
+      individually undoable mid-resolution — only whole-Action undo (after the prompt closes and
+      the Action commits) works today.
 - [ ] Spies (core mechanic, not deferred) — design not yet started
 - [ ] Game state & turn management (Action economy / Reveal / Combat / Makers / Round End structure)
 - [ ] Player actions / card play logic
@@ -615,6 +588,34 @@ Action for debugging.
 ---
 
 ## Completed Systems
+- [x] **Reveal-phase pending-action list** (implemented 2026-10-29, branch
+      `reveal-pending-actions`) — `GameState.build_reveal_pending_actions()` builds one
+      `PendingAction` per eligible Plan (from `_current_reveal_plans`, set by `execute_reveal()`)
+      and per ready Minion with `reveal_effects`; unlike `resolve_auto_actions()`, nothing here
+      ever auto-fires — even a free Plan power sits in the list until the player triggers or
+      declines it. `board.gd._do_reveal()` shows this through the same `PendingActionPrompt` modal
+      Place's Agent effects use, bundling every choice made (Plan or Minion, in whatever order)
+      into one undo-able "reveal" `ActionLogEntry`, committed only when the prompt closes.
+      `PendingAction` gained `action_token_cost`/`max_uses`/`uses_so_far` (generic, backward
+      compatible — existing Agent items never set them); `try_trigger_pending()` checks/spends
+      both the resource cost and the Action-token cost, and refuses once `max_uses` is hit
+      (`-1` = unlimited, bounded only by affordability). `PendingActionPrompt` now keeps a
+      repeatable item in the list (re-rendered with its use count) instead of erasing it after one
+      trigger, and reports every item still untriggered when the prompt closes via
+      `closed(declined_items: Array)`. The old single-Minion-select-and-press-`MinionRevealButton`
+      flow, `GameState.execute_minion_reveal()`, and the dead `can_minion_reveal()` are gone —
+      superseded entirely by this list. `ErrorTracker.replay_trace()` updated to match: a
+      `"minion_reveal"` trace type no longer exists, Minion Reveal activations replay as
+      `pending_trigger` sub-steps under `"reveal"`, same as Place's Agent triggers. Covered by
+      `test/unit/test_reveal_pending_actions.gd` (7 tests, GUT).
+- [x] **Per-Minion Reveal Action-token cost + repeat limit** — `CardData.reveal_action_cost`
+      (default 1) and `reveal_max_uses` (default 1, `-1` = unlimited) — a second cost dimension
+      from the existing resource-based `reveal_cost`/`reveal_cost_amount`, feeding the pending list
+      above.
+- [x] **Action tokens as a generic resource** — `GainResource.GainType.ACTION` (appended to the
+      enum, not inserted) adds directly to `player.actions_remaining`; grantable by any effect, not
+      special-cased to Reveal or to Minions. A token gained mid-Reveal is immediately spendable on
+      another pending item in the same list (tested).
 - [x] Action economy (2 Actions/round; Place / Recall per Action, no Hold — superseded 2026-07-13) — Place, Recall, Reveal, and the leftover-Action-token-spends-as-Minion-Reveal flow are all wired and working
 - [x] Card data (Resources) — `CardData`, `SpaceData`, `SpaceRequirement`, `GameEnums`
 - [x] Effect system scaffold (`Effect` base + `draw_card`, `gain_resource`)
@@ -860,6 +861,8 @@ Action for debugging.
 | 2026-10-29 | `takeover.tres` stays a regular Space for now — no special decisive/majority-control weight | Direct confirmation; no change from current implementation |
 | 2026-10-29 | Card pool scope: eventually a huge library with subsets chosen at Game Setup, but the near-term goal is a small, *complete* set across whatever Factions exist, not a large unfinished one | Confirmed; ties into the Game Setup "card pool" Open Question |
 | 2026-10-29 | The long-uncommitted working tree (Move Tracking/Undo, Error Tracking, and every CLAUDE.md update since) was finally committed — `b36513b "Check in after a long hiatus."`, on top of the Aug 9 `0a1f483` commit | Resolves the git-state discrepancy found this session: everything had been `git add`-ed but never actually committed, despite an earlier belief that it had been pushed |
+| 2026-10-29 | GUT (Godot Unit Testing, v9.6.1) added as the project's test framework, committed to `master` (`69fffd6`) separately from feature work; `test/unit/` is the configured test directory | Installed via the Godot AssetLib (no network access for this from the agent side — organization egress blocks GitHub, Godot's own asset store, and even npm/pip from this session). Verified with a 2-assertion smoke test before any real tests were written |
+| 2026-10-29 | Implemented the Reveal-phase pending-action list, per-Minion Action-token cost/repeat-limit, and Action-tokens-as-a-resource — see Completed Systems for the full description — on a dedicated `reveal-pending-actions` branch off `master`, not directly on `master` | Keeps this sizable, multi-file change isolated until playtested; `master` stays at the GUT-setup commit until this branch is reviewed/merged. Verified with `test/unit/test_reveal_pending_actions.gd` (7 tests, 35 assertions, all passing) plus a clean parse (no errors, only 3 pre-existing unrelated warnings in `effect.gd`) |
 
 ---
 

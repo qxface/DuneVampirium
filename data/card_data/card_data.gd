@@ -135,6 +135,17 @@ var agent_effective_auto_execute: bool:
 		reveal_cost_amount = max(0, v)
 		if reveal_cost != GameEnums.CostType.NONE: reveal_auto_execute = false
 		notify_property_list_changed()
+# --- Minion Reveal Action-token cost/repeat-limit (CLAUDE.md 2026-10-20 decisions) ---
+# Separate from reveal_cost/reveal_cost_amount above, which is a resource cost (Money/Blood/
+# Secret/Rapport). These two fields govern a MINION's Reveal power specifically: the Action-token
+# cost to activate it during the Reveal phase (usually 1, could be 0 or 2+), and how many times it
+# can fire per Reveal phase (usually 1, even if the player gains more Action tokens later that same
+# Reveal — see Core Design Constraint section). Plans ignore both — they reveal for free via the
+# resource-cost fields above only.
+@export var reveal_action_cost: int = 1:
+	set(v): reveal_action_cost = max(0, v); notify_property_list_changed()
+@export var reveal_max_uses: int = 1:
+	set(v): reveal_max_uses = max(-1, v); notify_property_list_changed()  # -1 = unlimited (while affordable)
 @export var reveal_requirement: GameEnums.RequirementType = GameEnums.RequirementType.NONE:
 	set(v): reveal_requirement = v; notify_property_list_changed()
 @export var reveal_requirement_amount: int = 0:

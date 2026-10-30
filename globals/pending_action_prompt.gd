@@ -6,9 +6,14 @@ extends CanvasLayer
 # resource a later one needs. Visually in the same family as CardArrayPopup.
 
 # Emitted whenever the prompt closes (Done button or the last item resolving) — lets
-# board.gd finalize a Place action's ActionLogEntry only once every pending trigger the
-# player chose to fire has actually happened, not right after the free ones do.
-signal closed
+# board.gd finalize a Place/Reveal action's ActionLogEntry only once every pending
+# trigger the player chose to fire has actually happened, not right after the free ones
+# do. declined_items carries whichever PendingActions were still showing, untriggered
+# (uses_so_far == 0), at close time — a Place caller can ignore the arg (Godot allows
+# connecting a signal to a callable with fewer parameters); a Reveal caller uses it to
+# record what the player chose NOT to trigger (CLAUDE.md 2026-10-20: declines are logged
+# too, not just what happened).
+signal closed(declined_items: Array)
 
 var _items: Array[PendingAction] = []
 
@@ -82,10 +87,11 @@ func show_pending(items: Array[PendingAction]) -> void:
 
 func close() -> void:
 	visible = false
+	var declined: Array = _items.filter(func(i: PendingAction): return i.uses_so_far == 0)
 	_items.clear()
 	for child in _row_vbox.get_children():
 		child.queue_free()
-	closed.emit()
+	closed.emit(declined)
 
 func _rebuild_rows() -> void:
 	for child in _row_vbox.get_children():
@@ -116,11 +122,31 @@ func _build_row(item: PendingAction) -> Control:
 	hbox.add_child(icon_hbox)
 	ActionDisplay.populate_into(icon_hbox, item.effects, item.cost_type, item.cost_amount, GameEnums.RequirementType.NONE, 0, item.source)
 
+	# Action-token cost / repeat-limit are a second cost dimension plain PendingAction
+	# display doesn't otherwise show (ActionDisplay.populate_into only knows about
+	# GameEnums.CostType resource costs) — append a plain-text summary rather than
+	# building new icon assets for this (visual "juice" is explicitly deferred, see
+	# CLAUDE.md's Future Considerations).
+	if item.has_action_token_cost() or item.max_uses != 1:
+		var meta_label := Label.new()
+		var cost_part := (" · %d Action%s" % [item.action_token_cost, "" if item.action_token_cost == 1 else "s"]) if item.has_action_token_cost() else ""
+		var uses_part := ""
+		if item.max_uses == -1:
+			uses_part = " · used %d (∞)" % item.uses_so_far
+		elif item.max_uses != 1:
+			uses_part = " · used %d/%d" % [item.uses_so_far, item.max_uses]
+		meta_label.text = (cost_part + uses_part).strip_edges(true, false)
+		meta_label.add_theme_font_size_override("font_size", 18)
+		hbox.add_child(meta_label)
+
 	var trigger_button := Button.new()
 	trigger_button.text = "Trigger"
 	trigger_button.add_theme_font_size_override("font_size", 22)
 	trigger_button.custom_minimum_size = Vector2(140, 50)
-	trigger_button.disabled = item.has_cost() and not GameState.can_afford(GameState.current_player(), {item.cost_type: item.cost_amount})
+	var p := GameState.current_player()
+	var affordable := (not item.has_cost() or GameState.can_afford(p, {item.cost_type: item.cost_amount}))
+	affordable = affordable and (not item.has_action_token_cost() or p.actions_remaining >= item.action_token_cost)
+	trigger_button.disabled = not item.can_use_again() or not affordable
 	trigger_button.pressed.connect(_on_trigger_pressed.bind(item))
 	hbox.add_child(trigger_button)
 
@@ -129,7 +155,11 @@ func _build_row(item: PendingAction) -> Control:
 func _on_trigger_pressed(item: PendingAction) -> void:
 	if not GameState.try_trigger_pending(item):
 		return
-	_items.erase(item)
+	# Repeatable items (max_uses > 1 or -1/unlimited) stay in the list, re-rendered with
+	# their updated use count/affordability, until exhausted or the player closes —
+	# unlike a plain one-shot Agent/Reveal item, which is erased the moment it fires.
+	if not item.can_use_again():
+		_items.erase(item)
 	if _items.is_empty():
 		close()
 	else:

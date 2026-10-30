@@ -126,10 +126,6 @@ func can_reveal() -> bool:
 	var p := current_player()
 	return p.round_phase == PlayerState.RoundPhase.ACTIVE and not _action_taken_this_turn
 
-func can_minion_reveal() -> bool:
-	var p := current_player()
-	return p.round_phase == PlayerState.RoundPhase.REVEALING and p.actions_remaining > 0
-
 func can_recall() -> bool:
 	var p := current_player()
 	return p.round_phase == PlayerState.RoundPhase.ACTIVE \
@@ -286,6 +282,28 @@ func _make_pending_action(source: Resource, action_name: String, cost_type: Game
 	item.effective_auto_execute = effective_auto_execute
 	return item
 
+# Reveal-phase pending list (CLAUDE.md 2026-10-20 decisions): every Plan revealed this
+# phase (_current_reveal_plans, set by execute_reveal()) plus every ready Minion with a
+# Reveal power becomes one PendingAction, player-ordered and player-declinable — UNLIKE
+# build_agent_pending_actions()/resolve_auto_actions(), nothing here ever auto-fires, even
+# a free Plan power. The caller (board.gd) must pass this straight to
+# PendingActionPrompt.show_pending() rather than through resolve_auto_actions() first.
+# Minion items additionally carry an Action-token cost/repeat-limit (reveal_action_cost/
+# reveal_max_uses) on top of the ordinary resource cost every pending item can have —
+# Plans never set these (cost stays 0, max_uses stays 1: fire for free, at most once).
+func build_reveal_pending_actions() -> Array[PendingAction]:
+	var items: Array[PendingAction] = []
+	for d: CardData in _current_reveal_plans:
+		if not d.reveal_effects.is_empty():
+			items.append(_make_pending_action(d, "Reveal", d.reveal_cost, d.reveal_cost_amount, d.reveal_effects, false))
+	for d: CardData in current_player().ready_minions:
+		if not d.reveal_effects.is_empty():
+			var item := _make_pending_action(d, "Reveal", d.reveal_cost, d.reveal_cost_amount, d.reveal_effects, false)
+			item.action_token_cost = d.reveal_action_cost
+			item.max_uses = d.reveal_max_uses
+			items.append(item)
+	return items
+
 # Fires every free (effective_auto_execute) item immediately and returns the rest —
 # costed or otherwise manual — for the player to resolve one at a time.
 func resolve_auto_actions(items: Array[PendingAction]) -> Array[PendingAction]:
@@ -302,11 +320,18 @@ func resolve_auto_actions(items: Array[PendingAction]) -> Array[PendingAction]:
 # changing anything if the player can't currently afford it.
 func try_trigger_pending(item: PendingAction) -> bool:
 	var p := current_player()
+	if not item.can_use_again():
+		return false
+	if item.has_cost() and not can_afford(p, {item.cost_type: item.cost_amount}):
+		return false
+	if item.has_action_token_cost() and p.actions_remaining < item.action_token_cost:
+		return false
 	if item.has_cost():
-		if not can_afford(p, {item.cost_type: item.cost_amount}):
-			return false
 		_spend(p, {item.cost_type: item.cost_amount})
+	if item.has_action_token_cost():
+		p.actions_remaining -= item.action_token_cost
 	_trigger_effects(item.effects, item.source)
+	item.uses_so_far += 1
 	# Record this as a subsequent player choice on the current Action's error trace —
 	# see globals/error_tracker.gd. Not part of Undo/Action Log; purely for crash forensics.
 	ErrorTracker.trace_step("pending_trigger", "%s — %s" % [item.source_name(), item.action_name], {"source": item.source})
@@ -319,23 +344,24 @@ func _trigger_effects(effects: Array, source: Resource) -> void:
 		if effect.is_binding():
 			_current_action_binding = true
 
+# Moves hand Plans to in-play and opens the Reveal phase. Per the 2026-10-20 decision,
+# this no longer fires any reveal_effects directly — Plan AND Minion Reveal powers are
+# both surfaced via build_reveal_pending_actions() instead, as player-ordered,
+# player-declinable choices (board.gd shows them through PendingActionPrompt, the same
+# as Place's Agent effects, bundled into this same Action's undo span until the prompt
+# closes). _current_reveal_plans records exactly which Plans this Reveal moved to
+# in-play, so build_reveal_pending_actions() doesn't have to guess from plan_in_play's
+# full contents (which could theoretically hold stale entries if _end_round() hasn't
+# run yet — using the explicit list sidesteps that ambiguity entirely).
 func execute_reveal() -> void:
 	var p := current_player()
 	var hand_plans := p.plan_hand.duplicate()
 	# Move hand plans to in-play FIRST — reveal effects may key off in-play count.
 	p.plan_in_play.append_array(hand_plans)
 	p.plan_hand.clear()
-	# Now trigger reveal effects in hand order.
-	for d: CardData in hand_plans:
-		_trigger_effects(d.reveal_effects, d)
+	_current_reveal_plans = hand_plans
 	p.round_phase = PlayerState.RoundPhase.REVEALING
 	_action_taken_this_turn = true
-	state_changed.emit()
-
-func execute_minion_reveal(minion_data: CardData) -> void:
-	var p := current_player()
-	_trigger_effects(minion_data.reveal_effects, minion_data)
-	p.actions_remaining -= 1
 	state_changed.emit()
 
 func execute_recall(minion_datas: Array, space_datas: Array = []) -> void:
@@ -386,6 +412,11 @@ func trash_card(player: PlayerState, card_data: CardData) -> void:
 # this system properly.
 var action_log: Array[ActionLogEntry] = []
 var gentlemans_undo: bool = false  # TEMP: hardcoded game-setup toggle until real Game Setup exists.
+
+# Set by execute_reveal(), read by build_reveal_pending_actions() — see that function's
+# comment. Not part of any snapshot/restore; it's rebuilt fresh every Reveal, same as the
+# Agent pending list is rebuilt fresh every Place.
+var _current_reveal_plans: Array[CardData] = []
 
 var _current_action_binding: bool = false
 var _turn_log_start_index: int = 0
@@ -509,11 +540,16 @@ func _end_round() -> void:
 # stays correct through the whole Reveal sequence: pre-Reveal it's pure forecast: once
 # plan_hand empties into plan_in_play the forecast naturally drops to (at most) whatever
 # Minions remain, and the real banked amount carries the rest.
-# Known edge case: a Minion whose Reveal was manually triggered this round (via
-# execute_minion_reveal) stays in ready_minions (Minions never change zones on Reveal),
-# so its contribution can be briefly double-counted (once real, once still-forecast)
-# until round end clears both. Narrow and self-correcting; not worth tracking
-# per-Minion "already revealed this round" state for.
+# Known edge case: a Minion whose Reveal was manually triggered this round (via the
+# Reveal-phase pending list, see build_reveal_pending_actions()) stays in ready_minions
+# (Minions never change zones on Reveal), so its contribution can be briefly
+# double-counted (once real, once still-forecast) until round end clears both. Narrow
+# and self-correcting; not worth tracking per-Minion "already revealed this round" state
+# for. Related, same-shape edge case: a Plan sitting in plan_in_play that the player
+# hasn't triggered yet from the same pending list briefly UNDER-counts (it already left
+# plan_hand, so the forecast stops counting it, but its effect hasn't fired yet either) —
+# same "narrow and self-correcting" tradeoff, resolves the moment the player triggers it
+# or the round ends.
 func forecast_resource_gain(player: PlayerState, gain_type: GainResource.GainType) -> int:
 	var total := 0
 	for d: CardData in player.ready_minions + player.plan_hand:

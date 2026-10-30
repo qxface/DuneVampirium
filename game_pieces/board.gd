@@ -70,10 +70,16 @@ func _ready() -> void:
 	send_minions_button.long_pressed.connect(_do_place)
 	reveal_button.long_pressed.connect(_do_reveal)
 	recall_minions_button.long_pressed.connect(_do_recall_minions)
-	minion_reveal_button.long_pressed.connect(_do_minion_reveal)
 	end_turn_button.long_pressed.connect(_do_end_turn)
 	accept_recall_button.long_pressed.connect(_do_accept_recall)
 	cancel_recall_button.long_pressed.connect(_do_cancel_recall)
+
+	# Superseded 2026-10-20: Minion Reveal activation is no longer its own
+	# select-one-then-press-button flow — it's one more item in the Reveal-phase
+	# PendingActionPrompt list (see _do_reveal()), alongside Plan reveal powers. The
+	# MinionRevealButton node stays in board.tscn (unused) rather than edited out of the
+	# scene file here; permanently hidden so it never shows.
+	minion_reveal_button.visible = false
 
 	for space in get_tree().get_nodes_in_group("SPACE"):
 		space.recall_selection_changed.connect(_update_button_states)
@@ -89,19 +95,16 @@ func _update_button_states() -> void:
 	var phase := cp.round_phase
 
 	var placing  := phase == PlayerState.RoundPhase.ACTIVE
-	var revealing := phase == PlayerState.RoundPhase.REVEALING
 
 	send_minions_button.visible    = placing and not _recall_mode
 	reveal_button.visible          = placing and not _recall_mode
 	recall_minions_button.visible  = placing and not _recall_mode
-	minion_reveal_button.visible   = revealing and cp.actions_remaining > 0
 	accept_recall_button.visible   = _recall_mode
 	cancel_recall_button.visible   = _recall_mode
 
 	send_minions_button.disabled   = not (GameState.can_place() and _has_valid_selection())
 	reveal_button.disabled         = not GameState.can_reveal()
 	recall_minions_button.disabled = not GameState.can_recall()
-	minion_reveal_button.disabled  = not _has_single_minion_selected()
 	end_turn_button.disabled       = not GameState.can_end_turn()
 	accept_recall_button.disabled  = not _has_recall_selection()
 
@@ -149,9 +152,6 @@ func _has_valid_selection() -> bool:
 	var minion_datas: Array = sel_minions.map(func(n): return n.card_data)
 	var plan_datas:   Array = sel_plans.map(func(n): return n.card_data)
 	return GameState.can_afford_place(minion_datas, plan_datas, space.space_data)
-
-func _has_single_minion_selected() -> bool:
-	return get_tree().get_nodes_in_group("MINION").filter(func(n): return n.selected).size() == 1
 
 func _has_recall_selection() -> bool:
 	return get_tree().get_nodes_in_group("SPACE").any(func(s): return s.recall_selected)
@@ -237,21 +237,25 @@ func _do_reveal() -> void:
 	var pre := GameState.begin_undo_span()
 	ErrorTracker.start_trace(pre, "reveal", reveal_description, reveal_params)
 	GameState.execute_reveal()
-	GameState.commit_action_log(pre, "reveal", reveal_description, reveal_params)
 
-func _do_minion_reveal() -> void:
-	var sel := get_tree().get_nodes_in_group("MINION").filter(func(n): return n.selected)
-	if sel.size() != 1:
-		return
-	var minion_node = sel[0]
-	minion_node.selected = false
-	var card_data: CardData = minion_node.card_data
-	var description := "%s activated %s's Reveal power" % [GameState.current_player().player_name, card_data.card_name]
-	var params := {"type": "minion_reveal", "minion": card_data}
-	var pre := GameState.begin_undo_span()
-	ErrorTracker.start_trace(pre, "minion_reveal", description, params)
-	GameState.execute_minion_reveal(card_data)
-	GameState.commit_action_log(pre, "minion_reveal", description, params)
+	# Unlike Place's Agent effects, NOTHING here auto-fires — per CLAUDE.md's 2026-10-20
+	# decision, even a free Plan Reveal power is a player-triggered, declinable choice,
+	# same as a Minion's (Action-token-costed) Reveal power. So this always goes to the
+	# prompt — never through GameState.resolve_auto_actions() — and the whole Reveal,
+	# including every pending trigger the player makes from it, stays one undo-able
+	# Action until the prompt closes (same bundling pattern _do_place() uses above).
+	var pending := GameState.build_reveal_pending_actions()
+	if pending.is_empty():
+		GameState.commit_action_log(pre, "reveal", reveal_description, reveal_params)
+	else:
+		PendingActionPrompt.closed.connect(
+			func(declined: Array):
+				if not declined.is_empty():
+					reveal_params["declined"] = declined.map(func(i: PendingAction): return i.source)
+				GameState.commit_action_log(pre, "reveal", reveal_description, reveal_params),
+			CONNECT_ONE_SHOT
+		)
+		PendingActionPrompt.show_pending(pending)
 
 func _do_end_turn() -> void:
 	GameState.end_turn()
