@@ -37,7 +37,9 @@ const PANEL_MARGIN: float = 8.0  # 4 px on each side of the inner scroll area
 var _plan_deck_long_press_active: bool = false
 var _plan_discard_long_press_active: bool = false
 var _plan_in_play_long_press_active: bool = false
-var _undo_long_press_active: bool = false
+var _undo_holding: bool = false
+var _undo_elapsed: float = 0.0
+const _UNDO_HOLD_DURATION: float = 0.5
 
 const PLAN_SCENE   := preload("res://game_pieces/plan.tscn")
 const MINION_SCENE := preload("res://game_pieces/minion.tscn")
@@ -386,20 +388,34 @@ func _update_undo_display() -> void:
 	var can_undo: bool = GameState.can_undo() and not _recall_mode
 	undo_icon.modulate = Color(1, 1, 1, 1) if can_undo else Color(1, 1, 1, 0.3)
 
+# Fixed 2026-10-30 (reported: "takes several clicks to undo"): the old version created
+# a brand-new one-shot SceneTreeTimer on every single press without ever cancelling a
+# prior one, and relied on a paired "mouse up" gui_input event to know when to stop
+# holding — but Control.gui_input only delivers events while the pointer is over the
+# icon's small rect, so drifting off it mid-hold (easy) left the flag stuck, and rapid
+# re-clicking could stack several timers that fired at the wrong moments relative to
+# the CURRENT press. Replaced with the same elapsed-time _process() approach
+# LongPressButton already uses for every other hold-to-confirm control on this screen —
+# see game_pieces/long_press_button.gd — polling the actual physical mouse-button state
+# each frame instead of trusting a single paired release event.
 func _on_undo_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		var mb := event as InputEventMouseButton
-		if mb.button_index == MOUSE_BUTTON_LEFT:
-			if mb.pressed:
-				_undo_long_press_active = true
-				get_tree().create_timer(0.5).timeout.connect(_on_undo_long_press_timeout)
-			else:
-				_undo_long_press_active = false
+	if event is InputEventMouseButton and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT \
+			and (event as InputEventMouseButton).pressed:
+		_undo_holding = true
+		_undo_elapsed = 0.0
 
-func _on_undo_long_press_timeout() -> void:
-	if not _undo_long_press_active:
+func _process(delta: float) -> void:
+	if not _undo_holding:
 		return
-	_undo_long_press_active = false
+	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		_undo_holding = false
+		_undo_elapsed = 0.0
+		return
+	_undo_elapsed += delta
+	if _undo_elapsed < _UNDO_HOLD_DURATION:
+		return
+	_undo_holding = false
+	_undo_elapsed = 0.0
 	if _recall_mode or not GameState.can_undo():
 		return
 	# Selection is UI-only and doesn't touch GameState data, but it may reference cards
