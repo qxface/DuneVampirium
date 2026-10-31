@@ -1,0 +1,19 @@
+# Godot 4+ regenerates this entirely from source assets/scripts on next editor open —
+# it was previously tracked (769 files) and caused constant spurious diffs plus a
+# blocked git-gui merge; see CLAUDE.md Key Decisions Log, 2026-10-31.
+.godot/
+
+# Godot 3.x import cache — unused by this Godot 4 project, ignored defensively.
+.import/
+
+# Build/export output — export_presets.cfg (the export CONFIG) stays tracked; the
+# actual compiled artifacts never should be (see the 2026-08-05 "removing compiled exes"
+# cleanup commit this supersedes/formalizes).
+export/
+exports/
+*.exe
+*.pck
+
+# OS cruft
+.DS_Store
+Thumbs.db

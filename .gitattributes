@@ -1,0 +1,7 @@
+# Normalize all text files to LF in the repository and treat CRLF/LF as equivalent for
+# diff/status purposes, regardless of what line endings an editor writes locally.
+# Added 2026-10-31 after the Godot editor repeatedly re-saved tracked .gd files with
+# CRLF, causing every one of them to show as "modified" with no real content change
+# (confirmed via `git diff --ignore-all-space`, which came back empty) — including once
+# mid-merge, blocking Git Gui's Local Merge outright. See CLAUDE.md Key Decisions Log.
+* text=auto eol=lf
