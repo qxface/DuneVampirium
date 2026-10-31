@@ -39,6 +39,7 @@ var _plan_discard_long_press_active: bool = false
 var _plan_in_play_long_press_active: bool = false
 var _undo_holding: bool = false
 var _undo_elapsed: float = 0.0
+var _undo_fill: ColorRect
 const _UNDO_HOLD_DURATION: float = 0.5
 
 const PLAN_SCENE   := preload("res://game_pieces/plan.tscn")
@@ -68,6 +69,18 @@ func _ready() -> void:
 	plan_in_play_icon.gui_input.connect(_on_plan_in_play_input)
 	plan_discard_icon.gui_input.connect(_on_plan_discard_input)
 	undo_icon.gui_input.connect(_on_undo_input)
+	# Same hold-progress indicator LongPressButton draws for every other hold-to-confirm
+	# control on this screen (see game_pieces/long_press_button.gd) — undo_icon is a
+	# plain TextureRect (icon.tscn), not a LongPressButton/Button, so it has no built-in
+	# equivalent; built by hand here instead. Added 2026-10-30 after a playtest report
+	# that Undo "doesn't work at all" turned out to be the player clicking instead of
+	# holding — with zero visual feedback, there was nothing to suggest a hold was even
+	# needed, unlike every other action button on this screen.
+	_undo_fill = ColorRect.new()
+	_undo_fill.color = Color(1.0, 1.0, 1.0, 0.35)
+	_undo_fill.size = Vector2.ZERO
+	_undo_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	undo_icon.add_child(_undo_fill)
 
 	send_minions_button.long_pressed.connect(_do_place)
 	reveal_button.long_pressed.connect(_do_reveal)
@@ -410,12 +423,15 @@ func _process(delta: float) -> void:
 	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		_undo_holding = false
 		_undo_elapsed = 0.0
+		_undo_fill.size = Vector2.ZERO
 		return
 	_undo_elapsed += delta
+	_undo_fill.size = Vector2(undo_icon.size.x * (_undo_elapsed / _UNDO_HOLD_DURATION), undo_icon.size.y)
 	if _undo_elapsed < _UNDO_HOLD_DURATION:
 		return
 	_undo_holding = false
 	_undo_elapsed = 0.0
+	_undo_fill.size = Vector2.ZERO
 	if _recall_mode or not GameState.can_undo():
 		return
 	# Selection is UI-only and doesn't touch GameState data, but it may reference cards
