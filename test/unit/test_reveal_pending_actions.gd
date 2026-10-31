@@ -231,3 +231,36 @@ func test_declined_items_reported_when_prompt_closes():
 	var declined: Array = call_params[0]
 	assert_eq(declined.size(), 1, "Only the untouched Minion item should be reported as declined")
 	assert_eq(declined[0].source, minion)
+
+func test_costed_plan_reveal_power_stays_manual_through_resolve_auto_actions():
+	var plan := _make_money_plan(4)
+	plan.reveal_cost = GameEnums.CostType.MONEY
+	plan.reveal_cost_amount = 1
+	_p.plan_hand = [plan]
+	_p.money = 5  # enough to afford the Plan's own cost later
+
+	GameState.execute_reveal()
+	var pending := GameState.build_reveal_pending_actions()
+	pending = GameState.resolve_auto_actions(pending)
+
+	assert_eq(_p.money, 5, "Costed Plan power must not auto-fire")
+	assert_eq(pending.size(), 1, "It should stay in the manual pending list")
+	assert_true(GameState.try_trigger_pending(pending[0]))
+	assert_eq(_p.money, 8, "Paid 1, gained 4")
+
+func test_requirement_only_plan_reveal_power_stays_manual_through_resolve_auto_actions():
+	# 2026-10-30 fix: a Requirement with no resource cost must still block auto-fire —
+	# see CardData.reveal_effective_auto_execute and test_card_data_auto_execute.gd for
+	# the getter-level version of this same coverage.
+	var plan := _make_money_plan(2)
+	plan.reveal_requirement = GameEnums.RequirementType.MONEY
+	plan.reveal_requirement_amount = 1
+	_p.plan_hand = [plan]
+
+	GameState.execute_reveal()
+	var pending := GameState.build_reveal_pending_actions()
+	pending = GameState.resolve_auto_actions(pending)
+
+	assert_eq(_p.money, 0, "A Requirement-gated Plan power must not auto-fire")
+	assert_eq(pending.size(), 1, "It should stay in the manual pending list")
+

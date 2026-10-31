@@ -607,7 +607,8 @@ Action for debugging.
       superseded entirely by this list. `ErrorTracker.replay_trace()` updated to match: a
       `"minion_reveal"` trace type no longer exists, Minion Reveal activations replay as
       `pending_trigger` sub-steps under `"reveal"`, same as Place's Agent triggers. Covered by
-      `test/unit/test_reveal_pending_actions.gd` (10 tests, GUT).
+      `test/unit/test_reveal_pending_actions.gd` (12 tests, GUT — see also `test_undo.gd` and
+      `test_card_data_auto_execute.gd`, added 2026-10-30, Completed Systems below).
       **Corrected 2026-10-30** (see Key Decisions Log): the "nothing here ever auto-fires" rule
       above was wrong in practice — playtesting showed free Reveal powers visibly resetting the
       Fight/Battle-Power forecast until manually triggered, which felt clunky for no reason, since
@@ -693,6 +694,25 @@ Action for debugging.
   `action_log`. `_jsonify()`/`_unjsonify()` round-trip `Resource` references via `resource_path`.
   `replay_trace()` restores the dump and re-runs the failed Action + its logged choices — a callable debug
   function, no in-game UI.
+- [x] **GUT coverage for Undo and *_effective_auto_execute** (added 2026-10-30) — two new test
+      files alongside `test_reveal_pending_actions.gd`: `test/unit/test_undo.gd` (11 tests) drives
+      `GameState.can_undo()`/`undo_last_action()`/`commit_action_log()` directly — turn-scoping via
+      `_turn_log_start_index`, the binding-action block and `gentlemans_undo` override (using a
+      free `DrawCard` Reveal effect as a real binding fixture), and the 2026-10-30
+      `state_changed`-on-commit fix. `test/unit/test_card_data_auto_execute.gd` (8 tests) is pure
+      `CardData.new()` fixtures (no autoload/isolation bookkeeping needed) covering
+      `reveal_effective_auto_execute`'s full cost × requirement × stored-flag matrix, including the
+      belt-and-suspenders case (cost forces the effective value off even if the stored checkbox is
+      manually re-enabled after), and explicitly locks in that `agent_effective_auto_execute` was
+      deliberately NOT widened the same way (see Open Questions) so that asymmetry can't drift
+      silently. `test_reveal_pending_actions.gd` gained 2 more cases (costed Plan, requirement-only
+      Plan — both confirmed to stay manual through `resolve_auto_actions()`), for 12 total.
+      **Known gap surfaced while writing these** (not fixed, see Open Questions): card-level
+      `*_requirement` is not actually enforced by `PendingAction`/`try_trigger_pending()` at
+      trigger time — it only ever affects auto-fire-vs-manual. **Not covered**: `board.gd`'s
+      Undo hold-timer/fill-indicator UI logic (`_process()`, `Input.is_mouse_button_pressed()`) —
+      this project's GUT tests only drive autoload/`Resource` logic directly today, no scene
+      instantiation or simulated input yet; would need that infrastructure first.
 
 ---
 
@@ -881,6 +901,7 @@ Action for debugging.
 | 2026-10-30 | Fixed: `GameState.commit_action_log()` wasn't emitting `state_changed`, so the Undo icon's enabled/highlighted display (`board.gd._update_undo_display()`) could sit stale — dimmed even when Undo was actually available — until some unrelated later action happened to refresh it. Root cause of the reported "undo button is never highlighted/enabled... seems to work with a double click" (the long-press-to-undo gesture itself was always functional; only the *visual* enabled state was stale) | Direct bug report from playtesting; fixed by adding the missing `state_changed.emit()` at the end of `commit_action_log()`, same place every other state-mutating function in `GameState` already emits it |
 | 2026-10-30 | Fixed a second, deeper Undo bug reported right after the first fix ("still acting weird, takes several clicks to undo the reveal"): `board.gd`'s hand-rolled long-press detection for the Undo icon (`gui_input` + a fresh one-shot `SceneTreeTimer` created on every press, never cancelled) could leak several pending timers from rapid re-clicks and had no reliable "release" signal — `Control.gui_input` only delivers events while the pointer is over the icon's small rect, so drifting off it mid-hold left the "holding" flag stuck. Replaced with the same elapsed-time `_process()` approach `LongPressButton` already uses for every other hold-to-confirm control on this screen, polling the actual physical mouse-button state (`Input.is_mouse_button_pressed()`) each frame instead of trusting one paired release event | Direct follow-up bug report; the Undo icon is a plain `TextureRect` (`icon.tscn`, reused from the resource-icon display widget), not a `LongPressButton`-derived `Button`, so it couldn't just reuse that class directly — reimplemented its same elapsed-time logic by hand instead. **Known same-shape issue, not yet fixed**: `plan_deck`/`plan_discard_icon`/`plan_in_play_icon`'s long-press-to-view-popup handlers use the identical old (leaky-timer, paired-release-event) pattern this fix replaced — lower stakes (opening a view-only popup, not mutating game state) so left alone for now, but worth the same fix if they're ever reported as flaky |
 | 2026-10-30 | Resolved as **working as designed, not a bug**: debug logging (temporarily added to `GameState.can_undo()` and the Undo hold handlers, then removed) confirmed `can_undo()` correctly returned `true` after a plain Place, and the hold-timer fix from the previous entry was functioning correctly — the player had been clicking the icon rather than pressing and holding it for the required 0.5s. Added a fill-progress overlay to the Undo icon (a `ColorRect` grown by `board.gd._process()`, same visual language `LongPressButton` already draws for every other hold-to-confirm control on this screen) so the hold requirement is now visible instead of silent | Direct follow-up: "OH! You have to hold it down. Then you need to add the same scrolling progress indicator to the undo button that the 'Send Minion' button or 'End Turn' button has." Root cause of all three "Undo is broken" reports traced to this single missing affordance — the Undo icon is a plain `TextureRect` (`icon.tscn`), not a `LongPressButton`, so it never inherited that class's built-in fill indicator the way every other action button on this screen did |
+| 2026-10-30 | Added GUT regression coverage for everything fixed in this session's Undo/Reveal debugging arc — see Completed Systems for the full breakdown (`test_undo.gd`, `test_card_data_auto_execute.gd`, 2 more cases in `test_reveal_pending_actions.gd`) | Direct request: "Add thorough unit tests through GUT." Surfaced one new, pre-existing gap in the process (card-level `*_requirement` isn't actually enforced at trigger time — see Open Questions), not introduced by this session's changes |
 
 ---
 
@@ -986,6 +1007,18 @@ Action for debugging.
 - Should `CardData.agent_effective_auto_execute` get the same `agent_requirement == NONE` check
   that `reveal_effective_auto_execute` gained on 2026-10-30 (currently cost-only)? Not raised by
   this playtest — flagged for consistency, not yet decided either way.
+- **Gap found while adding GUT coverage 2026-10-30**: `*_requirement`/`*_requirement_amount`
+  (Acquire/Agent/Reveal/Discard/Trash, all `CardData` lifecycle actions) only ever affect whether
+  an item auto-fires (via `*_effective_auto_execute`) — nothing enforces them at the point a
+  player actually triggers a manual `PendingAction`. `PendingAction` carries no
+  requirement_type/requirement_amount fields at all, and `GameState.try_trigger_pending()` only
+  checks resource cost and Action-token cost, never `GameState.meets_requirement()` (which exists
+  and IS wired up for Space `SpaceRequirement` clauses, just not for card-level Requirements). So
+  today a Requirement-gated card effect is purely cosmetic once it's in the pending list — a
+  player can trigger it without meeting the stated Requirement. Not yet fixed; needs a decision on
+  whether `PendingAction`/`try_trigger_pending()` should gate on it (disabled Trigger button,
+  mirroring the existing affordability check) the next time Requirement-gated effects are
+  actually used in real card data.
 - Beyond Tenebris, which other Factions exist and what are their thematic/mechanical hooks?
 - Exact shape of Faction Tracks: how many milestones, what do non-Tenebris Factions grant at each step?
 - Exact shape of the Game Setup/Configuration flow: what's configurable (VP target, Factions, Spaces,
